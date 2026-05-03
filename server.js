@@ -476,17 +476,31 @@ io.on('connection', (socket) => {
     });
   });
 
-  socket.on('sendThreadReply', ({ quoteId, text, quotedText }) => {
+  socket.on('sendThreadReply', ({ quoteId, text, quotedText }, ack = () => {}) => {
     if (!checkRateLimit(`thread:${socket.id}`, 35, 60 * 1000)) {
       emitRateLimited(socket, 'replying');
+      ack({ ok: false, error: 'Slow down a little before replying again.' });
       return;
     }
 
-    if (!quoteId) return;
+    if (!quoteId) {
+      ack({ ok: false, error: 'Missing thought to reply to.' });
+      return;
+    }
     const cleanText = sanitizeText(text, 500);
-    if (!cleanText) return;
+    if (!cleanText) {
+      ack({ ok: false, error: 'Reply cannot be empty.' });
+      return;
+    }
 
     const currentUser = getUserFromSocket(socket);
+    const quotes = loadQuotes();
+    const quoteIndex = quotes.findIndex(q => q.id === quoteId);
+    if (quoteIndex === -1) {
+      ack({ ok: false, error: 'That thought no longer exists.' });
+      return;
+    }
+
     const replyData = {
       id: uuidv4(),
       quoteId,
@@ -503,13 +517,10 @@ io.on('connection', (socket) => {
     saveChatHistory(quoteId, history);
     io.emit('newThreadReply', { quoteId, reply: replyData, replyCount: history.length });
 
-    const quotes = loadQuotes();
-    const quoteIndex = quotes.findIndex(q => q.id === quoteId);
-    if (quoteIndex !== -1) {
-      quotes[quoteIndex].replyCount = history.length;
-      saveQuotes(quotes);
-      io.emit('quoteUpdated', quotes[quoteIndex]);
-    }
+    quotes[quoteIndex].replyCount = history.length;
+    saveQuotes(quotes);
+    io.emit('quoteUpdated', quotes[quoteIndex]);
+    ack({ ok: true, reply: replyData });
 
     broadcastActivity({
       type: 'reply',

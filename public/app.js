@@ -2462,6 +2462,7 @@ function renderInlineThreads() {
                     <button class="secondary-action compact-action" onclick="quoteOriginalInReply('${quote.id}')">Quote Thought</button>
                     <button class="primary-action compact-action" onclick="sendThreadReply('${quote.id}')">Reply</button>
                 </div>
+                <div class="thread-compose-status" id="thread-status-${quote.id}"></div>
             </div>
         `;
 
@@ -2539,6 +2540,7 @@ function toggleFollowThread(quoteId) {
 function sendThreadReply(quoteId) {
     const input = document.getElementById(`thread-input-${quoteId}`);
     if (!input || !socket || !currentUser) return;
+    const status = document.getElementById(`thread-status-${quoteId}`);
 
     const raw = input.value.trim();
     if (!raw) return;
@@ -2547,8 +2549,22 @@ function sendThreadReply(quoteId) {
     const quotedText = quotedMatch ? quotedMatch[1].trim().slice(0, 180) : '';
     const text = raw.replace(/^>\s?.+?(\n\n|$)/s, '').trim() || raw;
 
-    socket.emit('sendThreadReply', { quoteId, text, quotedText });
-    input.value = '';
+    if (status) status.textContent = 'Sending reply...';
+    input.disabled = true;
+
+    socket.timeout(5000).emit('sendThreadReply', { quoteId, text, quotedText }, (err, response) => {
+        input.disabled = false;
+        if (err || !response?.ok) {
+            if (status) status.textContent = response?.error || 'Reply did not send. Check the connection and try again.';
+            return;
+        }
+
+        input.value = '';
+        if (status) status.textContent = 'Reply posted.';
+        setTimeout(() => {
+            if (status) status.textContent = '';
+        }, 1600);
+    });
 }
 
 
@@ -3028,7 +3044,7 @@ function connect() {
     
 
 
-    socket = io('http://localhost:3002', {
+    socket = io({
 
 
         reconnection: true,

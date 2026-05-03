@@ -2097,6 +2097,13 @@ body::before {
     flex-wrap: wrap;
 }
 
+.thread-compose-status {
+    min-height: 1.1rem;
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    text-align: right;
+}
+
 .action-btn {
     display: flex;
     align-items: center;
