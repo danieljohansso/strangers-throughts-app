@@ -401,6 +401,28 @@
 
     </div>
 
+    <div class="profile-modal" id="share-card-modal" style="display: none;" onclick="closeShareCard(event)">
+
+        <div class="profile-modal-card share-card-shell" onclick="event.stopPropagation()">
+
+            <button class="close-btn profile-modal-close" onclick="closeShareCard()">×</button>
+
+            <span class="hero-kicker">Share card</span>
+
+            <div class="share-card-preview" id="share-card-preview"></div>
+
+            <div class="thread-compose-actions">
+
+                <button class="secondary-action compact-action" onclick="copyShareCardText()">Copy Text</button>
+
+                <button class="primary-action compact-action" onclick="closeShareCard()">Done</button>
+
+            </div>
+
+        </div>
+
+    </div>
+
     <div class="onboarding-modal" id="onboarding-modal" style="display: none;">
 
         <div class="onboarding-card">

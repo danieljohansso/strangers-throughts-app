@@ -107,6 +107,8 @@ let waitingMatchCategory = null;
 let availableMatches = []; // Users currently waiting for matches
 
 let discoveryQueueIndex = 0;
+
+let currentShareCardText = '';
 
 
 
@@ -2251,6 +2253,38 @@ function focusThoughtFromHash() {
     jumpToThought(quoteId);
 }
 
+function openShareCard(quoteId, event) {
+    if (event) event.stopPropagation();
+    const quote = allQuotes.find(item => item.id === quoteId);
+    const modal = document.getElementById('share-card-modal');
+    const preview = document.getElementById('share-card-preview');
+    if (!quote || !modal || !preview) return;
+
+    currentShareCardText = `"${quote.text}"\n\n- ${quote.authorName || 'Anonymous'} on Stranger Thoughts\n${quote.category} · ${quote.mood || 'Reflective'}`;
+    preview.innerHTML = `
+        <div class="share-card-brand">Stranger Thoughts</div>
+        <blockquote>${escapeHtml(quote.text)}</blockquote>
+        <div class="share-card-meta">
+            <span>${escapeHtml(quote.authorName || 'Anonymous')}</span>
+            <span>${escapeHtml(quote.category)} · ${escapeHtml(quote.mood || 'Reflective')}</span>
+        </div>
+    `;
+    modal.style.display = 'grid';
+}
+
+function closeShareCard(event) {
+    if (event && event.target.id !== 'share-card-modal') return;
+    const modal = document.getElementById('share-card-modal');
+    if (modal) modal.style.display = 'none';
+}
+
+function copyShareCardText() {
+    if (!currentShareCardText) return;
+    navigator.clipboard.writeText(currentShareCardText).then(() => {
+        addNotification({ type: 'share', message: 'Share card text copied.' });
+    });
+}
+
 async function openModerationPanel() {
     const modal = document.getElementById('moderation-modal');
     const list = document.getElementById('moderation-list');
@@ -2646,6 +2680,7 @@ function renderQuotes() {
                     <button class="join-btn" onclick="toggleThread('${quote.id}')">${isThreadOpen ? 'Hide Thread' : 'Reply in Thread'}</button>
                     ${isYours ? `<button class="action-btn ${isPinned ? 'active-action' : ''}" onclick="pinThoughtToProfile('${quote.id}', event)">${isPinned ? 'Unpin' : 'Pin'}</button>` : ''}
                     <button class="action-btn" onclick="copyThoughtLink('${quote.id}', event)">Copy Link</button>
+                    <button class="action-btn" onclick="openShareCard('${quote.id}', event)">Share Card</button>
                     <button class="action-btn" onclick="reportThought('${quote.id}', '${quote.authorId || ''}', event)">Report</button>
                     ${isYours ? `<button class="action-btn danger-action" onclick="deleteOwnThought('${quote.id}', event)">Delete</button>` : ''}
                     ${!isYours ? `<button class="action-btn" onclick="blockAuthor('${quote.authorId || ''}', event)">Block</button>` : ''}

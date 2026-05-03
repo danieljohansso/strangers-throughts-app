@@ -807,6 +807,45 @@ body::before {
     gap: 0.55rem;
 }
 
+.share-card-shell {
+    width: min(560px, 100%);
+}
+
+.share-card-preview {
+    display: grid;
+    gap: 1rem;
+    margin: 1rem 0;
+    padding: clamp(1rem, 5vw, 2rem);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(145deg, #111, #1c2420);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.share-card-brand {
+    color: #98f0c0;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 0.8rem;
+}
+
+.share-card-preview blockquote {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: clamp(1.3rem, 4vw, 2rem);
+    line-height: 1.2;
+    font-weight: 800;
+}
+
+.share-card-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
 .upgrade-panel h3 {
     margin-top: 0.65rem;
     color: var(--text-primary);
