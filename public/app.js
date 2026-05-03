@@ -97,6 +97,8 @@ let blockedAuthors = [];
 
 let reportedPosts = [];
 
+let snoozedThoughts = [];
+
 let threadReplies = {};
 
 let expandedThreads = new Set();
@@ -477,15 +479,22 @@ function loadSafetyPreferences() {
     try {
         blockedAuthors = JSON.parse(localStorage.getItem('strangerBlockedAuthors') || '[]');
         reportedPosts = JSON.parse(localStorage.getItem('strangerReportedPosts') || '[]');
+        snoozedThoughts = JSON.parse(localStorage.getItem('strangerSnoozedThoughts') || '[]');
     } catch (err) {
         blockedAuthors = [];
         reportedPosts = [];
+        snoozedThoughts = [];
     }
 }
 
 function saveSafetyPreferences() {
     localStorage.setItem('strangerBlockedAuthors', JSON.stringify(blockedAuthors));
     localStorage.setItem('strangerReportedPosts', JSON.stringify(reportedPosts));
+    localStorage.setItem('strangerSnoozedThoughts', JSON.stringify(snoozedThoughts));
+}
+
+function isQuoteHiddenLocally(quote) {
+    return blockedAuthors.includes(quote.authorId) || reportedPosts.includes(quote.id) || snoozedThoughts.includes(quote.id);
 }
 
 function loadFollowedThreads() {
@@ -720,7 +729,7 @@ function updateExperienceStats() {
 
     if (thoughtStat) thoughtStat.textContent = allQuotes.length;
     if (savedStat) savedStat.textContent = savedPosts.length;
-    if (safetyStat) safetyStat.textContent = blockedAuthors.length + reportedPosts.length;
+    if (safetyStat) safetyStat.textContent = blockedAuthors.length + reportedPosts.length + snoozedThoughts.length;
     if (streakStat) streakStat.textContent = visitStreak;
 
     if (categoryStat && allQuotes.length > 0) {
@@ -744,7 +753,7 @@ function updateExperienceStats() {
 
 function getSpotlightQuote() {
     return allQuotes
-        .filter(quote => !blockedAuthors.includes(quote.authorId) && !reportedPosts.includes(quote.id))
+        .filter(quote => !isQuoteHiddenLocally(quote))
         .sort((a, b) => getEngagementScore(b) - getEngagementScore(a))[0] || null;
 }
 
@@ -839,7 +848,7 @@ function updateMoodPulse() {
     const bars = document.getElementById('mood-pulse-bars');
     if (!summary || !bars) return;
 
-    const visibleQuotes = allQuotes.filter(quote => !blockedAuthors.includes(quote.authorId) && !reportedPosts.includes(quote.id));
+    const visibleQuotes = allQuotes.filter(quote => !isQuoteHiddenLocally(quote));
     const counts = MOODS.map(mood => ({
         mood,
         count: visibleQuotes.filter(quote => (quote.mood || 'Reflective') === mood).length
@@ -903,7 +912,7 @@ function updateMoodMatchLane() {
 }
 
 function getVisibleQuotes() {
-    return allQuotes.filter(quote => !blockedAuthors.includes(quote.authorId) && !reportedPosts.includes(quote.id));
+    return allQuotes.filter(quote => !isQuoteHiddenLocally(quote));
 }
 
 function getTopCount(items, getKey) {
@@ -1029,7 +1038,7 @@ function openThreadFromRadar(quoteId) {
 function getSavedQuotes() {
     return savedPosts
         .map(getQuotePreviewById)
-        .filter(quote => quote && !blockedAuthors.includes(quote.authorId) && !reportedPosts.includes(quote.id));
+        .filter(quote => quote && !isQuoteHiddenLocally(quote));
 }
 
 function updateSavedDigest() {
@@ -1120,9 +1129,10 @@ function showSafetyCenter() {
 function clearHiddenContent() {
     blockedAuthors = [];
     reportedPosts = [];
+    snoozedThoughts = [];
     saveSafetyPreferences();
     applyFiltersAndSort();
-    addNotification({ type: 'safety', message: 'Hidden and reported local filters were cleared.' });
+    addNotification({ type: 'safety', message: 'Hidden, reported, and snoozed filters were cleared.' });
     renderSafetyControls();
 }
 
@@ -1167,6 +1177,19 @@ function renderSafetyControls() {
         `;
     }).join('');
 
+    const snoozedRows = snoozedThoughts.map(quoteId => {
+        const quote = allQuotes.find(item => item.id === quoteId);
+        return `
+            <div class="safety-row">
+                <div>
+                    <strong>${quote ? escapeHtml(quote.category || 'Thought') : 'Snoozed thought'}</strong>
+                    <span>${quote ? escapeHtml(quote.text) : 'This thought is tucked away locally.'}</span>
+                </div>
+                <button class="secondary-action compact-action" onclick="restoreSnoozedThought('${quoteId}')">Restore</button>
+            </div>
+        `;
+    }).join('');
+
     list.innerHTML = `
         <div class="safety-list-section">
             <h4>Blocked Strangers</h4>
@@ -1175,6 +1198,10 @@ function renderSafetyControls() {
         <div class="safety-list-section">
             <h4>Hidden Reports</h4>
             ${reportedRows || '<p class="thread-empty">No locally hidden reports.</p>'}
+        </div>
+        <div class="safety-list-section">
+            <h4>Snoozed Thoughts</h4>
+            ${snoozedRows || '<p class="thread-empty">No snoozed thoughts. Use Snooze when something is not for right now.</p>'}
         </div>
     `;
 }
@@ -1193,6 +1220,25 @@ function restoreReportedThought(quoteId) {
     applyFiltersAndSort();
     renderSafetyControls();
     addNotification({ type: 'safety', message: 'Thought restored to your feed.' });
+}
+
+function snoozeThought(quoteId, event) {
+    if (event) event.stopPropagation();
+    if (!quoteId || snoozedThoughts.includes(quoteId)) return;
+
+    snoozedThoughts.push(quoteId);
+    saveSafetyPreferences();
+    applyFiltersAndSort();
+    renderSafetyControls();
+    addNotification({ type: 'safety', message: 'Thought snoozed. Restore it from Safety.' });
+}
+
+function restoreSnoozedThought(quoteId) {
+    snoozedThoughts = snoozedThoughts.filter(id => id !== quoteId);
+    saveSafetyPreferences();
+    applyFiltersAndSort();
+    renderSafetyControls();
+    addNotification({ type: 'safety', message: 'Snoozed thought restored.' });
 }
 
 function showOnboarding(force = false) {
@@ -1570,7 +1616,7 @@ function resetToDashboard() {
 }
 
 function showRandomThought() {
-    const visibleQuotes = allQuotes.filter(quote => !blockedAuthors.includes(quote.authorId) && !reportedPosts.includes(quote.id));
+    const visibleQuotes = allQuotes.filter(quote => !isQuoteHiddenLocally(quote));
     if (visibleQuotes.length === 0) {
         addNotification({ type: 'info', message: 'No thoughts are available yet. Share the first one.' });
         focusThoughtInput();
@@ -1599,7 +1645,7 @@ function showRandomThought() {
 
 function getDiscoveryCandidates() {
     return allQuotes
-        .filter(quote => !blockedAuthors.includes(quote.authorId) && !reportedPosts.includes(quote.id))
+        .filter(quote => !isQuoteHiddenLocally(quote))
         .sort((a, b) => {
             const aSaved = savedPosts.includes(a.id) ? -2 : 0;
             const bSaved = savedPosts.includes(b.id) ? -2 : 0;
@@ -3242,6 +3288,7 @@ function removeQuoteLocally(quoteId) {
     expandedThreads.delete(quoteId);
     followedThreads = followedThreads.filter(id => id !== quoteId);
     reportedPosts = reportedPosts.filter(id => id !== quoteId);
+    snoozedThoughts = snoozedThoughts.filter(id => id !== quoteId);
 
     if (profileDetails.pinnedThoughtId === quoteId) {
         profileDetails.pinnedThoughtId = '';
@@ -3414,6 +3461,7 @@ function renderQuotes() {
                     ${isYours ? `<button class="action-btn ${isPinned ? 'active-action' : ''}" onclick="pinThoughtToProfile('${quote.id}', event)">${isPinned ? 'Unpin' : 'Pin'}</button>` : ''}
                     <button class="action-btn" onclick="copyThoughtLink('${quote.id}', event)">Copy Link</button>
                     <button class="action-btn" onclick="openShareCard('${quote.id}', event)">Share Card</button>
+                    <button class="action-btn" onclick="snoozeThought('${quote.id}', event)">Snooze</button>
                     <button class="action-btn" onclick="reportThought('${quote.id}', '${quote.authorId || ''}', event)">Report</button>
                     ${isYours ? `<button class="action-btn danger-action" onclick="deleteOwnThought('${quote.id}', event)">Delete</button>` : ''}
                     ${!isYours ? `<button class="action-btn" onclick="blockAuthor('${quote.authorId || ''}', event)">Block</button>` : ''}
@@ -3705,7 +3753,7 @@ function applyFiltersAndSort() {
     }
 
     let filtered = [...allQuotes];
-    filtered = filtered.filter(q => !blockedAuthors.includes(q.authorId) && !reportedPosts.includes(q.id));
+    filtered = filtered.filter(q => !isQuoteHiddenLocally(q));
 
 
     
@@ -3764,7 +3812,7 @@ function applyFiltersAndSort() {
 
 
 
-        filtered = allQuotes.filter(q => followedThreads.includes(q.id) && !blockedAuthors.includes(q.authorId) && !reportedPosts.includes(q.id));
+        filtered = allQuotes.filter(q => followedThreads.includes(q.id) && !isQuoteHiddenLocally(q));
 
 
 
@@ -3778,7 +3826,7 @@ function applyFiltersAndSort() {
     } else if (currentTab === 'saved') {
 
 
-        filtered = allQuotes.filter(q => savedPosts.includes(q.id) && !blockedAuthors.includes(q.authorId) && !reportedPosts.includes(q.id));
+        filtered = allQuotes.filter(q => savedPosts.includes(q.id) && !isQuoteHiddenLocally(q));
 
 
     }
