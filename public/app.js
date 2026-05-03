@@ -2976,6 +2976,8 @@ function renderProfilePage() {
                 </label>
                 <div class="thread-compose-actions">
                     <button class="secondary-action compact-action" onclick="copyUserId()">Copy ID</button>
+                    <button class="secondary-action compact-action" onclick="copyProfileCard()">Copy Card</button>
+                    <button class="secondary-action compact-action" onclick="randomizeProfileIdentity()">Surprise Me</button>
                     <button class="primary-action compact-action" onclick="saveMyProfileDetails()">Save Profile</button>
                 </div>
             </div>
@@ -3072,6 +3074,39 @@ function chooseAnimalAvatar(avatarId) {
     applyProfileAvatarVisuals();
     renderProfilePage();
     addNotification({ type: 'profile', message: 'Profile image updated.' });
+}
+
+function randomizeProfileIdentity() {
+    const currentAvatarIndex = ANIMAL_AVATARS.findIndex(avatar => avatar.id === profileDetails.animalAvatar);
+    const nextAvatar = ANIMAL_AVATARS[(currentAvatarIndex + 1 + Math.floor(Math.random() * (ANIMAL_AVATARS.length - 1))) % ANIMAL_AVATARS.length];
+    const currentVibeIndex = PROFILE_VIBES.indexOf(profileDetails.vibe);
+    const nextVibe = PROFILE_VIBES[(currentVibeIndex + 1 + Math.floor(Math.random() * (PROFILE_VIBES.length - 1))) % PROFILE_VIBES.length];
+
+    profileDetails.animalAvatar = nextAvatar.id;
+    profileDetails.vibe = nextVibe;
+    saveProfileDetails();
+    applyProfileAvatarVisuals();
+    renderProfilePage();
+    addNotification({ type: 'profile', message: `New ${nextAvatar.name} identity loaded.` });
+}
+
+async function copyProfileCard() {
+    const avatar = getSelectedAnimalAvatar();
+    const displayName = currentUser?.name || 'Anonymous Stranger';
+    const stats = getMyProfileStats();
+    const profileCard = [
+        `${displayName} (${avatar.name})`,
+        profileDetails.vibe || 'Kind listener',
+        profileDetails.status || 'Open to thoughtful replies',
+        `${stats.myThoughts.length} thoughts · ${stats.totalReplies} thread replies · ${stats.savedCount} saved`
+    ].join('\n');
+
+    try {
+        await navigator.clipboard.writeText(profileCard);
+        addNotification({ type: 'profile', message: 'Profile card copied.' });
+    } catch (err) {
+        addNotification({ type: 'profile', message: 'Could not copy profile card.' });
+    }
 }
 
 function pinThoughtToProfile(quoteId, event) {
