@@ -197,6 +197,45 @@
 
         </section>
 
+        <section class="intention-panel">
+
+            <div class="intention-copy">
+
+                <span class="hero-kicker">Today's intention</span>
+
+                <strong id="intention-summary">Choose what kind of thoughts you want to find.</strong>
+
+            </div>
+
+            <div class="intention-controls">
+
+                <select id="intention-mood" onchange="saveTodayIntention()">
+                    <option value="all">Any mood</option>
+                    <option value="Reflective">Reflective</option>
+                    <option value="Hopeful">Hopeful</option>
+                    <option value="Heavy">Heavy</option>
+                    <option value="Curious">Curious</option>
+                    <option value="Unfiltered">Unfiltered</option>
+                    <option value="Celebrating">Celebrating</option>
+                </select>
+
+                <select id="intention-category" onchange="saveTodayIntention()">
+                    <option value="all">Any category</option>
+                    <option value="Deep">Deep</option>
+                    <option value="Confessions">Confessions</option>
+                    <option value="Advice">Advice</option>
+                    <option value="Late Night">Late Night</option>
+                    <option value="Funny">Funny</option>
+                </select>
+
+                <button class="primary-action compact-action" onclick="applyTodayIntention()">Apply</button>
+
+                <button class="secondary-action compact-action" onclick="clearTodayIntention()">Clear</button>
+
+            </div>
+
+        </section>
+
         <section class="orbit-panel" id="orbit-panel">
 
             <div class="orbit-header">

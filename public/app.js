@@ -76,6 +76,7 @@ let currentSort = 'new';
 let currentFilter = 'all';
 
 let currentMoodFilter = 'all';
+let todayIntention = { mood: 'all', category: 'all' };
 
 
 let currentTab = 'all';
@@ -1081,6 +1082,7 @@ function completeOnboarding() {
 function initializeProductShell() {
     const prompt = document.getElementById('daily-prompt');
     if (prompt) prompt.textContent = getDailyPrompt();
+    loadTodayIntention();
     loadProfileDetails();
     loadFollowedThreads();
     loadCalmMode();
@@ -1090,6 +1092,80 @@ function initializeProductShell() {
     restoreThoughtDraft();
     renderDraftLocker();
     showOnboarding();
+}
+
+function loadTodayIntention() {
+    try {
+        const saved = JSON.parse(localStorage.getItem('strangerTodayIntention') || 'null');
+        todayIntention = saved || { mood: 'all', category: 'all' };
+    } catch (err) {
+        localStorage.removeItem('strangerTodayIntention');
+        todayIntention = { mood: 'all', category: 'all' };
+    }
+
+    const moodSelect = document.getElementById('intention-mood');
+    const categorySelect = document.getElementById('intention-category');
+    if (moodSelect) moodSelect.value = todayIntention.mood || 'all';
+    if (categorySelect) categorySelect.value = todayIntention.category || 'all';
+    updateTodayIntentionSummary();
+}
+
+function saveTodayIntention() {
+    todayIntention = {
+        mood: document.getElementById('intention-mood')?.value || 'all',
+        category: document.getElementById('intention-category')?.value || 'all',
+        updatedAt: new Date().toISOString()
+    };
+    localStorage.setItem('strangerTodayIntention', JSON.stringify(todayIntention));
+    updateTodayIntentionSummary();
+}
+
+function updateTodayIntentionSummary() {
+    const summary = document.getElementById('intention-summary');
+    if (!summary) return;
+
+    const mood = todayIntention.mood || 'all';
+    const category = todayIntention.category || 'all';
+    if (mood === 'all' && category === 'all') {
+        summary.textContent = 'Choose what kind of thoughts you want to find.';
+        return;
+    }
+
+    const moodText = mood === 'all' ? 'any mood' : mood.toLowerCase();
+    const categoryText = category === 'all' ? 'any category' : category.toLowerCase();
+    summary.textContent = `Today you are looking for ${moodText} thoughts in ${categoryText}.`;
+}
+
+function applyTodayIntention() {
+    saveTodayIntention();
+    currentMoodFilter = todayIntention.mood || 'all';
+    currentFilter = todayIntention.category || 'all';
+    searchQuery = '';
+
+    const searchInput = document.getElementById('search-input');
+    const searchClear = document.getElementById('search-clear');
+    const categoryFilter = document.getElementById('category-filter');
+    if (searchInput) searchInput.value = '';
+    if (searchClear) searchClear.style.display = 'none';
+    if (categoryFilter) categoryFilter.value = currentFilter;
+    document.querySelectorAll('.mood-chip').forEach(chip => {
+        chip.classList.toggle('active', chip.dataset.mood === currentMoodFilter);
+    });
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === 'all'));
+    currentTab = 'all';
+    applyFiltersAndSort();
+    addNotification({ type: 'intent', message: 'Today\'s intention applied to your feed.' });
+}
+
+function clearTodayIntention() {
+    todayIntention = { mood: 'all', category: 'all' };
+    localStorage.removeItem('strangerTodayIntention');
+    const moodSelect = document.getElementById('intention-mood');
+    const categorySelect = document.getElementById('intention-category');
+    if (moodSelect) moodSelect.value = 'all';
+    if (categorySelect) categorySelect.value = 'all';
+    updateTodayIntentionSummary();
+    addNotification({ type: 'intent', message: 'Today\'s intention cleared.' });
 }
 
 function updateVisitStreak() {
