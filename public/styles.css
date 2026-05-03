@@ -155,6 +155,29 @@ body::before {
     margin: 0 auto;
 }
 
+body.calm-mode::before {
+    opacity: 0.16;
+    animation: none;
+}
+
+body.calm-mode *,
+body.calm-mode *::before,
+body.calm-mode *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+}
+
+body.calm-mode .mood-pulse-panel,
+body.calm-mode .discovery-queue,
+body.calm-mode .spotlight-panel {
+    display: none;
+}
+
+body.calm-mode .quote-card:hover,
+body.calm-mode .orbit-card:hover {
+    transform: none;
+}
+
 .hero-panel {
     display: grid;
     grid-template-columns: minmax(0, 1.7fr) minmax(280px, 0.9fr);

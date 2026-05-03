@@ -109,6 +109,8 @@ let availableMatches = []; // Users currently waiting for matches
 let discoveryQueueIndex = 0;
 
 let currentShareCardText = '';
+
+let calmMode = false;
 
 
 
@@ -810,10 +812,32 @@ function initializeProductShell() {
     if (prompt) prompt.textContent = getDailyPrompt();
     loadProfileDetails();
     loadFollowedThreads();
+    loadCalmMode();
     updateExperienceStats();
     updateSpotlight();
     restoreThoughtDraft();
     showOnboarding();
+}
+
+function loadCalmMode() {
+    calmMode = localStorage.getItem('strangerCalmMode') === 'true';
+    applyCalmMode();
+}
+
+function toggleCalmMode() {
+    calmMode = !calmMode;
+    localStorage.setItem('strangerCalmMode', String(calmMode));
+    applyCalmMode();
+    addNotification({
+        type: 'settings',
+        message: calmMode ? 'Calm mode is on.' : 'Calm mode is off.'
+    });
+}
+
+function applyCalmMode() {
+    document.body.classList.toggle('calm-mode', calmMode);
+    const button = document.getElementById('calm-mode-btn');
+    if (button) button.textContent = calmMode ? 'Full Mode' : 'Calm Mode';
 }
 
 function saveThoughtDraft() {
