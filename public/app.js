@@ -582,6 +582,22 @@ function getFocusedViewMeta() {
     };
 }
 
+function getFocusedViewMetrics() {
+    const hiddenCount = blockedAuthors.length + reportedPosts.length + snoozedThoughts.length;
+    const visibleCount = getVisibleQuotes().length;
+    const renderedCount = currentTab === 'profile'
+        ? getMyProfileStats().myThoughts.length
+        : currentTab === 'matches'
+            ? visibleCount
+            : quotes.length;
+
+    return [
+        { label: currentTab === 'matches' ? 'eligible' : 'showing', value: renderedCount },
+        { label: 'visible room', value: visibleCount },
+        { label: 'hidden locally', value: hiddenCount }
+    ];
+}
+
 function updateFocusedViewBar(shouldShow) {
     const bar = document.getElementById('focused-view-bar');
     if (!bar) return;
@@ -593,10 +609,16 @@ function updateFocusedViewBar(shouldShow) {
     const kicker = document.getElementById('focused-view-kicker');
     const title = document.getElementById('focused-view-title');
     const detail = document.getElementById('focused-view-detail');
+    const metrics = document.getElementById('focused-view-metrics');
 
     if (kicker) kicker.textContent = meta.kicker;
     if (title) title.textContent = meta.title;
     if (detail) detail.textContent = meta.detail;
+    if (metrics) {
+        metrics.innerHTML = getFocusedViewMetrics().map(item => `
+            <span><strong>${item.value}</strong>${escapeHtml(item.label)}</span>
+        `).join('');
+    }
 }
 
 function getSelectedAnimalAvatar() {
@@ -2344,6 +2366,7 @@ function closeOneOnOneChatInterface() {
     if (currentTab === 'profile') {
         updateExperienceStats();
         renderProfilePage();
+        updateFocusedViewBar(true);
         return;
     }
 
@@ -3749,6 +3772,7 @@ function applyFiltersAndSort() {
 
     if (currentTab === 'matches') {
         renderMatchLobby();
+        updateFocusedViewBar(true);
         return;
     }
 
@@ -3888,6 +3912,7 @@ function applyFiltersAndSort() {
 
 
     quotes = filtered;
+    updateFocusedViewBar(currentTab !== 'all' || Boolean(searchQuery) || currentFilter !== 'all' || currentMoodFilter !== 'all');
     updateExperienceStats();
 
 
