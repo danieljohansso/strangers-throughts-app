@@ -19,6 +19,33 @@ const MATCH_CATEGORIES = ['Deep', 'Confessions', 'Advice', 'Late Night', 'Funny'
 
 const MOODS = ['Reflective', 'Hopeful', 'Heavy', 'Curious', 'Unfiltered', 'Celebrating'];
 
+const THREAD_NUDGES = {
+    Reflective: [
+        { label: 'Mirror', text: 'What I hear in this is ' },
+        { label: 'Meaning', text: 'The part that stays with me is ' }
+    ],
+    Hopeful: [
+        { label: 'Encourage', text: 'One hopeful angle here is ' },
+        { label: 'Build', text: 'A next step might be ' }
+    ],
+    Heavy: [
+        { label: 'Hold Space', text: 'That sounds heavy. I want to say ' },
+        { label: 'Care', text: 'If this were mine, I would need ' }
+    ],
+    Curious: [
+        { label: 'Ask Better', text: 'A question this opens for me is ' },
+        { label: 'Explore', text: 'I wonder if part of this is ' }
+    ],
+    Unfiltered: [
+        { label: 'Name It', text: 'The blunt truth I notice is ' },
+        { label: 'Reframe', text: 'Another way to look at this is ' }
+    ],
+    Celebrating: [
+        { label: 'Cheer', text: 'This deserves a little celebration because ' },
+        { label: 'Savor', text: 'The good part worth holding onto is ' }
+    ]
+};
+
 const DAILY_PROMPTS = [
     'What thought keeps coming back when the world gets quiet?',
     'What would you tell someone who feels exactly like you tonight?',
@@ -2996,6 +3023,7 @@ function renderInlineThreads() {
 
         const replies = threadReplies[quote.id] || [];
         const draft = getThreadReplyDraft(quote.id);
+        const nudges = getThreadNudges(quote);
         const isThreadOpen = expandedThreads.has(quote.id);
         const isFollowingThread = followedThreads.includes(quote.id);
         const latestReplies = replies.slice(-3);
@@ -3018,11 +3046,11 @@ function renderInlineThreads() {
             <div class="thread-compose">
                 ${draft ? `<div class="thread-draft-note">Draft restored from ${formatTimeAgo(new Date(draft.updatedAt || Date.now()))}.</div>` : ''}
                 <textarea id="thread-input-${quote.id}" placeholder="Reply to this thought..." maxlength="500" oninput="saveThreadReplyDraft('${quote.id}')">${escapeHtml(draft?.text || '')}</textarea>
+                <div class="thread-nudge">
+                    <span>${escapeHtml(getThreadNudgeHint(quote))}</span>
+                </div>
                 <div class="thread-starters">
-                    <button onclick="insertThreadStarter('${quote.id}', 'I relate to this because ')">Relate</button>
-                    <button onclick="insertThreadStarter('${quote.id}', 'A question this brings up for me is ')">Ask</button>
-                    <button onclick="insertThreadStarter('${quote.id}', 'Another way to look at this is ')">Reframe</button>
-                    <button onclick="insertThreadStarter('${quote.id}', 'If I were sitting with you, I would say ')">Support</button>
+                    ${nudges.map(nudge => `<button onclick="insertThreadStarter('${quote.id}', ${JSON.stringify(nudge.text).replace(/"/g, '&quot;')})">${escapeHtml(nudge.label)}</button>`).join('')}
                 </div>
                 <div class="thread-compose-actions">
                     <button class="secondary-action compact-action" onclick="toggleFollowThread('${quote.id}')">${isFollowingThread ? 'Unfollow' : 'Follow Thread'}</button>
@@ -3074,6 +3102,26 @@ function clearThreadReplyDraft(quoteId, updateUi = false) {
         if (input) input.value = '';
         addNotification({ type: 'draft', message: 'Thread reply draft cleared.' });
     }
+}
+
+function getThreadNudges(quote) {
+    const mood = quote.mood || 'Reflective';
+    const moodNudges = THREAD_NUDGES[mood] || THREAD_NUDGES.Reflective;
+    return [
+        ...moodNudges,
+        { label: 'Relate', text: 'I relate to this because ' },
+        { label: 'Support', text: 'If I were sitting with you, I would say ' }
+    ];
+}
+
+function getThreadNudgeHint(quote) {
+    const mood = quote.mood || 'Reflective';
+    if (mood === 'Heavy') return 'Lead with care before advice.';
+    if (mood === 'Celebrating') return 'Reflect the good thing back clearly.';
+    if (mood === 'Curious') return 'Ask one question that opens the thought.';
+    if (mood === 'Unfiltered') return 'Keep it honest without escalating.';
+    if (mood === 'Hopeful') return 'Help the hopeful part become concrete.';
+    return 'Mirror the feeling, then add one true thing.';
 }
 
 function renderThreadReply(reply) {
