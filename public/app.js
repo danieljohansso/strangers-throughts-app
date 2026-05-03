@@ -1463,7 +1463,12 @@ function updateTabBadges() {
     
 
 
-    // Update Saved badge
+    const followingBadge = document.getElementById('following-badge');
+    if (followingBadge) {
+        followingBadge.textContent = followedThreads.length;
+    }
+
+    // Update Saved badge
 
 
     const savedBadge = document.getElementById('saved-badge');
@@ -2174,6 +2179,8 @@ function renderQuotes() {
             ? 'No thoughts match that search. Try a mood, category, or stranger name.'
             : currentTab === 'saved'
                 ? 'Saved thoughts will appear here when one is worth coming back to.'
+                : currentTab === 'following'
+                    ? 'Follow a thread to keep an eye on replies and return to it fast.'
                 : currentTab === 'yours'
                     ? 'Your anonymous thoughts will collect here after you post.'
                     : 'No thoughts to show yet. Start the room with something honest.';
@@ -2419,6 +2426,7 @@ function toggleFollowThread(quoteId) {
     }
 
     saveFollowedThreads();
+    updateTabBadges();
     applyFiltersAndSort();
 }
 
@@ -2506,7 +2514,29 @@ function applyFiltersAndSort() {
         filtered = postsWithReplies;
 
 
-    } else if (currentTab === 'saved') {
+    } else if (currentTab === 'following') {
+
+
+
+
+
+
+
+
+
+
+        filtered = allQuotes.filter(q => followedThreads.includes(q.id) && !blockedAuthors.includes(q.authorId) && !reportedPosts.includes(q.id));
+
+
+
+
+
+
+
+
+
+
+    } else if (currentTab === 'saved') {
 
 
         filtered = allQuotes.filter(q => savedPosts.includes(q.id) && !blockedAuthors.includes(q.authorId) && !reportedPosts.includes(q.id));
