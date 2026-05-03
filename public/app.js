@@ -603,6 +603,7 @@ function updateOrbitPanel() {
     const stats = getMyProfileStats();
     const pinned = getQuotePreviewById(profileDetails.pinnedThoughtId);
     const latestSaved = [...savedPosts].reverse().map(getQuotePreviewById).find(Boolean);
+    const oldestSaved = savedPosts.map(getQuotePreviewById).find(Boolean);
     const latestFollowed = [...followedThreads].reverse().map(getQuotePreviewById).find(Boolean);
     const strongest = stats.myThoughts.slice().sort((a, b) => getEngagementScore(b) - getEngagementScore(a))[0];
     const unlocked = getProfileAchievements(stats).filter(item => item.unlocked).length;
@@ -623,6 +624,12 @@ function updateOrbitPanel() {
             label: latestSaved ? latestSaved.text : 'Save thoughts you want to revisit.',
             action: latestSaved ? `jumpToThought('${latestSaved.id}')` : "switchTab('saved')",
             cta: latestSaved ? 'Open saved' : 'Saved tab'
+        },
+        {
+            title: 'Read later',
+            label: oldestSaved ? oldestSaved.text : 'Your oldest saved thought will surface here.',
+            action: oldestSaved ? `jumpToThought('${oldestSaved.id}')` : "switchTab('saved')",
+            cta: oldestSaved ? 'Revisit' : 'No backlog'
         },
         {
             title: 'Following',
