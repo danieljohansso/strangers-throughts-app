@@ -565,12 +565,69 @@ function updateExperienceStats() {
     updateSpotlight();
     updateDiscoveryQueue();
     updateMoodPulse();
+    updateOrbitPanel();
 }
 
 function getSpotlightQuote() {
     return allQuotes
         .filter(quote => !blockedAuthors.includes(quote.authorId) && !reportedPosts.includes(quote.id))
         .sort((a, b) => getEngagementScore(b) - getEngagementScore(a))[0] || null;
+}
+
+function getQuotePreviewById(quoteId) {
+    return allQuotes.find(quote => quote.id === quoteId) || null;
+}
+
+function updateOrbitPanel() {
+    const summary = document.getElementById('orbit-summary');
+    const grid = document.getElementById('orbit-grid');
+    if (!summary || !grid) return;
+
+    const stats = getMyProfileStats();
+    const pinned = getQuotePreviewById(profileDetails.pinnedThoughtId);
+    const latestSaved = [...savedPosts].reverse().map(getQuotePreviewById).find(Boolean);
+    const latestFollowed = [...followedThreads].reverse().map(getQuotePreviewById).find(Boolean);
+    const strongest = stats.myThoughts.slice().sort((a, b) => getEngagementScore(b) - getEngagementScore(a))[0];
+    const unlocked = getProfileAchievements(stats).filter(item => item.unlocked).length;
+
+    summary.textContent = currentUser
+        ? `${currentUser.name}: ${stats.myThoughts.length} thoughts, ${stats.savedCount} saved, ${unlocked} badges.`
+        : 'Connect to start building your orbit.';
+
+    const cards = [
+        {
+            title: 'Pinned',
+            label: pinned ? pinned.text : 'Pin one of your thoughts from the feed.',
+            action: pinned ? `jumpToThought('${pinned.id}')` : "switchTab('yours')",
+            cta: pinned ? 'Open pinned' : 'Pick a thought'
+        },
+        {
+            title: 'Saved',
+            label: latestSaved ? latestSaved.text : 'Save thoughts you want to revisit.',
+            action: latestSaved ? `jumpToThought('${latestSaved.id}')` : "switchTab('saved')",
+            cta: latestSaved ? 'Open saved' : 'Saved tab'
+        },
+        {
+            title: 'Following',
+            label: latestFollowed ? latestFollowed.text : 'Follow threads to track replies.',
+            action: latestFollowed ? `jumpToThought('${latestFollowed.id}')` : "switchTab('following')",
+            cta: latestFollowed ? 'Open thread' : 'Following tab'
+        },
+        {
+            title: 'Best signal',
+            label: strongest ? strongest.text : 'Your strongest thought will appear here.',
+            action: strongest ? `jumpToThought('${strongest.id}')` : 'focusThoughtInput()',
+            cta: strongest ? 'Open best' : 'Write'
+        }
+    ];
+
+    grid.innerHTML = cards.map(card => `
+        <button class="orbit-card" onclick="${card.action}">
+            <strong>${escapeHtml(card.title)}</strong>
+            <span>${escapeHtml(card.label)}</span>
+            <em>${escapeHtml(card.cta)}</em>
+        </button>
+    `).join('');
 }
 
 function updateSpotlight() {

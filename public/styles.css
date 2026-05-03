@@ -296,6 +296,78 @@ body::before {
     color: var(--text-muted);
 }
 
+.orbit-panel {
+    display: grid;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: var(--radius-lg);
+    background: linear-gradient(145deg, rgba(18, 18, 18, 0.95), rgba(24, 22, 30, 0.9));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: var(--shadow-md);
+}
+
+.orbit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.orbit-header strong {
+    color: var(--text-primary);
+}
+
+.orbit-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.7rem;
+}
+
+.orbit-card {
+    display: grid;
+    gap: 0.45rem;
+    min-height: 132px;
+    align-content: start;
+    padding: 0.85rem;
+    border: 1px solid rgba(255, 255, 255, 0.075);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.04);
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+    font: inherit;
+}
+
+.orbit-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(0, 191, 255, 0.22);
+    background: rgba(0, 191, 255, 0.06);
+}
+
+.orbit-card strong {
+    color: var(--text-primary);
+}
+
+.orbit-card span {
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    line-height: 1.45;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.orbit-card em {
+    align-self: end;
+    color: var(--accent);
+    font-style: normal;
+    font-size: 0.82rem;
+    font-weight: 800;
+}
+
 .discovery-bar {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto;
@@ -2736,6 +2808,10 @@ body::before {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
+    .orbit-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .my-profile-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -2945,6 +3021,10 @@ body::before {
 
 @media (max-width: 480px) {
     .insight-strip {
+        grid-template-columns: 1fr;
+    }
+
+    .orbit-grid {
         grid-template-columns: 1fr;
     }
 
