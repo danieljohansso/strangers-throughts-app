@@ -1778,6 +1778,43 @@ body::before {
     animation: cardFadeIn 0.3s ease-out;
 }
 
+.saved-shelf {
+    display: grid;
+    gap: 0.8rem;
+    padding: 1rem;
+    border-radius: var(--radius-lg);
+    background: rgba(255, 215, 0, 0.055);
+    border: 1px solid rgba(255, 215, 0, 0.14);
+}
+
+.saved-shelf .profile-panel-header span {
+    color: var(--gold);
+    font-weight: 800;
+}
+
+.saved-shelf-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+}
+
+.saved-shelf-chips button {
+    display: inline-flex;
+    gap: 0.45rem;
+    align-items: center;
+    padding: 0.5rem 0.7rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid rgba(255, 215, 0, 0.16);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.saved-shelf-chips span {
+    color: var(--gold);
+    font-weight: 900;
+}
+
 @keyframes cardFadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }

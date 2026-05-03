@@ -2566,7 +2566,9 @@ function renderQuotes() {
     
 
 
-    feed.innerHTML = quotes.map(quote => {
+    const savedShelf = currentTab === 'saved' ? renderSavedShelf() : '';
+
+    feed.innerHTML = savedShelf + quotes.map(quote => {
 
 
         const date = new Date(quote.timestamp);
@@ -2702,6 +2704,33 @@ function renderQuotes() {
     renderInlineThreads();
 
 
+}
+
+function renderSavedShelf() {
+    const savedQuotes = allQuotes.filter(quote => savedPosts.includes(quote.id));
+    if (savedQuotes.length === 0) return '';
+
+    const groups = MOODS.map(mood => ({
+        mood,
+        count: savedQuotes.filter(quote => (quote.mood || 'Reflective') === mood).length
+    })).filter(group => group.count > 0);
+
+    return `
+        <section class="saved-shelf">
+            <div class="profile-panel-header">
+                <h3>Saved Collections</h3>
+                <span>${savedQuotes.length} saved</span>
+            </div>
+            <div class="saved-shelf-chips">
+                ${groups.map(group => `
+                    <button onclick="filterByMood('${group.mood}')">
+                        <strong>${escapeHtml(group.mood)}</strong>
+                        <span>${group.count}</span>
+                    </button>
+                `).join('')}
+            </div>
+        </section>
+    `;
 }
 
 function renderInlineThreads() {
