@@ -171,6 +171,7 @@ body.calm-mode .mood-pulse-panel,
 body.calm-mode .mood-match-panel,
 body.calm-mode .thought-dna-panel,
 body.calm-mode .reply-radar-panel,
+body.calm-mode .saved-digest-panel,
 body.calm-mode .discovery-queue,
 body.calm-mode .spotlight-panel {
     display: none;
@@ -685,6 +686,66 @@ body.calm-mode .orbit-card:hover {
 }
 
 .reply-radar-card button {
+    width: fit-content;
+}
+
+.saved-digest-panel {
+    display: grid;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: var(--radius-lg);
+    background: rgba(255, 215, 0, 0.045);
+    border: 1px solid rgba(255, 215, 0, 0.13);
+}
+
+.saved-digest-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.saved-digest-header strong {
+    color: var(--text-primary);
+}
+
+.saved-digest-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.65rem;
+}
+
+.saved-digest-card {
+    display: grid;
+    gap: 0.55rem;
+    padding: 0.8rem;
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.saved-digest-card span {
+    color: var(--gold);
+    font-size: 0.74rem;
+    font-weight: 900;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.saved-digest-card p {
+    color: var(--text-primary);
+    line-height: 1.45;
+    word-break: break-word;
+}
+
+.saved-digest-card small {
+    color: var(--text-muted);
+    font-weight: 700;
+}
+
+.saved-digest-card button {
     width: fit-content;
 }
 
@@ -3351,6 +3412,10 @@ body.calm-mode .orbit-card:hover {
     }
 
     .reply-radar-list {
+        grid-template-columns: 1fr;
+    }
+
+    .saved-digest-grid {
         grid-template-columns: 1fr;
     }
 

@@ -612,6 +612,7 @@ function updateExperienceStats() {
     updateMoodMatchLane();
     updateThoughtDna();
     updateReplyRadar();
+    updateSavedDigest();
     updateOrbitPanel();
 }
 
@@ -890,6 +891,63 @@ function openThreadFromRadar(quoteId) {
         const input = document.getElementById(`thread-input-${quoteId}`);
         if (input) input.focus();
     }, 120);
+}
+
+function getSavedQuotes() {
+    return savedPosts
+        .map(getQuotePreviewById)
+        .filter(quote => quote && !blockedAuthors.includes(quote.authorId) && !reportedPosts.includes(quote.id));
+}
+
+function updateSavedDigest() {
+    const summary = document.getElementById('saved-digest-summary');
+    const grid = document.getElementById('saved-digest-grid');
+    if (!summary || !grid) return;
+
+    const savedQuotes = getSavedQuotes();
+    if (savedQuotes.length === 0) {
+        summary.textContent = 'Your saved thoughts will gather here.';
+        grid.innerHTML = `
+            <article class="saved-digest-card">
+                <span>Start saving</span>
+                <p>Save thoughts you want to revisit and this digest will become your reading queue.</p>
+                <button class="secondary-action compact-action" onclick="switchTab('all')">Browse feed</button>
+            </article>
+        `;
+        return;
+    }
+
+    const oldest = savedQuotes[0];
+    const newest = savedQuotes[savedQuotes.length - 1];
+    const strongest = savedQuotes.slice().sort((a, b) => getEngagementScore(b) - getEngagementScore(a))[0];
+    const discussed = savedQuotes.slice().sort((a, b) => (b.replyCount || 0) - (a.replyCount || 0))[0];
+    const cards = [
+        {
+            label: 'Continue reading',
+            quote: oldest,
+            meta: `${formatTimeAgo(new Date(oldest.timestamp))} · ${oldest.mood || 'Reflective'}`
+        },
+        {
+            label: 'Strongest saved',
+            quote: strongest,
+            meta: `${getEngagementScore(strongest)} signal · ${strongest.category || 'Deep'}`
+        },
+        {
+            label: 'Most discussed',
+            quote: discussed || newest,
+            meta: `${(discussed || newest).replyCount || 0} replies · ${(discussed || newest).mood || 'Reflective'}`
+        }
+    ];
+
+    summary.textContent = `${savedQuotes.length} saved ${savedQuotes.length === 1 ? 'thought' : 'thoughts'} in your private queue.`;
+    grid.innerHTML = cards.map(card => `
+        <article class="saved-digest-card">
+            <span>${escapeHtml(card.label)}</span>
+            <p>${escapeHtml(card.quote.text)}</p>
+            <small>${escapeHtml(card.meta)}</small>
+            <button class="primary-action compact-action" onclick="jumpToThought('${card.quote.id}')">Open</button>
+        </article>
+    `).join('');
 }
 
 function focusThoughtInput() {
