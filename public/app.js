@@ -107,10 +107,31 @@ let profileDetails = {
     bio: '',
     status: 'Open to thoughtful replies',
     intention: 'Share honestly',
+    vibe: 'Kind listener',
+    animalAvatar: 'fox',
     premiumBadge: false,
     pinnedThoughtId: ''
 };
-
+
+const ANIMAL_AVATARS = [
+    { id: 'fox', name: 'Fox', image: '/avatars/fox.svg', accent: '#f97316' },
+    { id: 'owl', name: 'Owl', image: '/avatars/owl.svg', accent: '#2563eb' },
+    { id: 'cat', name: 'Cat', image: '/avatars/cat.svg', accent: '#ec4899' },
+    { id: 'wolf', name: 'Wolf', image: '/avatars/wolf.svg', accent: '#64748b' },
+    { id: 'deer', name: 'Deer', image: '/avatars/deer.svg', accent: '#b45309' },
+    { id: 'raven', name: 'Raven', image: '/avatars/raven.svg', accent: '#4f46e5' }
+];
+
+const PROFILE_VIBES = [
+    'Kind listener',
+    'Deep diver',
+    'Quiet observer',
+    'Advice giver',
+    'Late-night thinker',
+    'Soft chaos',
+    'Hope collector'
+];
+
 
 let chatParticipantCounts = {}; // quoteId -> participant count
 
@@ -251,7 +272,7 @@ function updateConnectionUI() {
     if (isConnected && currentUser) {
 
 
-        if (userAvatar) userAvatar.style.backgroundColor = currentUser.color;
+        applyAnimalAvatarElement(userAvatar);
 
 
         if (userName) userName.textContent = currentUser.name;
@@ -269,7 +290,7 @@ function updateConnectionUI() {
     } else {
 
 
-        if (userAvatar) userAvatar.style.backgroundColor = '#444';
+        clearAnimalAvatarElement(userAvatar);
 
 
         if (userName) userName.textContent = 'Connecting...';
@@ -492,6 +513,33 @@ function saveProfileDetails() {
     localStorage.setItem('strangerProfileDetails', JSON.stringify(profileDetails));
 }
 
+function getSelectedAnimalAvatar() {
+    return ANIMAL_AVATARS.find(avatar => avatar.id === profileDetails.animalAvatar) || ANIMAL_AVATARS[0];
+}
+
+function applyAnimalAvatarElement(element) {
+    if (!element) return;
+    const avatar = getSelectedAnimalAvatar();
+    element.style.backgroundColor = avatar.accent;
+    element.style.backgroundImage = `url("${avatar.image}")`;
+    element.style.backgroundSize = 'cover';
+    element.style.backgroundPosition = 'center';
+    element.title = `${avatar.name} avatar`;
+}
+
+function clearAnimalAvatarElement(element) {
+    if (!element) return;
+    element.style.backgroundImage = '';
+    element.style.backgroundColor = '#444';
+    element.title = '';
+}
+
+function applyProfileAvatarVisuals() {
+    if (!currentUser) return;
+    applyAnimalAvatarElement(document.getElementById('user-avatar'));
+    applyAnimalAvatarElement(document.getElementById('profile-avatar-large'));
+}
+
 function getMyThoughts() {
     if (!currentUser) return [];
     return allQuotes
@@ -564,7 +612,7 @@ function updateProfileStats() {
     if (posts) posts.textContent = stats.myThoughts.length;
     if (replies) replies.textContent = stats.totalReplies;
     if (reactions) reactions.textContent = stats.totalReactions;
-    if (largeAvatar && currentUser) largeAvatar.style.backgroundColor = currentUser.color;
+    if (largeAvatar && currentUser) applyAnimalAvatarElement(largeAvatar);
 }
 
 function getDailyPrompt() {
@@ -2841,7 +2889,7 @@ function renderProfilePage() {
 
     const stats = getMyProfileStats();
     const displayName = currentUser?.name || 'Anonymous Stranger';
-    const avatarColor = currentUser?.color || '#444';
+    const selectedAvatar = getSelectedAnimalAvatar();
     const memberSince = currentUser?.createdAt ? formatTimeAgo(new Date(currentUser.createdAt)) : 'just now';
     const pinnedThought = stats.myThoughts.find(quote => quote.id === profileDetails.pinnedThoughtId);
     const strongestThought = stats.myThoughts
@@ -2855,14 +2903,18 @@ function renderProfilePage() {
     feed.innerHTML = `
         <section class="my-profile-page">
             <div class="my-profile-hero">
-                <div class="my-profile-avatar" style="background-color: ${avatarColor}"></div>
+                <div class="my-profile-avatar animal-avatar-frame" style="background-color: ${selectedAvatar.accent}">
+                    <img src="${selectedAvatar.image}" alt="${escapeAttr(selectedAvatar.name)} avatar">
+                </div>
                 <div class="my-profile-copy">
                     <span class="hero-kicker">Your anonymous profile</span>
                     <h2>${escapeHtml(displayName)} ${profileDetails.premiumBadge ? '<span class="premium-badge">Premium</span>' : ''}</h2>
                     <p>${escapeHtml(profileDetails.bio || 'Add a short bio so your anonymous presence feels more intentional.')}</p>
                     <div class="profile-signal-row">
+                        <span>${escapeHtml(selectedAvatar.name)} image</span>
                         <span>${escapeHtml(profileDetails.status)}</span>
                         <span>${escapeHtml(profileDetails.intention)}</span>
+                        <span>${escapeHtml(profileDetails.vibe || 'Kind listener')}</span>
                         <span>Joined ${memberSince}</span>
                     </div>
                 </div>
@@ -2881,6 +2933,17 @@ function renderProfilePage() {
                     <p>These stay in this browser for now. They shape your profile page without adding accounts yet.</p>
                 </div>
                 <label>
+                    Animal image preset
+                    <div class="animal-avatar-picker">
+                        ${ANIMAL_AVATARS.map(avatar => `
+                            <button type="button" class="animal-avatar-option ${selectedAvatar.id === avatar.id ? 'selected' : ''}" onclick="chooseAnimalAvatar('${avatar.id}')" aria-pressed="${selectedAvatar.id === avatar.id ? 'true' : 'false'}">
+                                <img src="${avatar.image}" alt="${escapeAttr(avatar.name)} avatar">
+                                <span>${escapeHtml(avatar.name)}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                </label>
+                <label>
                     Bio
                     <textarea id="profile-bio-input" maxlength="160" placeholder="A short anonymous bio...">${escapeHtml(profileDetails.bio)}</textarea>
                 </label>
@@ -2894,6 +2957,19 @@ function renderProfilePage() {
                         ${['Share honestly', 'Find similar minds', 'Give advice', 'Read quietly', 'Ask better questions'].map(option => `<option value="${option}" ${profileDetails.intention === option ? 'selected' : ''}>${option}</option>`).join('')}
                     </select>
                 </label>
+                <label>
+                    Profile vibe
+                    <select id="profile-vibe-input">
+                        ${PROFILE_VIBES.map(option => `<option value="${option}" ${(profileDetails.vibe || 'Kind listener') === option ? 'selected' : ''}>${option}</option>`).join('')}
+                    </select>
+                </label>
+                <div class="profile-identity-preview">
+                    <img src="${selectedAvatar.image}" alt="${escapeAttr(selectedAvatar.name)} avatar preview">
+                    <div>
+                        <strong>${escapeHtml(selectedAvatar.name)} profile image</strong>
+                        <span>${escapeHtml(profileDetails.vibe || 'Kind listener')} · ${escapeHtml(profileDetails.intention)}</span>
+                    </div>
+                </div>
                 <label class="boost-toggle profile-badge-toggle">
                     <input type="checkbox" id="profile-premium-input" ${profileDetails.premiumBadge ? 'checked' : ''}>
                     <span>Show premium badge placeholder</span>
@@ -2977,13 +3053,25 @@ function saveMyProfileDetails() {
         bio: document.getElementById('profile-bio-input')?.value.trim().slice(0, 160) || '',
         status: document.getElementById('profile-status-input')?.value.trim().slice(0, 48) || 'Open to thoughtful replies',
         intention: document.getElementById('profile-intention-input')?.value || 'Share honestly',
+        vibe: document.getElementById('profile-vibe-input')?.value || 'Kind listener',
+        animalAvatar: profileDetails.animalAvatar || 'fox',
         premiumBadge: Boolean(document.getElementById('profile-premium-input')?.checked),
         pinnedThoughtId: profileDetails.pinnedThoughtId || ''
     };
 
     saveProfileDetails();
+    applyProfileAvatarVisuals();
     addNotification({ type: 'profile', message: 'Profile saved for this browser.' });
     renderProfilePage();
+}
+
+function chooseAnimalAvatar(avatarId) {
+    if (!ANIMAL_AVATARS.some(avatar => avatar.id === avatarId)) return;
+    profileDetails.animalAvatar = avatarId;
+    saveProfileDetails();
+    applyProfileAvatarVisuals();
+    renderProfilePage();
+    addNotification({ type: 'profile', message: 'Profile image updated.' });
 }
 
 function pinThoughtToProfile(quoteId, event) {

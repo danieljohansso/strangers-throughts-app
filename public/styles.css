@@ -1204,6 +1204,17 @@ body.calm-mode .orbit-card:hover {
     border-radius: 50%;
     border: 4px solid rgba(255, 255, 255, 0.12);
     box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+}
+
+.my-profile-avatar img,
+.profile-identity-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
 .my-profile-copy h2 {
@@ -1313,6 +1324,85 @@ body.calm-mode .orbit-card:hover {
 .profile-editor-panel textarea:focus {
     outline: none;
     border-color: var(--primary);
+}
+
+.animal-avatar-picker {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 0.55rem;
+}
+
+.animal-avatar-option {
+    display: grid;
+    place-items: center;
+    gap: 0.35rem;
+    min-height: 92px;
+    padding: 0.55rem 0.35rem;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.045);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: transform var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.animal-avatar-option:hover,
+.animal-avatar-option:focus-visible {
+    transform: translateY(-1px);
+    border-color: rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.075);
+    outline: none;
+}
+
+.animal-avatar-option.selected {
+    border-color: var(--primary);
+    background: rgba(139, 92, 246, 0.14);
+    color: var(--text-primary);
+}
+
+.animal-avatar-option img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
+}
+
+.animal-avatar-option span {
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+.profile-identity-preview {
+    display: grid;
+    grid-template-columns: 54px minmax(0, 1fr);
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.profile-identity-preview img {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+}
+
+.profile-identity-preview strong,
+.profile-identity-preview span {
+    display: block;
+}
+
+.profile-identity-preview strong {
+    color: var(--text-primary);
+}
+
+.profile-identity-preview span {
+    margin-top: 0.2rem;
+    color: var(--text-muted);
+    font-size: 0.88rem;
 }
 
 .profile-badge-toggle {
@@ -1849,8 +1939,11 @@ body.calm-mode .orbit-card:hover {
     height: 36px;
     border-radius: 50%;
     background: linear-gradient(135deg, #444 0%, #333 100%);
+    background-size: cover;
+    background-position: center;
     border: 2px solid rgba(255, 255, 255, 0.1);
     position: relative;
+    overflow: visible;
     transition: all var(--transition-normal);
 }
 
@@ -1918,6 +2011,8 @@ body.calm-mode .orbit-card:hover {
     height: 64px;
     border-radius: 50%;
     background: linear-gradient(135deg, #444 0%, #333 100%);
+    background-size: cover;
+    background-position: center;
     border: 3px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -3510,6 +3605,10 @@ body.calm-mode .orbit-card:hover {
         justify-items: start;
     }
 
+    .animal-avatar-picker {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
     .hero-actions {
         display: grid;
     }
@@ -3664,6 +3763,10 @@ body.calm-mode .orbit-card:hover {
 
     .my-profile-grid {
         grid-template-columns: 1fr;
+    }
+
+    .animal-avatar-picker {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .profile-panel-header {
