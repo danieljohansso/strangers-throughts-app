@@ -190,6 +190,15 @@ function getQuoteById(quoteId) {
   return loadQuotes().find(q => q.id === quoteId) || null;
 }
 
+function removeQuoteArtifacts(quoteId) {
+  const chatFile = path.join(CHAT_DIR, `${quoteId}.json`);
+  try {
+    if (fs.existsSync(chatFile)) fs.unlinkSync(chatFile);
+  } catch (err) {
+    console.error('Error deleting quote thread:', err);
+  }
+}
+
 // User management
 const connectedUsers = new Map(); // socket.id -> user data
 const matchQueue = new Map(); // category -> [socketIds]
@@ -691,6 +700,39 @@ io.on('connection', (socket) => {
       message: `${user.name} shared a new thought`,
       quoteId: quoteWithId.id,
       timestamp: new Date().toISOString()
+    });
+  });
+
+  socket.on('deleteQuote', ({ quoteId }) => {
+    if (!checkRateLimit(`delete:${socket.id}`, 20, 60 * 1000)) {
+      emitRateLimited(socket, 'deleting');
+      return;
+    }
+
+    const quotes = loadQuotes();
+    const quote = quotes.find(q => q.id === quoteId);
+    if (!quote) {
+      socket.emit('quoteDeleteRejected', { message: 'That thought no longer exists.' });
+      return;
+    }
+
+    if (quote.authorId !== user.id) {
+      socket.emit('quoteDeleteRejected', { message: 'You can only delete thoughts from your current identity.' });
+      return;
+    }
+
+    saveQuotes(quotes.filter(q => q.id !== quoteId));
+
+    const reactions = loadReactions();
+    if (reactions[quoteId]) {
+      delete reactions[quoteId];
+      saveReactions(reactions);
+    }
+
+    removeQuoteArtifacts(quoteId);
+    io.emit('quoteDeleted', {
+      quoteId,
+      message: `${user.name} deleted a thought.`
     });
   });
   

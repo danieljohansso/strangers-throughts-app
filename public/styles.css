@@ -2065,6 +2065,18 @@ body::before {
     color: var(--text-primary);
 }
 
+.action-btn.active-action {
+    border-color: rgba(246, 212, 122, 0.34);
+    color: #f6d47a;
+    background: rgba(246, 212, 122, 0.1);
+}
+
+.action-btn.danger-action:hover {
+    border-color: rgba(255, 68, 68, 0.36);
+    color: #ff8b8b;
+    background: rgba(255, 68, 68, 0.1);
+}
+
 .action-btn.dm-btn:hover {
     background: rgba(0, 120, 215, 0.1);
     border-color: var(--primary);

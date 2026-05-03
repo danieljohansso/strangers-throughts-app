@@ -79,7 +79,8 @@ let profileDetails = {
     bio: '',
     status: 'Open to thoughtful replies',
     intention: 'Share honestly',
-    premiumBadge: false
+    premiumBadge: false,
+    pinnedThoughtId: ''
 };
 
 
@@ -1977,6 +1978,7 @@ function renderProfilePage() {
     const displayName = currentUser?.name || 'Anonymous Stranger';
     const avatarColor = currentUser?.color || '#444';
     const memberSince = currentUser?.createdAt ? formatTimeAgo(new Date(currentUser.createdAt)) : 'just now';
+    const pinnedThought = stats.myThoughts.find(quote => quote.id === profileDetails.pinnedThoughtId);
     const strongestThought = stats.myThoughts
         .slice()
         .sort((a, b) => getEngagementScore(b) - getEngagementScore(a))[0];
@@ -2047,11 +2049,11 @@ function renderProfilePage() {
                     </div>
                 </section>
                 <section class="profile-panel">
-                    <h3>Strongest Thought</h3>
-                    ${strongestThought ? `
-                        <button class="profile-thought-row" onclick="jumpToThought('${strongestThought.id}')">
-                            <strong>${escapeHtml(strongestThought.category)} · ${escapeHtml(strongestThought.mood || 'Reflective')}</strong>
-                            <span>${escapeHtml(strongestThought.text)}</span>
+                    <h3>${pinnedThought ? 'Pinned Thought' : 'Strongest Thought'}</h3>
+                    ${pinnedThought || strongestThought ? `
+                        <button class="profile-thought-row" onclick="jumpToThought('${(pinnedThought || strongestThought).id}')">
+                            <strong>${escapeHtml((pinnedThought || strongestThought).category)} · ${escapeHtml((pinnedThought || strongestThought).mood || 'Reflective')}</strong>
+                            <span>${escapeHtml((pinnedThought || strongestThought).text)}</span>
                         </button>
                     ` : '<p class="thread-empty">Share a thought to start building your profile signal.</p>'}
                 </section>
@@ -2095,12 +2097,59 @@ function saveMyProfileDetails() {
         bio: document.getElementById('profile-bio-input')?.value.trim().slice(0, 160) || '',
         status: document.getElementById('profile-status-input')?.value.trim().slice(0, 48) || 'Open to thoughtful replies',
         intention: document.getElementById('profile-intention-input')?.value || 'Share honestly',
-        premiumBadge: Boolean(document.getElementById('profile-premium-input')?.checked)
+        premiumBadge: Boolean(document.getElementById('profile-premium-input')?.checked),
+        pinnedThoughtId: profileDetails.pinnedThoughtId || ''
     };
 
     saveProfileDetails();
     addNotification({ type: 'profile', message: 'Profile saved for this browser.' });
     renderProfilePage();
+}
+
+function pinThoughtToProfile(quoteId, event) {
+    if (event) event.stopPropagation();
+    profileDetails.pinnedThoughtId = profileDetails.pinnedThoughtId === quoteId ? '' : quoteId;
+    saveProfileDetails();
+    addNotification({
+        type: 'profile',
+        message: profileDetails.pinnedThoughtId ? 'Thought pinned to your profile.' : 'Profile pin removed.'
+    });
+    applyFiltersAndSort();
+}
+
+function deleteOwnThought(quoteId, event) {
+    if (event) event.stopPropagation();
+    if (!socket || !currentUser || !quoteId) return;
+
+    const quote = allQuotes.find(item => item.id === quoteId);
+    if (!quote || quote.authorId !== currentUser.id) return;
+    if (!confirm('Delete this thought and its thread replies?')) return;
+
+    socket.emit('deleteQuote', { quoteId });
+}
+
+function removeQuoteLocally(quoteId) {
+    allQuotes = allQuotes.filter(quote => quote.id !== quoteId);
+    quotes = quotes.filter(quote => quote.id !== quoteId);
+    yourPosts = yourPosts.filter(quote => quote.id !== quoteId);
+    postsWithReplies = postsWithReplies.filter(quote => quote.id !== quoteId);
+    savedPosts = savedPosts.filter(id => id !== quoteId);
+    delete reactionsData[quoteId];
+    delete threadReplies[quoteId];
+    expandedThreads.delete(quoteId);
+    followedThreads = followedThreads.filter(id => id !== quoteId);
+    reportedPosts = reportedPosts.filter(id => id !== quoteId);
+
+    if (profileDetails.pinnedThoughtId === quoteId) {
+        profileDetails.pinnedThoughtId = '';
+        saveProfileDetails();
+    }
+
+    saveSavedPosts();
+    saveFollowedThreads();
+    saveSafetyPreferences();
+    updateTabBadges();
+    applyFiltersAndSort();
 }
 
 // Render quotes to the feed
@@ -2171,6 +2220,7 @@ function renderQuotes() {
         const isThreadOpen = expandedThreads.has(quote.id);
         const latestReplies = replies.slice(-3);
         const isFollowingThread = followedThreads.includes(quote.id);
+        const isPinned = profileDetails.pinnedThoughtId === quote.id;
 
 
         
@@ -2251,8 +2301,10 @@ function renderQuotes() {
 
 
                     <button class="join-btn" onclick="toggleThread('${quote.id}')">${isThreadOpen ? 'Hide Thread' : 'Reply in Thread'}</button>
+                    ${isYours ? `<button class="action-btn ${isPinned ? 'active-action' : ''}" onclick="pinThoughtToProfile('${quote.id}', event)">${isPinned ? 'Unpin' : 'Pin'}</button>` : ''}
                     <button class="action-btn" onclick="copyThoughtLink('${quote.id}', event)">Copy Link</button>
                     <button class="action-btn" onclick="reportThought('${quote.id}', '${quote.authorId || ''}', event)">Report</button>
+                    ${isYours ? `<button class="action-btn danger-action" onclick="deleteOwnThought('${quote.id}', event)">Delete</button>` : ''}
                     ${!isYours ? `<button class="action-btn" onclick="blockAuthor('${quote.authorId || ''}', event)">Block</button>` : ''}
 
 
@@ -3256,6 +3308,21 @@ function connect() {
         applyFiltersAndSort();
 
 
+    });
+
+    socket.on('quoteDeleted', ({ quoteId, message }) => {
+        removeQuoteLocally(quoteId);
+        addNotification({
+            type: 'profile',
+            message: message || 'Thought deleted.'
+        });
+    });
+
+    socket.on('quoteDeleteRejected', ({ message }) => {
+        addNotification({
+            type: 'error',
+            message: message || 'That thought could not be deleted.'
+        });
     });
 
     socket.on('threadHistory', ({ quoteId, replies }) => {
