@@ -1,8 +1,24 @@
 const http = require('http');
 const { spawn } = require('child_process');
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
 
 const PORT = 3922;
 const BASE_URL = `http://localhost:${PORT}`;
+const TEMP_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), 'stranger-smoke-'));
+
+function copyDataSeed() {
+  const sourceDir = path.join(process.cwd(), 'data');
+  if (!fs.existsSync(sourceDir)) return;
+
+  for (const fileName of ['quotes.json', 'reactions.json', 'reports.json']) {
+    const source = path.join(sourceDir, fileName);
+    if (fs.existsSync(source)) {
+      fs.copyFileSync(source, path.join(TEMP_DATA_DIR, fileName));
+    }
+  }
+}
 
 function request(path, options = {}) {
   const body = options.body ? JSON.stringify(options.body) : null;
@@ -39,9 +55,11 @@ async function waitForServer() {
 }
 
 async function main() {
+  copyDataSeed();
+
   const child = spawn(process.execPath, ['server.js'], {
     cwd: process.cwd(),
-    env: { ...process.env, PORT: String(PORT) },
+    env: { ...process.env, PORT: String(PORT), DATA_DIR: TEMP_DATA_DIR },
     stdio: 'pipe'
   });
 
@@ -78,6 +96,7 @@ async function main() {
     console.log('Smoke checks passed:', checks.map(([name]) => name).join(', '));
   } finally {
     child.kill();
+    fs.rmSync(TEMP_DATA_DIR, { recursive: true, force: true });
   }
 }
 

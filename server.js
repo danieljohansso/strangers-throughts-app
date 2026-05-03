@@ -18,7 +18,9 @@ const io = socketIo(server, {
 });
 
 const PORT = process.env.PORT || 3002;
-const DATA_DIR = path.join(__dirname, 'data');
+const DATA_DIR = process.env.DATA_DIR
+  ? path.resolve(process.env.DATA_DIR)
+  : path.join(__dirname, 'data');
 const QUOTES_FILE = path.join(DATA_DIR, 'quotes.json');
 const REACTIONS_FILE = path.join(DATA_DIR, 'reactions.json');
 const CHAT_DIR = path.join(DATA_DIR, 'chats');
@@ -26,9 +28,9 @@ const ONE_ON_ONE_DIR = path.join(DATA_DIR, 'one_on_one');
 const REPORTS_FILE = path.join(DATA_DIR, 'reports.json');
 
 // Ensure data directory exists
-if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR);
-if (!fs.existsSync(CHAT_DIR)) fs.mkdirSync(CHAT_DIR);
-if (!fs.existsSync(ONE_ON_ONE_DIR)) fs.mkdirSync(ONE_ON_ONE_DIR);
+if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+if (!fs.existsSync(CHAT_DIR)) fs.mkdirSync(CHAT_DIR, { recursive: true });
+if (!fs.existsSync(ONE_ON_ONE_DIR)) fs.mkdirSync(ONE_ON_ONE_DIR, { recursive: true });
 
 // Serve static files
 app.use(express.json({ limit: '32kb' }));
