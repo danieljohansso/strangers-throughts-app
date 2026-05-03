@@ -610,6 +610,7 @@ function updateExperienceStats() {
     updateDiscoveryQueue();
     updateMoodPulse();
     updateThoughtDna();
+    updateReplyRadar();
     updateOrbitPanel();
 }
 
@@ -799,6 +800,56 @@ function updateThoughtDna() {
             <em>${escapeHtml(card.detail)}</em>
         </div>
     `).join('');
+}
+
+function updateReplyRadar() {
+    const summary = document.getElementById('reply-radar-summary');
+    const list = document.getElementById('reply-radar-list');
+    if (!summary || !list) return;
+
+    const visibleQuotes = getVisibleQuotes();
+    const activeThreads = visibleQuotes
+        .filter(quote => (quote.replyCount || 0) > 0)
+        .sort((a, b) => {
+            const replyDelta = (b.replyCount || 0) - (a.replyCount || 0);
+            return replyDelta || getEngagementScore(b) - getEngagementScore(a);
+        })
+        .slice(0, 3);
+
+    if (activeThreads.length === 0) {
+        summary.textContent = 'No active threads yet.';
+        list.innerHTML = `
+            <div class="reply-radar-card">
+                <p>The next reply can start the first real conversation.</p>
+                <button class="secondary-action compact-action" onclick="switchTab('all')">Browse thoughts</button>
+            </div>
+        `;
+        return;
+    }
+
+    const totalReplies = activeThreads.reduce((sum, quote) => sum + (quote.replyCount || 0), 0);
+    summary.textContent = `${activeThreads.length} live ${activeThreads.length === 1 ? 'thread' : 'threads'} with ${totalReplies} recent replies.`;
+    list.innerHTML = activeThreads.map(quote => `
+        <article class="reply-radar-card">
+            <div class="reply-radar-meta">
+                <span>${escapeHtml(quote.mood || 'Reflective')}</span>
+                <span>${escapeHtml(quote.category || 'Deep')}</span>
+                <span>${quote.replyCount || 0} replies</span>
+            </div>
+            <p>${escapeHtml(quote.text)}</p>
+            <button class="primary-action compact-action" onclick="openThreadFromRadar('${quote.id}')">Join Thread</button>
+        </article>
+    `).join('');
+}
+
+function openThreadFromRadar(quoteId) {
+    expandedThreads.add(quoteId);
+    if (socket) socket.emit('getThreadReplies', quoteId);
+    jumpToThought(quoteId);
+    setTimeout(() => {
+        const input = document.getElementById(`thread-input-${quoteId}`);
+        if (input) input.focus();
+    }, 120);
 }
 
 function focusThoughtInput() {

@@ -169,6 +169,7 @@ body.calm-mode *::after {
 
 body.calm-mode .mood-pulse-panel,
 body.calm-mode .thought-dna-panel,
+body.calm-mode .reply-radar-panel,
 body.calm-mode .discovery-queue,
 body.calm-mode .spotlight-panel {
     display: none;
@@ -558,6 +559,69 @@ body.calm-mode .orbit-card:hover {
     font-size: 0.85rem;
     font-style: normal;
     line-height: 1.35;
+}
+
+.reply-radar-panel {
+    display: grid;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: var(--radius-lg);
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.reply-radar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.reply-radar-header strong {
+    color: var(--text-primary);
+}
+
+.reply-radar-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.65rem;
+}
+
+.reply-radar-card {
+    display: grid;
+    gap: 0.55rem;
+    padding: 0.8rem;
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.reply-radar-card p {
+    color: var(--text-primary);
+    line-height: 1.45;
+    word-break: break-word;
+}
+
+.reply-radar-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+.reply-radar-meta span {
+    padding: 0.22rem 0.5rem;
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.055);
+}
+
+.reply-radar-card button {
+    width: fit-content;
 }
 
 .compact-action {
@@ -3216,6 +3280,10 @@ body.calm-mode .orbit-card:hover {
 
     .thought-dna-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .reply-radar-list {
+        grid-template-columns: 1fr;
     }
 
     .safety-actions {
