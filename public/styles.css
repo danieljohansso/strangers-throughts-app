@@ -182,6 +182,27 @@ body.calm-mode .orbit-card:hover {
     transform: none;
 }
 
+.app-shell.dashboard-collapsed > .hero-panel,
+.app-shell.dashboard-collapsed > .insight-strip,
+.app-shell.dashboard-collapsed > .intention-panel,
+.app-shell.dashboard-collapsed > .orbit-panel,
+.app-shell.dashboard-collapsed > .discovery-bar,
+.app-shell.dashboard-collapsed > .mood-pulse-panel,
+.app-shell.dashboard-collapsed > .mood-match-panel,
+.app-shell.dashboard-collapsed > .thought-dna-panel,
+.app-shell.dashboard-collapsed > .reply-radar-panel,
+.app-shell.dashboard-collapsed > .saved-digest-panel,
+.app-shell.dashboard-collapsed > .spotlight-panel,
+.app-shell.dashboard-collapsed > .discovery-queue,
+.app-shell.dashboard-collapsed > .upgrade-panel,
+.app-shell.dashboard-collapsed > .safety-center {
+    display: none !important;
+}
+
+.app-shell.dashboard-collapsed > .feed {
+    margin-top: 1rem;
+}
+
 .hero-panel {
     display: grid;
     grid-template-columns: minmax(0, 1.7fr) minmax(280px, 0.9fr);

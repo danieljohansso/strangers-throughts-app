@@ -513,6 +513,14 @@ function saveProfileDetails() {
     localStorage.setItem('strangerProfileDetails', JSON.stringify(profileDetails));
 }
 
+function updateDashboardPanelVisibility() {
+    const shell = document.querySelector('.app-shell');
+    if (!shell) return;
+
+    const hasFocusedFeedState = currentTab !== 'all' || Boolean(searchQuery) || currentFilter !== 'all' || currentMoodFilter !== 'all';
+    shell.classList.toggle('dashboard-collapsed', hasFocusedFeedState);
+}
+
 function getSelectedAnimalAvatar() {
     return ANIMAL_AVATARS.find(avatar => avatar.id === profileDetails.animalAvatar) || ANIMAL_AVATARS[0];
 }
@@ -3590,6 +3598,8 @@ function sendThreadReply(quoteId) {
 
 
 function applyFiltersAndSort() {
+    updateDashboardPanelVisibility();
+
     if (currentTab === 'profile') {
         updateExperienceStats();
         renderProfilePage();
