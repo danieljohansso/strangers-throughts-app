@@ -182,7 +182,15 @@ function loadSavedIdentity() {
     const saved = localStorage.getItem('strangerIdentity');
 
 
-    return saved ? JSON.parse(saved) : null;
+    if (!saved) return null;
+
+    try {
+        const parsed = JSON.parse(saved);
+        return parsed?.id && parsed.name && parsed.color ? parsed : null;
+    } catch (err) {
+        localStorage.removeItem('strangerIdentity');
+        return null;
+    }
 
 
 }
@@ -221,7 +229,15 @@ function loadSavedPosts() {
     const saved = localStorage.getItem('strangerSavedPosts');
 
 
-    return saved ? JSON.parse(saved) : [];
+    if (!saved) return [];
+
+    try {
+        const parsed = JSON.parse(saved);
+        return Array.isArray(parsed) ? parsed : [];
+    } catch (err) {
+        localStorage.removeItem('strangerSavedPosts');
+        return [];
+    }
 
 
 }
