@@ -609,6 +609,7 @@ function updateExperienceStats() {
     updateSpotlight();
     updateDiscoveryQueue();
     updateMoodPulse();
+    updateMoodMatchLane();
     updateThoughtDna();
     updateReplyRadar();
     updateOrbitPanel();
@@ -726,6 +727,45 @@ function updateMoodPulse() {
             </button>
         `;
     }).join('');
+}
+
+function updateMoodMatchLane() {
+    const summary = document.getElementById('mood-match-summary');
+    const list = document.getElementById('mood-match-list');
+    if (!summary || !list) return;
+
+    const visibleQuotes = getVisibleQuotes();
+    const targetMood = currentMoodFilter !== 'all'
+        ? currentMoodFilter
+        : getTopCount(visibleQuotes, quote => quote.mood || 'Reflective')?.[0] || 'Reflective';
+    const matches = visibleQuotes
+        .filter(quote => (quote.mood || 'Reflective') === targetMood)
+        .sort((a, b) => getEngagementScore(b) - getEngagementScore(a) || new Date(b.timestamp) - new Date(a.timestamp))
+        .slice(0, 3);
+
+    if (matches.length === 0) {
+        summary.textContent = `No ${targetMood} thoughts yet.`;
+        list.innerHTML = `
+            <article class="mood-match-card">
+                <p>Write the first ${escapeHtml(targetMood.toLowerCase())} thought for this room.</p>
+                <button class="secondary-action compact-action" onclick="useThoughtTemplate('', 'Deep', '${targetMood}'); focusThoughtInput()">Write one</button>
+            </article>
+        `;
+        return;
+    }
+
+    summary.textContent = `${matches.length} ${targetMood.toLowerCase()} ${matches.length === 1 ? 'thought' : 'thoughts'} worth opening.`;
+    list.innerHTML = matches.map(quote => `
+        <article class="mood-match-card">
+            <div class="mood-match-meta">
+                <span>${escapeHtml(quote.category || 'Deep')}</span>
+                <span>${getEngagementScore(quote)} signal</span>
+                <span>${quote.replyCount || 0} replies</span>
+            </div>
+            <p>${escapeHtml(quote.text)}</p>
+            <button class="primary-action compact-action" onclick="jumpToThought('${quote.id}')">Open Match</button>
+        </article>
+    `).join('');
 }
 
 function getVisibleQuotes() {
