@@ -111,6 +111,8 @@ let discoveryQueueIndex = 0;
 let currentShareCardText = '';
 
 let calmMode = false;
+
+let visitStreak = 1;
 
 
 
@@ -552,10 +554,12 @@ function updateExperienceStats() {
     const savedStat = document.getElementById('stat-saved');
     const categoryStat = document.getElementById('stat-category');
     const safetyStat = document.getElementById('stat-safety');
+    const streakStat = document.getElementById('stat-streak');
 
     if (thoughtStat) thoughtStat.textContent = allQuotes.length;
     if (savedStat) savedStat.textContent = savedPosts.length;
     if (safetyStat) safetyStat.textContent = blockedAuthors.length + reportedPosts.length;
+    if (streakStat) streakStat.textContent = visitStreak;
 
     if (categoryStat && allQuotes.length > 0) {
         const counts = allQuotes.reduce((acc, quote) => {
@@ -813,10 +817,25 @@ function initializeProductShell() {
     loadProfileDetails();
     loadFollowedThreads();
     loadCalmMode();
+    updateVisitStreak();
     updateExperienceStats();
     updateSpotlight();
     restoreThoughtDraft();
     showOnboarding();
+}
+
+function updateVisitStreak() {
+    const today = new Date().toISOString().slice(0, 10);
+    const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+    const saved = JSON.parse(localStorage.getItem('strangerVisitStreak') || '{}');
+
+    if (saved.lastVisit === today) {
+        visitStreak = saved.count || 1;
+        return;
+    }
+
+    visitStreak = saved.lastVisit === yesterday ? (saved.count || 1) + 1 : 1;
+    localStorage.setItem('strangerVisitStreak', JSON.stringify({ lastVisit: today, count: visitStreak }));
 }
 
 function loadCalmMode() {
