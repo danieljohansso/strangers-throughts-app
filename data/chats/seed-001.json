@@ -1,0 +1,65 @@
+[
+  {
+    "quoteId": "seed-001",
+    "text": "asd",
+    "timestamp": "2026-05-03T19:32:23.576Z",
+    "isMe": true,
+    "authorName": "GentleHawk58",
+    "authorColor": "#20B2AA",
+    "id": "ee0cc93c-7049-49a4-8566-4fd87e67cd1e"
+  },
+  {
+    "quoteId": "seed-001",
+    "text": "d",
+    "timestamp": "2026-05-03T19:42:04.625Z",
+    "isMe": true,
+    "authorName": "CuriousWhale29",
+    "authorColor": "#FF5733",
+    "id": "2b08255f-d453-4fed-b7f2-6d265ff5a750"
+  },
+  {
+    "quoteId": "seed-001",
+    "text": "aaada",
+    "timestamp": "2026-05-03T19:42:06.938Z",
+    "isMe": true,
+    "authorName": "CuriousWhale29",
+    "authorColor": "#FF5733",
+    "id": "cde6a6af-06cc-408d-aec3-1d6a1ecd4998"
+  },
+  {
+    "quoteId": "seed-001",
+    "text": "asd",
+    "timestamp": "2026-05-03T19:46:16.202Z",
+    "isMe": true,
+    "authorName": "Dadasd",
+    "authorColor": "#FFD700",
+    "id": "b086a671-22b5-4384-b073-c79ddadd7cb0"
+  },
+  {
+    "quoteId": "seed-001",
+    "text": "Whats up`?",
+    "timestamp": "2026-05-03T19:49:02.995Z",
+    "isMe": true,
+    "authorName": "SadCat12",
+    "authorColor": "#33FF57",
+    "id": "63aed968-2dca-4dfc-9017-bc7206f83ca6"
+  },
+  {
+    "quoteId": "seed-001",
+    "text": "What are you doing?",
+    "timestamp": "2026-05-03T19:49:09.859Z",
+    "isMe": true,
+    "authorName": "Dadasd",
+    "authorColor": "#FFD700",
+    "id": "3fd24d73-f786-40a0-b244-cf4caf58613e"
+  },
+  {
+    "quoteId": "seed-001",
+    "text": "> What are you doing?\n\naa",
+    "timestamp": "2026-05-03T19:49:15.440Z",
+    "isMe": true,
+    "authorName": "SadCat12",
+    "authorColor": "#33FF57",
+    "id": "b79b37bd-cc82-4e83-b127-39054ca746f1"
+  }
+]

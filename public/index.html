@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stranger Thoughts</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <div class="logo">
+                <h1>Stranger Thoughts</h1>
+            </div>
+            <div class="live-indicator" id="live-indicator">
+                <span class="pulse"></span>
+                <span id="online-count">0 online</span>
+            </div>
+        </div>
+        
+        <div class="header-center">
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="all" onclick="switchTab('all')">🌐 All Thoughts</button>
+                <button class="tab-btn" data-tab="matches" onclick="switchTab('matches')">👥 Find Matches <span class="tab-badge" id="matches-badge">0</span></button>
+                <button class="tab-btn" data-tab="trending" onclick="switchTab('trending')">🔥 Trending</button>
+                <button class="tab-btn" data-tab="yours" onclick="switchTab('yours')">👤 Your Thoughts <span class="tab-badge" id="yours-badge">0</span></button>
+                <button class="tab-btn" data-tab="replies" onclick="switchTab('replies')">💬 Replies <span class="tab-badge" id="replies-badge">0</span></button>
+                <button class="tab-btn" data-tab="saved" onclick="switchTab('saved')">🔖 Saved <span class="tab-badge" id="saved-badge">0</span></button>
+            </div>
+            
+            <div class="controls">
+                <div class="search-box">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="m21 21-4.35-4.35"/>
+                    </svg>
+                    <input type="text" id="search-input" placeholder="Search thoughts..." oninput="handleSearch()">
+                    <button id="search-clear" onclick="clearSearch()" style="display: none;">×</button>
+                </div>
+                
+                <div class="sort-controls">
+                    <button class="sort-btn active" data-sort="new" onclick="setSort('new')">New</button>
+                    <button class="sort-btn" data-sort="hot" onclick="setSort('hot')">Hot</button>
+                    <button class="sort-btn" data-sort="discussed" onclick="setSort('discussed')">Most Discussed</button>
+                </div>
+                
+                <div class="filter-controls">
+                    <select id="category-filter" onchange="filterByCategory()">
+                        <option value="all">All</option>
+                        <option value="Deep">Deep</option>
+                        <option value="Confessions">Confessions</option>
+                        <option value="Advice">Advice</option>
+                        <option value="Late Night">Late Night</option>
+                        <option value="Funny">Funny</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <div class="notifications" onclick="toggleNotifications(event)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+                <span class="notification-badge" id="notification-badge">0</span>
+                <div class="notification-dropdown" id="notification-dropdown">
+                    <div class="notification-header">
+                        <h4>Notifications</h4>
+                        <button class="mark-all-read" onclick="markAllNotificationsRead(); event.stopPropagation();">Mark all read</button>
+                    </div>
+                    <div class="notification-list" id="notification-list">
+                        <p class="no-notifications">No new notifications</p>
+                    </div>
+                </div>
+            </div>
+            <div class="similar-thoughts-stats" id="similar-thoughts-stats"></div>
+            <div class="activity-notice" id="activity-notice"></div>
+            <div class="user-profile" onclick="toggleProfileDropdown(event)">
+                <div class="user-avatar" id="user-avatar"></div>
+                <span class="user-name" id="user-name">Connecting...</span>
+                
+                <div class="profile-dropdown" id="profile-dropdown">
+                    <div class="profile-info">
+                        <div class="profile-avatar-large" id="profile-avatar-large"></div>
+                        <div class="profile-stats">
+                            <div class="stat">
+                                <span class="stat-value" id="profile-posts">0</span>
+                                <span class="stat-label">Posts</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-value" id="profile-replies">0</span>
+                                <span class="stat-label">Replies</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-value" id="profile-reactions">0</span>
+                                <span class="stat-label">Reactions</span>
+                            </div>
+                        </div>
+                        <input type="text" class="profile-name-input" id="profile-name-input" placeholder="Enter new name..." maxlength="20" onkeydown="handleProfileInputKey(event)">
+                        <button class="profile-button" onclick="updateUsername(); event.stopPropagation();">Change Username</button>
+                    </div>
+                    <div class="profile-menu-item" onclick="copyUserId(); event.stopPropagation();">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+                        <span>Copy User ID</span>
+                    </div>
+                    <div class="profile-menu-item" onclick="regenerateIdentity(); event.stopPropagation();">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                        <span>New Identity</span>
+                    </div>
+                    <div class="profile-menu-item" onclick="viewYourThoughts(); event.stopPropagation();">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+                        <span>View Your Posts</span>
+                    </div>
+                    <div class="profile-menu-item" onclick="viewSaved(); event.stopPropagation();">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                        <span>View Saved Posts</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <main class="app-shell">
+
+        <section class="hero-panel">
+
+            <div class="hero-copy">
+
+                <span class="hero-kicker">Anonymous, real-time, moderated by the crowd</span>
+
+                <h2>Say the thing you cannot quite say anywhere else.</h2>
+
+                <p>Share a thought, find a stranger in the same mood, or drift through what other people are carrying tonight.</p>
+
+                <div class="hero-actions">
+
+                    <button class="primary-action" onclick="focusThoughtInput()">Write a Thought</button>
+
+                    <button class="secondary-action" onclick="showRandomThought()">Random Thought</button>
+
+                    <button class="secondary-action" onclick="showSafetyCenter()">Safety</button>
+
+                    <button class="secondary-action" onclick="showUpgradePanel()">Upgrade</button>
+
+                    <div class="profile-menu-item" onclick="openModerationPanel(); event.stopPropagation();">
+
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+
+                        <span>Moderation Queue</span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="daily-prompt-card">
+
+                <span>Daily prompt</span>
+
+                <strong id="daily-prompt">Loading prompt...</strong>
+
+                <button onclick="useDailyPrompt()">Answer Prompt</button>
+
+            </div>
+
+        </section>
+
+        <section class="insight-strip">
+
+            <div><span id="stat-thoughts">0</span><small>thoughts shared</small></div>
+
+            <div><span id="stat-saved">0</span><small>saved by you</small></div>
+
+            <div><span id="stat-category">Deep</span><small>top category</small></div>
+
+            <div><span id="stat-safety">0</span><small>hidden/reported</small></div>
+
+        </section>
+
+        <section class="discovery-bar">
+
+            <span>Browse by mood</span>
+
+            <div class="mood-chips" id="mood-chips">
+
+                <button class="mood-chip active" data-mood="all" onclick="filterByMood('all')">All</button>
+
+                <button class="mood-chip" data-mood="Reflective" onclick="filterByMood('Reflective')">Reflective</button>
+
+                <button class="mood-chip" data-mood="Hopeful" onclick="filterByMood('Hopeful')">Hopeful</button>
+
+                <button class="mood-chip" data-mood="Heavy" onclick="filterByMood('Heavy')">Heavy</button>
+
+                <button class="mood-chip" data-mood="Curious" onclick="filterByMood('Curious')">Curious</button>
+
+                <button class="mood-chip" data-mood="Unfiltered" onclick="filterByMood('Unfiltered')">Unfiltered</button>
+
+                <button class="mood-chip" data-mood="Celebrating" onclick="filterByMood('Celebrating')">Celebrating</button>
+
+            </div>
+
+            <button class="secondary-action compact-action" onclick="clearDiscovery()">Clear</button>
+
+        </section>
+
+        <section class="spotlight-panel">
+
+            <div>
+
+                <span class="hero-kicker">Spotlight</span>
+
+                <p id="spotlight-text">Finding the strongest thought...</p>
+
+                <small id="spotlight-meta">Loading</small>
+
+            </div>
+
+            <button class="secondary-action" onclick="setSort('hot'); switchTab('trending')">See Trending</button>
+
+        </section>
+
+        <section class="upgrade-panel" id="upgrade-panel" style="display: none;">
+
+            <div>
+
+                <span class="premium-badge">Premium preview</span>
+
+                <h3>Boost thoughtful posts without changing the anonymous spirit.</h3>
+
+                <p>Future paid plans can unlock featured thoughts, profile glow, advanced filters, and supporter badges. Payment integration is intentionally not connected yet.</p>
+
+                <button class="secondary-action" onclick="window.location.href='/pricing.html'">View Pricing Draft</button>
+
+                <button class="secondary-action" onclick="window.location.href='/admin.html'">Local Admin</button>
+
+            </div>
+
+            <div class="pricing-grid">
+
+                <div><strong>Free</strong><span>Post, save, report, match</span></div>
+
+                <div><strong>Plus placeholder</strong><span>Boosts, badges, deeper discovery</span></div>
+
+            </div>
+
+        </section>
+
+        <section class="safety-center" id="safety-center" style="display: none;">
+
+            <div>
+
+                <span class="hero-kicker">Safety center</span>
+
+                <h3>Your feed should feel strange, not unsafe.</h3>
+
+                <p>Reports are saved for review. Blocks stay private to this browser and can be cleared anytime.</p>
+
+            </div>
+
+            <div class="safety-actions">
+
+                <button class="secondary-action" onclick="clearHiddenContent()">Clear Hidden Content</button>
+
+                <button class="secondary-action" onclick="showOnboarding(true)">View Onboarding</button>
+
+            </div>
+
+        </section>
+    
+    <div class="feed" id="feed">
+        <div class="loading">Connecting to server...</div>
+    </div>
+    
+    <div class="error-message" id="error-message"></div>
+
+    <div class="toast-stack" id="toast-stack"></div>
+
+    <div class="profile-modal" id="author-modal" style="display: none;" onclick="closeAuthorModal(event)">
+
+        <div class="profile-modal-card" onclick="event.stopPropagation()">
+
+            <button class="close-btn profile-modal-close" onclick="closeAuthorModal()">×</button>
+
+            <div class="profile-modal-header">
+
+                <div class="profile-avatar-large" id="author-modal-avatar"></div>
+
+                <div>
+
+                    <span class="hero-kicker">Stranger profile</span>
+
+                    <h3 id="author-modal-name">Anonymous</h3>
+
+                    <p id="author-modal-summary">No summary yet.</p>
+
+                </div>
+
+            </div>
+
+            <div class="profile-modal-stats">
+
+                <div><strong id="author-modal-posts">0</strong><span>thoughts</span></div>
+
+                <div><strong id="author-modal-reactions">0</strong><span>reactions</span></div>
+
+                <div><strong id="author-modal-replies">0</strong><span>replies</span></div>
+
+            </div>
+
+            <div class="profile-modal-list" id="author-modal-list"></div>
+
+        </div>
+
+    </div>
+
+    <div class="profile-modal" id="moderation-modal" style="display: none;" onclick="closeModerationPanel(event)">
+
+        <div class="profile-modal-card" onclick="event.stopPropagation()">
+
+            <button class="close-btn profile-modal-close" onclick="closeModerationPanel()">×</button>
+
+            <span class="hero-kicker">Local moderation</span>
+
+            <h3>Report queue</h3>
+
+            <p class="modal-helper">Reports are stored in local JSON for review. This is not a replacement for production moderation.</p>
+
+            <div class="profile-modal-list" id="moderation-list">Loading reports...</div>
+
+        </div>
+
+    </div>
+
+    <div class="onboarding-modal" id="onboarding-modal" style="display: none;">
+
+        <div class="onboarding-card">
+
+            <span class="hero-kicker">Welcome to Stranger Thoughts</span>
+
+            <h2>Anonymous does not have to mean careless.</h2>
+
+            <div class="onboarding-grid">
+
+                <div><strong>Post honestly</strong><span>Your generated identity keeps the room playful without asking for accounts.</span></div>
+
+                <div><strong>Find people fast</strong><span>Use moods, categories, search, saved posts, and random discovery to move around.</span></div>
+
+                <div><strong>Stay in control</strong><span>Report unsafe thoughts and block strangers from your own feed.</span></div>
+
+            </div>
+
+            <div class="hero-actions">
+
+                <button class="primary-action" onclick="completeOnboarding()">Enter</button>
+
+                <button class="secondary-action" onclick="useDailyPrompt(); completeOnboarding()">Answer Today’s Prompt</button>
+
+            </div>
+
+        </div>
+
+    </div>
+    
+    <div class="submit-area">
+        <h2>Share Your Thought</h2>
+        <div class="category-selector">
+            <span>Category:</span>
+            <select id="new-category" onchange="saveThoughtDraft()">
+                <option value="Deep">Deep</option>
+                <option value="Confessions">Confessions</option>
+                <option value="Advice">Advice</option>
+                <option value="Late Night">Late Night</option>
+                <option value="Funny">Funny</option>
+            </select>
+        </div>
+        <div class="category-selector">
+
+            <span>Mood:</span>
+
+            <select id="new-mood" onchange="saveThoughtDraft()">
+
+                <option value="Reflective">Reflective</option>
+
+                <option value="Hopeful">Hopeful</option>
+
+                <option value="Heavy">Heavy</option>
+
+                <option value="Curious">Curious</option>
+
+                <option value="Unfiltered">Unfiltered</option>
+
+                <option value="Celebrating">Celebrating</option>
+
+            </select>
+
+        </div>
+
+        <label class="boost-toggle">
+
+            <input type="checkbox" id="boost-thought">
+
+            <span>Feature this thought preview</span>
+
+        </label>
+
+        <textarea 
+            id="thought-input" 
+            placeholder="What's on your mind? (minimum 10 characters)"
+            maxlength="200" 
+            oninput="updateCharCount()"
+            disabled
+        ></textarea>
+        <div class="char-count"><span id="char-count">0</span>/200</div>
+        <button id="submit-btn" onclick="submitThought()" disabled>Share Anonymously</button>
+    </div>
+    
+    </main>
+
+    <!-- 1-on-1 Match Chat -->
+
+    <div class="one-on-one-chat-interface" id="one-on-one-chat-interface" style="display: none;">
+
+        <div class="one-on-one-chat-panel">
+
+            <div class="one-on-one-chat-header">
+
+                <div class="one-on-one-partner">
+
+                    <div class="one-on-one-partner-avatar" id="one-on-one-partner-avatar"></div>
+
+                    <div>
+
+                        <div class="one-on-one-partner-name" id="one-on-one-partner-name">Matched stranger</div>
+
+                        <div class="one-on-one-category" id="one-on-one-category">Private chat</div>
+
+                    </div>
+
+                </div>
+
+                <button class="one-on-one-leave-btn" onclick="leaveOneOnOneChat()">Leave</button>
+
+            </div>
+
+            <div class="one-on-one-messages" id="one-on-one-messages"></div>
+
+            <div class="one-on-one-compose">
+
+                <input id="one-on-one-message-input" type="text" placeholder="Type a private message..." maxlength="500" disabled>
+
+                <button onclick="sendOneOnOneMessage()">Send</button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- DM Modal -->
+    <div class="modal" id="dm-modal" onclick="closeDMModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3>Start Private Chat</h3>
+                <button class="close-btn" onclick="closeDMModal()">×</button>
+            </div>
+            <div class="dm-user-list" id="dm-user-list">
+                <p>Select a user to start a private chat...</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Emoji Picker Modal -->
+    <div class="modal" id="emoji-modal" onclick="closeEmojiModal()">
+        <div class="modal-content emoji-picker" onclick="event.stopPropagation()">
+            <div class="emoji-categories">
+                <button class="emoji-category active" data-category="recent" onclick="switchEmojiCategory('recent', event)">⏳</button>
+                <button class="emoji-category" data-category="smileys" onclick="switchEmojiCategory('smileys', event)">😊</button>
+                <button class="emoji-category" data-category="animals" onclick="switchEmojiCategory('animals', event)">🐶</button>
+                <button class="emoji-category" data-category="food" onclick="switchEmojiCategory('food', event)">🍕</button>
+                <button class="emoji-category" data-category="symbols" onclick="switchEmojiCategory('symbols', event)">❤️</button>
+            </div>
+            <div class="emoji-grid" id="emoji-grid">
+                <!-- Emojis will be inserted here -->
+            </div>
+        </div>
+    </div>
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Stranger Thoughts</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <main class="app-shell pricing-page">
+        <section class="hero-panel">
+            <div class="hero-copy">
+                <span class="hero-kicker">Local admin</span>
+                <h2>Operate the room before it becomes a platform.</h2>
+                <p>This page uses local JSON endpoints only. Add authentication before exposing it publicly.</p>
+                <div class="hero-actions">
+                    <button class="primary-action" onclick="createBackup()">Create Backup</button>
+                    <button class="secondary-action" onclick="downloadExport()">Download Export</button>
+                    <button class="secondary-action" onclick="window.location.href='/'">Back to App</button>
+                </div>
+            </div>
+            <div class="daily-prompt-card">
+                <span>Health</span>
+                <strong id="admin-health">Loading stats...</strong>
+                <button onclick="loadAdmin()">Refresh</button>
+            </div>
+        </section>
+
+        <section class="upgrade-panel" style="display: grid;">
+            <div>
+                <span class="premium-badge">Reports</span>
+                <h3>Moderation queue</h3>
+                <p>Review what users have flagged and dismiss items once handled.</p>
+                <div class="profile-modal-list" id="admin-reports">Loading reports...</div>
+            </div>
+            <div>
+                <span class="premium-badge">Backups</span>
+                <h3>Data care</h3>
+                <p id="backup-result">No backup created in this session.</p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        async function loadAdmin() {
+            const [statsRes, reportsRes] = await Promise.all([
+                fetch('/api/stats'),
+                fetch('/api/reports')
+            ]);
+            const stats = await statsRes.json();
+            const reports = await reportsRes.json();
+
+            document.getElementById('admin-health').textContent =
+                `${stats.quotes} thoughts · ${stats.reports} reports · ${stats.activeUsers} online`;
+
+            document.getElementById('admin-reports').innerHTML = reports.length
+                ? reports.map(report => `
+                    <div class="moderation-row">
+                        <strong>${escapeHtml(report.reason)}</strong>
+                        <span>${escapeHtml(report.quoteId)} · ${new Date(report.timestamp).toLocaleString()}</span>
+                        <button class="secondary-action" onclick="dismissReport('${report.id}')">Dismiss</button>
+                    </div>
+                `).join('')
+                : '<div class="empty-message">No reports waiting.</div>';
+        }
+
+        async function dismissReport(id) {
+            await fetch(`/api/reports/${id}`, { method: 'DELETE' });
+            await loadAdmin();
+        }
+
+        async function createBackup() {
+            const res = await fetch('/api/backup', { method: 'POST' });
+            const data = await res.json();
+            document.getElementById('backup-result').textContent = data.ok
+                ? `Created ${data.file}`
+                : 'Backup failed.';
+        }
+
+        async function downloadExport() {
+            const res = await fetch('/api/export');
+            const data = await res.json();
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `stranger-thoughts-export-${new Date().toISOString().slice(0, 10)}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function escapeHtml(value) {
+            const div = document.createElement('div');
+            div.textContent = value || '';
+            return div.innerHTML;
+        }
+
+        loadAdmin();
+    </script>
+</body>
+</html>

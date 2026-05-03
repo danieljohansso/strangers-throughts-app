@@ -1,0 +1,26 @@
+{
+  "id": "ed4a207d-60f6-4341-807d-58a7c71a7eba",
+  "users": [
+    {
+      "socketId": "qVzNWwt_4Ml06cEJAAAH",
+      "user": {
+        "id": "cdec683d-7b78-48ff-a9b9-d53b0c114650",
+        "name": "AngryTiger84",
+        "color": "#33FF57",
+        "createdAt": "2026-05-03T22:09:03.122Z"
+      }
+    },
+    {
+      "socketId": "eTYhk2MWVgjugUxmAAAB",
+      "user": {
+        "id": "e5f47688-fb10-49e4-aa72-721b11c7ee0b",
+        "name": "QuietMouse89",
+        "color": "#DC143C",
+        "createdAt": "2026-05-03T22:08:56.369Z"
+      }
+    }
+  ],
+  "messages": [],
+  "category": "Deep",
+  "createdAt": "2026-05-03T22:09:05.251Z"
+}

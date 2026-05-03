@@ -1,0 +1,32 @@
+[
+  {
+    "quoteId": "1777840718364",
+    "text": "asd",
+    "timestamp": "2026-05-03T20:41:21.960Z",
+    "isMe": true,
+    "authorName": "KindTiger70",
+    "authorColor": "#20B2AA",
+    "id": "878e05c8-ee1e-4208-a875-e99430e3a128",
+    "authorId": "64182e3d-6d4f-4df8-90c4-88f9fbd49d9b"
+  },
+  {
+    "quoteId": "1777840718364",
+    "text": "asd",
+    "timestamp": "2026-05-03T20:58:28.941Z",
+    "isMe": true,
+    "authorName": "GentleShark5",
+    "authorColor": "#00FA9A",
+    "id": "06c89b48-06f7-4447-b93a-f6fdf37ce576",
+    "authorId": "6e92c1a9-53ff-4a6b-bdd1-b79820e052b8"
+  },
+  {
+    "quoteId": "1777840718364",
+    "text": "asd",
+    "timestamp": "2026-05-03T20:59:38.697Z",
+    "isMe": true,
+    "authorName": "GentleShark5",
+    "authorColor": "#00FA9A",
+    "id": "d65f5cd9-f78f-49be-ac32-7e4dab2ee6c0",
+    "authorId": "6e92c1a9-53ff-4a6b-bdd1-b79820e052b8"
+  }
+]

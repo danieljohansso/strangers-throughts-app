@@ -1,0 +1,26 @@
+{
+  "id": "7f7ed8cc-74e3-4034-bbca-1405f3a1551f",
+  "users": [
+    {
+      "socketId": "XFWJyswLjqBpaCH1AAAF",
+      "user": {
+        "id": "13cfbd26-b053-45da-8c8d-08ab8cfac64c",
+        "name": "HappyRabbit6",
+        "color": "#33FFF3",
+        "createdAt": "2026-05-03T22:11:49.430Z"
+      }
+    },
+    {
+      "socketId": "7_A_gLyuIJEilBi-AAAH",
+      "user": {
+        "id": "e181073c-13bd-4171-8967-742ac4ae57b1",
+        "name": "WiseEagle31",
+        "color": "#33FFF3",
+        "createdAt": "2026-05-03T22:11:52.957Z"
+      }
+    }
+  ],
+  "messages": [],
+  "category": "Confessions",
+  "createdAt": "2026-05-03T22:12:14.717Z"
+}

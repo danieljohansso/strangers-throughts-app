@@ -1,0 +1,22 @@
+[
+  {
+    "quoteId": "seed-006",
+    "text": "sa",
+    "timestamp": "2026-05-03T19:57:49.102Z",
+    "isMe": true,
+    "authorName": "HappyFox48",
+    "authorColor": "#FF7F50",
+    "id": "daeea3ac-3267-4d9e-b8ee-26d3ae4ad031",
+    "authorId": "5152be12-9e0e-4341-bed5-2fb745a567eb"
+  },
+  {
+    "quoteId": "seed-006",
+    "text": "> sa\n\nd",
+    "timestamp": "2026-05-03T19:57:55.708Z",
+    "isMe": true,
+    "authorName": "KindTiger70",
+    "authorColor": "#20B2AA",
+    "id": "bfc1bfab-acf8-41b7-bd4c-ccfdf899f2d5",
+    "authorId": "64182e3d-6d4f-4df8-90c4-88f9fbd49d9b"
+  }
+]

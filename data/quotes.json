@@ -1,0 +1,222 @@
+[
+  {
+    "id": "1777841983878",
+    "text": "asdsadasdasd",
+    "category": "Deep",
+    "timestamp": "2026-05-03T20:59:43.878Z",
+    "authorId": "6e92c1a9-53ff-4a6b-bdd1-b79820e052b8",
+    "authorName": "GentleShark5",
+    "authorColor": "#00FA9A",
+    "replyCount": 1,
+    "reactionCount": 1
+  },
+  {
+    "id": "1777840718364",
+    "text": "dasdasdasdas",
+    "category": "Deep",
+    "timestamp": "2026-05-03T20:38:38.364Z",
+    "authorId": "b690f79c-ae96-42cb-af62-978c2b5ad9d7",
+    "authorName": "FunnyPanda24",
+    "authorColor": "#6495ED",
+    "replyCount": 0,
+    "reactionCount": 1
+  },
+  {
+    "id": "1777840447658",
+    "text": "asdsadasdasd",
+    "category": "Deep",
+    "timestamp": "2026-05-03T20:34:07.658Z",
+    "authorId": "7c0d9a9e-91ce-4fe7-8c52-90a0fce110b2",
+    "authorName": "Dadasd",
+    "authorColor": "#FFD700",
+    "replyCount": 0,
+    "reactionCount": 2
+  },
+  {
+    "id": "1777840437399",
+    "text": "sdfsdfsdfsdf",
+    "category": "Deep",
+    "timestamp": "2026-05-03T20:33:57.399Z",
+    "authorId": "7c0d9a9e-91ce-4fe7-8c52-90a0fce110b2",
+    "authorName": "Dadasd",
+    "authorColor": "#FFD700",
+    "replyCount": 0,
+    "reactionCount": 0
+  },
+  {
+    "id": "1777840435059",
+    "text": "sdfsdfsdfsdf",
+    "category": "Deep",
+    "timestamp": "2026-05-03T20:33:55.059Z",
+    "authorId": "7c0d9a9e-91ce-4fe7-8c52-90a0fce110b2",
+    "authorName": "Dadasd",
+    "authorColor": "#FFD700",
+    "replyCount": 0,
+    "reactionCount": 0
+  },
+  {
+    "id": "1777840274526",
+    "text": "dddasdadasdaas",
+    "category": "Deep",
+    "timestamp": "2026-05-03T20:31:14.526Z",
+    "authorId": "7c0d9a9e-91ce-4fe7-8c52-90a0fce110b2",
+    "authorName": "Dadasd",
+    "authorColor": "#FFD700",
+    "replyCount": 0,
+    "reactionCount": 0
+  },
+  {
+    "id": "1777840042355",
+    "text": "asdadwaddfefesffasdawdawd",
+    "category": "Deep",
+    "timestamp": "2026-05-03T20:27:22.355Z",
+    "authorId": "7c0d9a9e-91ce-4fe7-8c52-90a0fce110b2",
+    "authorName": "Dadasd",
+    "authorColor": "#FFD700",
+    "replyCount": 0,
+    "reactionCount": 0
+  },
+  {
+    "id": "1777840036433",
+    "text": "adsdasdwad",
+    "category": "Deep",
+    "timestamp": "2026-05-03T20:27:16.433Z",
+    "authorId": "7c0d9a9e-91ce-4fe7-8c52-90a0fce110b2",
+    "authorName": "Dadasd",
+    "authorColor": "#FFD700",
+    "replyCount": 0,
+    "reactionCount": 0
+  },
+  {
+    "id": "seed-001",
+    "text": "I spent 10 minutes staring at the ceiling last night, wondering if I'm the only one who does this. Then I realized everyone does. That's why we all have the same thoughts.",
+    "category": "Deep",
+    "timestamp": "2026-05-03T18:00:00.000Z",
+    "authorId": "user-001",
+    "authorName": "QuietFox72",
+    "authorColor": "#FF5733",
+    "replyCount": 0,
+    "reactionCount": 8
+  },
+  {
+    "id": "seed-002",
+    "text": "The scariest thing about adulthood isn't paying bills. It's realizing you're becoming the person you swore you never would be.",
+    "category": "Confessions",
+    "timestamp": "2026-05-03T17:30:00.000Z",
+    "authorId": "user-002",
+    "authorName": "HappyWolf45",
+    "authorColor": "#33FF57",
+    "replyCount": 0,
+    "reactionCount": 19
+  },
+  {
+    "id": "seed-003",
+    "text": "What if the voice in your head isn't yours? What if it's the last thought of someone who died thinking of you?",
+    "category": "Late Night",
+    "timestamp": "2026-05-03T16:45:00.000Z",
+    "authorId": "user-003",
+    "authorName": "SmartBear99",
+    "authorColor": "#3357FF",
+    "replyCount": 0,
+    "reactionCount": 12
+  },
+  {
+    "id": "seed-004",
+    "text": "I told my therapist I have trust issues. She said 'I believe you.' I'm not sure if that was a joke or the first honest thing anyone's said to me.",
+    "category": "Funny",
+    "timestamp": "2026-05-03T15:20:00.000Z",
+    "authorId": "user-004",
+    "authorName": "SillyTiger23",
+    "authorColor": "#F3FF33",
+    "replyCount": 2,
+    "reactionCount": 8
+  },
+  {
+    "id": "seed-005",
+    "text": "The best advice I never took: Stop trying to be happy. Just stop being unhappy. The rest will figure itself out.",
+    "category": "Advice",
+    "timestamp": "2026-05-03T14:10:00.000Z",
+    "authorId": "user-005",
+    "authorName": "WiseDragon11",
+    "authorColor": "#FF33F3",
+    "replyCount": 0,
+    "reactionCount": 20
+  },
+  {
+    "id": "seed-006",
+    "text": "I deleted all my social media accounts yesterday. Today I feel lighter, like I lost 50 pounds of other people's opinions.",
+    "category": "Confessions",
+    "timestamp": "2026-05-03T13:05:00.000Z",
+    "authorId": "user-006",
+    "authorName": "BraveRabbit88",
+    "authorColor": "#00BFFF",
+    "replyCount": 0,
+    "reactionCount": 18
+  },
+  {
+    "id": "seed-007",
+    "text": "2 AM thoughts hit different. The walls start talking, the shadows have opinions, and suddenly you're questioning every decision you've ever made.",
+    "category": "Late Night",
+    "timestamp": "2026-05-03T12:30:00.000Z",
+    "authorId": "user-007",
+    "authorName": "DreamyOwl77",
+    "authorColor": "#7CFC00",
+    "replyCount": 3,
+    "reactionCount": 9
+  },
+  {
+    "id": "seed-008",
+    "text": "Money can't buy happiness. But it can buy a jetski. And have you ever seen a sad person on a jetski?",
+    "category": "Funny",
+    "timestamp": "2026-05-03T11:15:00.000Z",
+    "authorId": "user-008",
+    "authorName": "PlayfulPenguin42",
+    "authorColor": "#FF8C00",
+    "replyCount": 0,
+    "reactionCount": 14
+  },
+  {
+    "id": "seed-009",
+    "text": "Love isn't about finding someone you can live with. It's about finding someone you can't live without. And then realizing you actually can, you just don't want to.",
+    "category": "Deep",
+    "timestamp": "2026-05-03T10:00:00.000Z",
+    "authorId": "user-009",
+    "authorName": "GentleUnicorn55",
+    "authorColor": "#9932CC",
+    "replyCount": 0,
+    "reactionCount": 22
+  },
+  {
+    "id": "seed-010",
+    "text": "If someone tells you they have a secret and then says 'promise not to tell anyone', they've already told at least one other person. That's how secrets work.",
+    "category": "Advice",
+    "timestamp": "2026-05-03T09:25:00.000Z",
+    "authorId": "user-010",
+    "authorName": "MysteriousLynx33",
+    "authorColor": "#20B2AA",
+    "replyCount": 1,
+    "reactionCount": 5
+  },
+  {
+    "id": "seed-011",
+    "text": "I used to think I was indecisive. But now I'm not so sure.",
+    "category": "Funny",
+    "timestamp": "2026-05-03T08:40:00.000Z",
+    "authorId": "user-011",
+    "authorName": "ChillKoala67",
+    "authorColor": "#FF1493",
+    "replyCount": 1,
+    "reactionCount": 3
+  },
+  {
+    "id": "seed-012",
+    "text": "We're all just walking each other home. Some of us take the scenic route, some of us get lost, but we all end up at the same place eventually.",
+    "category": "Deep",
+    "timestamp": "2026-05-03T07:50:00.000Z",
+    "authorId": "user-012",
+    "authorName": "HopefulPanda94",
+    "authorColor": "#87CEEB",
+    "replyCount": 0,
+    "reactionCount": 16
+  }
+]

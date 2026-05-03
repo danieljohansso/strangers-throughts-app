@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - Stranger Thoughts</title>
+    <link rel="stylesheet" href="/chat.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+    <div class="chat-header">
+        <button class="back-btn" onclick="window.location.href='/'">← All Quotes</button>
+        <div class="quote-display" id="quote-display">Loading...</div>
+        <div class="chat-user-info">
+            <div class="chat-avatar" id="chat-avatar"></div>
+            <span class="chat-username" id="chat-username">Connecting...</span>
+            <span class="connected-status" id="status">Connecting...</span>
+        </div>
+    </div>
+    
+    <div class="chat-container">
+        <div class="chat-sidebar">
+            <div class="participants-header">
+                <span>In this chat</span>
+                <span class="participant-count" id="participant-count">0</span>
+            </div>
+            <div class="participants-list" id="participants-list">
+                <div class="participant-loading">Loading participants...</div>
+            </div>
+        </div>
+        
+        <div class="messages-container">
+            <div class="messages" id="messages">
+                <div class="typing-indicator" id="typing-indicator" style="display: none;">Someone is typing...</div>
+            </div>
+            
+            <div class="input-area">
+                <div id="quoting-notice" class="quoting-notice" style="display: none;">
+                    <span>Replying to:</span>
+                    <button class="cancel-btn" onclick="cancelQuote()">×</button>
+                    <span id="quote-preview"></span>
+                </div>
+                <div class="input-container">
+                    <textarea 
+                        id="message-input" 
+                        placeholder="Type a message... (Click a message to quote it)" 
+                        maxlength="500" 
+                        oninput="updateCharCount()"
+                        disabled
+                    ></textarea>
+                    <button id="send-btn" onclick="sendMessage()" disabled>→</button>
+                </div>
+                <div class="char-count"><span id="char-count">500</span>/500</div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/chat.js"></script>
+</body>
+</html>

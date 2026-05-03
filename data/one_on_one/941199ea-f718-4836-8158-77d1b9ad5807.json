@@ -1,0 +1,45 @@
+{
+  "id": "941199ea-f718-4836-8158-77d1b9ad5807",
+  "users": [
+    {
+      "socketId": "7_A_gLyuIJEilBi-AAAH",
+      "user": {
+        "id": "e181073c-13bd-4171-8967-742ac4ae57b1",
+        "name": "WiseEagle31",
+        "color": "#33FFF3",
+        "createdAt": "2026-05-03T22:11:52.957Z"
+      }
+    },
+    {
+      "socketId": "XFWJyswLjqBpaCH1AAAF",
+      "user": {
+        "id": "13cfbd26-b053-45da-8c8d-08ab8cfac64c",
+        "name": "HappyRabbit6",
+        "color": "#33FFF3",
+        "createdAt": "2026-05-03T22:11:49.430Z"
+      }
+    }
+  ],
+  "messages": [
+    {
+      "id": "7baf76c7-3f81-41f7-b6a5-b0f18b5a8a5d",
+      "chatId": "941199ea-f718-4836-8158-77d1b9ad5807",
+      "authorId": "e181073c-13bd-4171-8967-742ac4ae57b1",
+      "authorName": "WiseEagle31",
+      "authorColor": "#33FFF3",
+      "text": "Hi",
+      "timestamp": "2026-05-03T22:11:58.127Z"
+    },
+    {
+      "id": "137f50f2-f93b-4725-b42f-10c9605ae374",
+      "chatId": "941199ea-f718-4836-8158-77d1b9ad5807",
+      "authorId": "13cfbd26-b053-45da-8c8d-08ab8cfac64c",
+      "authorName": "HappyRabbit6",
+      "authorColor": "#33FFF3",
+      "text": "How are you doing?",
+      "timestamp": "2026-05-03T22:12:02.253Z"
+    }
+  ],
+  "category": "Deep",
+  "createdAt": "2026-05-03T22:11:54.764Z"
+}
