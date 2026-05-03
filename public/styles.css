@@ -368,6 +368,66 @@ body::before {
     color: var(--text-muted);
 }
 
+.discovery-queue {
+    display: grid;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: linear-gradient(145deg, rgba(18, 18, 18, 0.94), rgba(19, 27, 24, 0.9));
+    border: 1px solid rgba(152, 240, 192, 0.12);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.discovery-queue-header,
+.discovery-queue-actions,
+.discovery-queue-author,
+.discovery-queue-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex-wrap: wrap;
+}
+
+.discovery-queue-header {
+    justify-content: space-between;
+}
+
+.discovery-queue-header h3 {
+    margin-top: 0.5rem;
+    color: var(--text-primary);
+}
+
+.discovery-queue-card {
+    display: grid;
+    gap: 0.8rem;
+}
+
+.discovery-queue-card p {
+    color: var(--text-primary);
+    font-size: 1.08rem;
+    line-height: 1.55;
+}
+
+.discovery-queue-meta span {
+    padding: 0.25rem 0.55rem;
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.055);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--text-secondary);
+    font-size: 0.76rem;
+    font-weight: 800;
+}
+
+.discovery-queue-author {
+    color: var(--text-secondary);
+    font-weight: 700;
+}
+
+.discovery-queue-actions {
+    justify-content: flex-end;
+}
+
 .safety-center {
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;

@@ -104,8 +104,9 @@ let currentOneOnOneChat = null; // Current 1-on-1 chat data
 let matchQueueInfo = {}; // Category -> count of users waiting for matches
 
 let waitingMatchCategory = null;
-
-let availableMatches = []; // Users currently waiting for matches
+let availableMatches = []; // Users currently waiting for matches
+
+let discoveryQueueIndex = 0;
 
 
 
@@ -562,6 +563,7 @@ function updateExperienceStats() {
 
     updateProfileStats();
     updateSpotlight();
+    updateDiscoveryQueue();
 }
 
 function getSpotlightQuote() {
@@ -843,6 +845,83 @@ function showRandomThought() {
         const card = document.querySelector(`[data-quote-id="${quote.id}"]`);
         if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, 50);
+}
+
+function getDiscoveryCandidates() {
+    return allQuotes
+        .filter(quote => !blockedAuthors.includes(quote.authorId) && !reportedPosts.includes(quote.id))
+        .sort((a, b) => {
+            const aSaved = savedPosts.includes(a.id) ? -2 : 0;
+            const bSaved = savedPosts.includes(b.id) ? -2 : 0;
+            return (getEngagementScore(b) + bSaved) - (getEngagementScore(a) + aSaved);
+        });
+}
+
+function getCurrentDiscoveryThought() {
+    const candidates = getDiscoveryCandidates();
+    if (candidates.length === 0) return null;
+    discoveryQueueIndex = discoveryQueueIndex % candidates.length;
+    return candidates[discoveryQueueIndex];
+}
+
+function updateDiscoveryQueue() {
+    const card = document.getElementById('discovery-queue-card');
+    if (!card) return;
+
+    const quote = getCurrentDiscoveryThought();
+    if (!quote) {
+        card.innerHTML = `
+            <p>The queue is empty. Share something honest to seed discovery.</p>
+            <button class="primary-action compact-action" onclick="focusThoughtInput()">Write a Thought</button>
+        `;
+        return;
+    }
+
+    const isSaved = savedPosts.includes(quote.id);
+    card.innerHTML = `
+        <div class="discovery-queue-meta">
+            <span>${escapeHtml(quote.category)}</span>
+            <span>${escapeHtml(quote.mood || 'Reflective')}</span>
+            <span>${getEngagementScore(quote)} signal</span>
+        </div>
+        <p>"${escapeHtml(quote.text)}"</p>
+        <div class="discovery-queue-author">
+            <div class="quote-avatar" style="background-color: ${quote.authorColor || '#444'}"></div>
+            <span>${escapeHtml(quote.authorName || 'Anonymous')}</span>
+        </div>
+        <div class="discovery-queue-actions">
+            <button class="primary-action compact-action" onclick="openDiscoveryThread()">Reply</button>
+            <button class="secondary-action compact-action" onclick="saveDiscoveryThought()">${isSaved ? 'Saved' : 'Save'}</button>
+            <button class="secondary-action compact-action" onclick="jumpToThought('${quote.id}')">Open</button>
+            <button class="secondary-action compact-action" onclick="nextDiscoveryThought()">Next</button>
+        </div>
+    `;
+}
+
+function nextDiscoveryThought() {
+    const candidates = getDiscoveryCandidates();
+    if (candidates.length === 0) return;
+    discoveryQueueIndex = (discoveryQueueIndex + 1) % candidates.length;
+    updateDiscoveryQueue();
+}
+
+function saveDiscoveryThought() {
+    const quote = getCurrentDiscoveryThought();
+    if (!quote) return;
+    toggleSavePost(quote.id, { stopPropagation() {} });
+    updateDiscoveryQueue();
+}
+
+function openDiscoveryThread() {
+    const quote = getCurrentDiscoveryThought();
+    if (!quote) return;
+    expandedThreads.add(quote.id);
+    jumpToThought(quote.id);
+    if (socket) socket.emit('getThreadReplies', quote.id);
+    setTimeout(() => {
+        const input = document.getElementById(`thread-input-${quote.id}`);
+        if (input) input.focus();
+    }, 120);
 }
 
 function cancelMatchSearch() {
