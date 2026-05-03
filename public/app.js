@@ -519,6 +519,50 @@ function updateDashboardPanelVisibility() {
 
     const hasFocusedFeedState = currentTab !== 'all' || Boolean(searchQuery) || currentFilter !== 'all' || currentMoodFilter !== 'all';
     shell.classList.toggle('dashboard-collapsed', hasFocusedFeedState);
+    updateFocusedViewBar(hasFocusedFeedState);
+}
+
+function getFocusedViewMeta() {
+    const tabLabels = {
+        all: 'All thoughts',
+        matches: 'Find matches',
+        trending: 'Trending thoughts',
+        yours: 'Your thoughts',
+        profile: 'Profile',
+        replies: 'Threads with replies',
+        following: 'Following',
+        saved: 'Saved thoughts'
+    };
+    const filters = [];
+
+    if (searchQuery) filters.push(`search: "${searchQuery}"`);
+    if (currentFilter !== 'all') filters.push(`category: ${currentFilter}`);
+    if (currentMoodFilter !== 'all') filters.push(`mood: ${currentMoodFilter}`);
+
+    return {
+        kicker: currentTab === 'all' ? 'Filtered feed' : 'Focused view',
+        title: tabLabels[currentTab] || 'Focused thoughts',
+        detail: filters.length
+            ? `Showing ${filters.join(' - ')}.`
+            : 'Dashboard panels are tucked away so this view has room.'
+    };
+}
+
+function updateFocusedViewBar(shouldShow) {
+    const bar = document.getElementById('focused-view-bar');
+    if (!bar) return;
+
+    bar.style.display = shouldShow ? 'grid' : 'none';
+    if (!shouldShow) return;
+
+    const meta = getFocusedViewMeta();
+    const kicker = document.getElementById('focused-view-kicker');
+    const title = document.getElementById('focused-view-title');
+    const detail = document.getElementById('focused-view-detail');
+
+    if (kicker) kicker.textContent = meta.kicker;
+    if (title) title.textContent = meta.title;
+    if (detail) detail.textContent = meta.detail;
 }
 
 function getSelectedAnimalAvatar() {
@@ -1477,6 +1521,19 @@ function clearDiscovery() {
     document.querySelectorAll('.mood-chip').forEach(chip => chip.classList.toggle('active', chip.dataset.mood === 'all'));
 
     applyFiltersAndSort();
+}
+
+function resetToDashboard() {
+    currentTab = 'all';
+    currentSort = 'new';
+    clearDiscovery();
+
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === 'all'));
+    document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.sort === 'new'));
+
+    const shell = document.querySelector('.app-shell');
+    if (shell) shell.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    addNotification({ type: 'navigation', message: 'Dashboard restored.' });
 }
 
 function showRandomThought() {

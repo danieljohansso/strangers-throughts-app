@@ -436,6 +436,19 @@
 
         </section>
     
+    <section class="focused-view-bar" id="focused-view-bar" style="display: none;">
+        <div>
+            <span class="hero-kicker" id="focused-view-kicker">Focused view</span>
+            <strong id="focused-view-title">Browsing thoughts</strong>
+            <p id="focused-view-detail">Use the shortcuts to move around.</p>
+        </div>
+        <div class="focused-view-actions">
+            <button class="secondary-action compact-action" onclick="focusThoughtInput()">Write</button>
+            <button class="secondary-action compact-action" onclick="showRandomThought()">Random</button>
+            <button class="primary-action compact-action" onclick="resetToDashboard()">Dashboard</button>
+        </div>
+    </section>
+
     <div class="feed" id="feed">
         <div class="loading">Connecting to server...</div>
     </div>
