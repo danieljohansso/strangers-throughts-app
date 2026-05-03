@@ -80,45 +80,46 @@ function emitRateLimited(socket, action) {
   });
 }
 
+function readJsonFile(file, fallback, validate, label) {
+  try {
+    if (!fs.existsSync(file)) return fallback;
+    const parsed = JSON.parse(fs.readFileSync(file, 'utf8'));
+    return validate(parsed) ? parsed : fallback;
+  } catch (err) {
+    console.error(`Error loading ${label}:`, err);
+    return fallback;
+  }
+}
+
+function writeJsonFile(file, value, label) {
+  try {
+    fs.writeFileSync(file, JSON.stringify(value, null, 2), 'utf8');
+  } catch (err) {
+    console.error(`Error saving ${label}:`, err);
+  }
+}
+
 // Data loading and saving functions
 function loadQuotes() {
-  try {
-    if (fs.existsSync(QUOTES_FILE)) {
-      const data = fs.readFileSync(QUOTES_FILE, 'utf8');
-      return JSON.parse(data);
-    }
-  } catch (err) {
-    console.error('Error loading quotes:', err);
-  }
-  return [];
+  return readJsonFile(QUOTES_FILE, [], Array.isArray, 'quotes');
 }
 
 function saveQuotes(quotes) {
-  try {
-    fs.writeFileSync(QUOTES_FILE, JSON.stringify(quotes, null, 2), 'utf8');
-  } catch (err) {
-    console.error('Error saving quotes:', err);
-  }
+  writeJsonFile(QUOTES_FILE, Array.isArray(quotes) ? quotes : [], 'quotes');
 }
 
 function loadReactions() {
-  try {
-    if (fs.existsSync(REACTIONS_FILE)) {
-      const data = fs.readFileSync(REACTIONS_FILE, 'utf8');
-      return JSON.parse(data);
-    }
-  } catch (err) {
-    console.error('Error loading reactions:', err);
-  }
-  return {};
+  return readJsonFile(
+    REACTIONS_FILE,
+    {},
+    value => value && typeof value === 'object' && !Array.isArray(value),
+    'reactions'
+  );
 }
 
 function saveReactions(reactions) {
-  try {
-    fs.writeFileSync(REACTIONS_FILE, JSON.stringify(reactions, null, 2), 'utf8');
-  } catch (err) {
-    console.error('Error saving reactions:', err);
-  }
+  const safeReactions = reactions && typeof reactions === 'object' && !Array.isArray(reactions) ? reactions : {};
+  writeJsonFile(REACTIONS_FILE, safeReactions, 'reactions');
 }
 
 function loadOneOnOneChats() {
@@ -129,8 +130,13 @@ function loadOneOnOneChats() {
       files.forEach(file => {
         if (file.endsWith('.json')) {
           const chatId = file.replace('.json', '');
-          const data = fs.readFileSync(path.join(ONE_ON_ONE_DIR, file), 'utf8');
-          chats[chatId] = JSON.parse(data);
+          const chatData = readJsonFile(
+            path.join(ONE_ON_ONE_DIR, file),
+            null,
+            value => value && typeof value === 'object' && !Array.isArray(value),
+            `1-on-1 chat ${chatId}`
+          );
+          if (chatData) chats[chatId] = chatData;
         }
       });
     }
@@ -141,51 +147,30 @@ function loadOneOnOneChats() {
 }
 
 function saveOneOnOneChat(chatId, chatData) {
-  try {
-    fs.writeFileSync(path.join(ONE_ON_ONE_DIR, `${chatId}.json`), JSON.stringify(chatData, null, 2), 'utf8');
-  } catch (err) {
-    console.error('Error saving 1-on-1 chat:', err);
-  }
+  writeJsonFile(path.join(ONE_ON_ONE_DIR, `${chatId}.json`), chatData, '1-on-1 chat');
 }
 
 function loadReports() {
-  try {
-    if (fs.existsSync(REPORTS_FILE)) {
-      return JSON.parse(fs.readFileSync(REPORTS_FILE, 'utf8'));
-    }
-  } catch (err) {
-    console.error('Error loading reports:', err);
-  }
-  return [];
+  return readJsonFile(REPORTS_FILE, [], Array.isArray, 'reports');
 }
 
 function saveReports(reports) {
-  try {
-    fs.writeFileSync(REPORTS_FILE, JSON.stringify(reports, null, 2), 'utf8');
-  } catch (err) {
-    console.error('Error saving reports:', err);
-  }
+  writeJsonFile(REPORTS_FILE, Array.isArray(reports) ? reports : [], 'reports');
 }
 
 function loadChatHistory(quoteId) {
   const file = path.join(CHAT_DIR, `${quoteId}.json`);
-  try {
-    if (fs.existsSync(file)) {
-      const chatData = JSON.parse(fs.readFileSync(file, 'utf8'));
-      return Array.isArray(chatData.messages) ? chatData.messages : [];
-    }
-  } catch (err) {
-    console.error('Error loading chat history:', err);
-  }
-  return [];
+  const chatData = readJsonFile(
+    file,
+    null,
+    value => value && typeof value === 'object' && !Array.isArray(value),
+    `chat history ${quoteId}`
+  );
+  return Array.isArray(chatData?.messages) ? chatData.messages : [];
 }
 
 function saveChatHistory(quoteId, messages) {
-  try {
-    fs.writeFileSync(path.join(CHAT_DIR, `${quoteId}.json`), JSON.stringify({ quoteId, messages }, null, 2), 'utf8');
-  } catch (err) {
-    console.error('Error saving chat history:', err);
-  }
+  writeJsonFile(path.join(CHAT_DIR, `${quoteId}.json`), { quoteId, messages }, 'chat history');
 }
 
 function getQuoteById(quoteId) {

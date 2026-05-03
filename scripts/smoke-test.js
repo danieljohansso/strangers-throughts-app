@@ -18,6 +18,10 @@ function copyDataSeed() {
       fs.copyFileSync(source, path.join(TEMP_DATA_DIR, fileName));
     }
   }
+
+  const corruptChatDir = path.join(TEMP_DATA_DIR, 'one_on_one');
+  fs.mkdirSync(corruptChatDir, { recursive: true });
+  fs.writeFileSync(path.join(corruptChatDir, 'corrupt.json'), '{not valid json', 'utf8');
 }
 
 function request(path, options = {}) {
