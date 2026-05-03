@@ -2426,7 +2426,21 @@ body::before {
     justify-content: flex-end;
     font-size: 0.85rem;
     color: var(--text-muted);
+    margin-bottom: 0.45rem;
+}
+
+.composer-helper {
     margin-bottom: 1rem;
+    color: var(--text-muted);
+    font-size: 0.86rem;
+}
+
+.composer-helper.ready {
+    color: #98f0c0;
+}
+
+.composer-helper.warning {
+    color: var(--warning);
 }
 
 .composer-preview {

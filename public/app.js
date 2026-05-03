@@ -813,17 +813,35 @@ function useThoughtTemplate(text, category, mood) {
 
 function updateComposerPreview() {
     const preview = document.getElementById('composer-preview');
+    const helper = document.getElementById('composer-helper');
     const input = document.getElementById('thought-input');
     const category = document.getElementById('new-category')?.value || 'Deep';
     const mood = document.getElementById('new-mood')?.value || 'Reflective';
     if (!preview || !input) return;
 
     const text = input.value.trim();
+    const remaining = MAX_LENGTH - input.value.length;
     preview.innerHTML = `
         <span>${escapeHtml(category)} · ${escapeHtml(mood)}</span>
         <p>${text ? escapeHtml(text) : 'Your thought preview will appear here.'}</p>
     `;
     preview.classList.toggle('ready', text.length >= MIN_LENGTH);
+
+    if (helper) {
+        helper.className = 'composer-helper';
+        if (!text) {
+            helper.textContent = 'Start with a real sentence. The room works best when thoughts have a little shape.';
+        } else if (text.length < MIN_LENGTH) {
+            helper.textContent = `${MIN_LENGTH - text.length} more characters before this can be posted.`;
+            helper.classList.add('warning');
+        } else if (remaining <= 20) {
+            helper.textContent = `${remaining} characters left. Tight, but still readable.`;
+            helper.classList.add('warning');
+        } else {
+            helper.textContent = 'Ready to share anonymously.';
+            helper.classList.add('ready');
+        }
+    }
 }
 
 function filterByMood(mood) {
