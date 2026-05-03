@@ -74,6 +74,13 @@ let threadReplies = {};
 let expandedThreads = new Set();
 
 let followedThreads = [];
+
+let profileDetails = {
+    bio: '',
+    status: 'Open to thoughtful replies',
+    intention: 'Share honestly',
+    premiumBadge: false
+};
 
 
 let chatParticipantCounts = {}; // quoteId -> participant count
@@ -434,6 +441,65 @@ function saveFollowedThreads() {
     localStorage.setItem('strangerFollowedThreads', JSON.stringify(followedThreads));
 }
 
+function loadProfileDetails() {
+    try {
+        profileDetails = {
+            ...profileDetails,
+            ...JSON.parse(localStorage.getItem('strangerProfileDetails') || '{}')
+        };
+    } catch (err) {
+        localStorage.removeItem('strangerProfileDetails');
+    }
+}
+
+function saveProfileDetails() {
+    localStorage.setItem('strangerProfileDetails', JSON.stringify(profileDetails));
+}
+
+function getMyThoughts() {
+    if (!currentUser) return [];
+    return allQuotes
+        .filter(quote => quote.authorId === currentUser.id)
+        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+}
+
+function syncYourPostsFromQuotes() {
+    if (!currentUser) return;
+    yourPosts = getMyThoughts();
+    updateTabBadges();
+}
+
+function getMyProfileStats() {
+    const myThoughts = getMyThoughts();
+    const totalReplies = myThoughts.reduce((sum, quote) => sum + (quote.replyCount || 0), 0);
+    const totalReactions = myThoughts.reduce((sum, quote) => sum + (quote.reactionCount || 0), 0);
+    const topMood = getMostCommon(myThoughts.map(quote => quote.mood || 'Reflective')) || 'Reflective';
+    const topCategory = getMostCommon(myThoughts.map(quote => quote.category || 'Deep')) || 'Deep';
+
+    return {
+        myThoughts,
+        totalReplies,
+        totalReactions,
+        topMood,
+        topCategory,
+        savedCount: savedPosts.length,
+        followedCount: followedThreads.length
+    };
+}
+
+function updateProfileStats() {
+    const stats = getMyProfileStats();
+    const posts = document.getElementById('profile-posts');
+    const replies = document.getElementById('profile-replies');
+    const reactions = document.getElementById('profile-reactions');
+    const largeAvatar = document.getElementById('profile-avatar-large');
+
+    if (posts) posts.textContent = stats.myThoughts.length;
+    if (replies) replies.textContent = stats.totalReplies;
+    if (reactions) reactions.textContent = stats.totalReactions;
+    if (largeAvatar && currentUser) largeAvatar.style.backgroundColor = currentUser.color;
+}
+
 function getDailyPrompt() {
     const dayKey = new Date().toISOString().slice(0, 10);
     const index = Array.from(dayKey).reduce((sum, char) => sum + char.charCodeAt(0), 0) % DAILY_PROMPTS.length;
@@ -462,6 +528,7 @@ function updateExperienceStats() {
         categoryStat.textContent = Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0];
     }
 
+    updateProfileStats();
     updateSpotlight();
 }
 
@@ -547,6 +614,7 @@ function completeOnboarding() {
 function initializeProductShell() {
     const prompt = document.getElementById('daily-prompt');
     if (prompt) prompt.textContent = getDailyPrompt();
+    loadProfileDetails();
     loadFollowedThreads();
     updateExperienceStats();
     updateSpotlight();
@@ -1260,6 +1328,12 @@ function closeOneOnOneChatInterface() {
     currentOneOnOneChat = null;
     waitingMatchCategory = null;
 
+    if (currentTab === 'profile') {
+        updateExperienceStats();
+        renderProfilePage();
+        return;
+    }
+
     if (currentTab === 'matches') {
         renderMatchLobby();
     }
@@ -1628,7 +1702,11 @@ function escapeHtml(text) {
 // Format time as "2 min ago", "1 hour ago", etc.
 
 
-function formatTimeAgo(date) {
+function escapeAttr(text) {
+    return escapeHtml(text).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function formatTimeAgo(date) {
 
 
     const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
@@ -1884,6 +1962,145 @@ async function dismissReport(reportId) {
     await fetch(`/api/reports/${reportId}`, { method: 'DELETE' });
     openModerationPanel();
     updateExperienceStats();
+}
+
+function openMyProfile() {
+    switchTab('profile');
+    closeProfileDropdown();
+}
+
+function renderProfilePage() {
+    const feed = document.getElementById('feed');
+    if (!feed) return;
+
+    const stats = getMyProfileStats();
+    const displayName = currentUser?.name || 'Anonymous Stranger';
+    const avatarColor = currentUser?.color || '#444';
+    const memberSince = currentUser?.createdAt ? formatTimeAgo(new Date(currentUser.createdAt)) : 'just now';
+    const strongestThought = stats.myThoughts
+        .slice()
+        .sort((a, b) => getEngagementScore(b) - getEngagementScore(a))[0];
+    const recentThoughts = stats.myThoughts.slice(0, 4);
+    const savedThoughts = allQuotes
+        .filter(quote => savedPosts.includes(quote.id))
+        .slice(0, 3);
+
+    feed.innerHTML = `
+        <section class="my-profile-page">
+            <div class="my-profile-hero">
+                <div class="my-profile-avatar" style="background-color: ${avatarColor}"></div>
+                <div class="my-profile-copy">
+                    <span class="hero-kicker">Your anonymous profile</span>
+                    <h2>${escapeHtml(displayName)} ${profileDetails.premiumBadge ? '<span class="premium-badge">Premium</span>' : ''}</h2>
+                    <p>${escapeHtml(profileDetails.bio || 'Add a short bio so your anonymous presence feels more intentional.')}</p>
+                    <div class="profile-signal-row">
+                        <span>${escapeHtml(profileDetails.status)}</span>
+                        <span>${escapeHtml(profileDetails.intention)}</span>
+                        <span>Joined ${memberSince}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="my-profile-grid">
+                <div class="profile-stat-card"><strong>${stats.myThoughts.length}</strong><span>thoughts</span></div>
+                <div class="profile-stat-card"><strong>${stats.totalReactions}</strong><span>reactions earned</span></div>
+                <div class="profile-stat-card"><strong>${stats.totalReplies}</strong><span>thread replies</span></div>
+                <div class="profile-stat-card"><strong>${stats.savedCount}</strong><span>saved thoughts</span></div>
+            </div>
+
+            <div class="profile-editor-panel">
+                <div>
+                    <h3>Profile Details</h3>
+                    <p>These stay in this browser for now. They shape your profile page without adding accounts yet.</p>
+                </div>
+                <label>
+                    Bio
+                    <textarea id="profile-bio-input" maxlength="160" placeholder="A short anonymous bio...">${escapeHtml(profileDetails.bio)}</textarea>
+                </label>
+                <label>
+                    Current status
+                    <input id="profile-status-input" maxlength="48" value="${escapeAttr(profileDetails.status)}">
+                </label>
+                <label>
+                    Why you are here
+                    <select id="profile-intention-input">
+                        ${['Share honestly', 'Find similar minds', 'Give advice', 'Read quietly', 'Ask better questions'].map(option => `<option value="${option}" ${profileDetails.intention === option ? 'selected' : ''}>${option}</option>`).join('')}
+                    </select>
+                </label>
+                <label class="boost-toggle profile-badge-toggle">
+                    <input type="checkbox" id="profile-premium-input" ${profileDetails.premiumBadge ? 'checked' : ''}>
+                    <span>Show premium badge placeholder</span>
+                </label>
+                <div class="thread-compose-actions">
+                    <button class="secondary-action compact-action" onclick="copyUserId()">Copy ID</button>
+                    <button class="primary-action compact-action" onclick="saveMyProfileDetails()">Save Profile</button>
+                </div>
+            </div>
+
+            <div class="profile-section-grid">
+                <section class="profile-panel">
+                    <h3>Profile Pattern</h3>
+                    <div class="profile-pattern">
+                        <span><strong>${escapeHtml(stats.topMood)}</strong> top mood</span>
+                        <span><strong>${escapeHtml(stats.topCategory)}</strong> top category</span>
+                        <span><strong>${stats.followedCount}</strong> followed threads</span>
+                    </div>
+                </section>
+                <section class="profile-panel">
+                    <h3>Strongest Thought</h3>
+                    ${strongestThought ? `
+                        <button class="profile-thought-row" onclick="jumpToThought('${strongestThought.id}')">
+                            <strong>${escapeHtml(strongestThought.category)} · ${escapeHtml(strongestThought.mood || 'Reflective')}</strong>
+                            <span>${escapeHtml(strongestThought.text)}</span>
+                        </button>
+                    ` : '<p class="thread-empty">Share a thought to start building your profile signal.</p>'}
+                </section>
+            </div>
+
+            <section class="profile-panel">
+                <div class="profile-panel-header">
+                    <h3>Recent Thoughts</h3>
+                    <button class="secondary-action compact-action" onclick="viewYourThoughts()">View All</button>
+                </div>
+                <div class="profile-modal-list">
+                    ${recentThoughts.length ? recentThoughts.map(quote => `
+                        <button class="profile-thought-row" onclick="jumpToThought('${quote.id}')">
+                            <strong>${escapeHtml(quote.category)} · ${escapeHtml(quote.mood || 'Reflective')} · ${formatTimeAgo(new Date(quote.timestamp))}</strong>
+                            <span>${escapeHtml(quote.text)}</span>
+                        </button>
+                    `).join('') : '<p class="thread-empty">No thoughts from this identity yet.</p>'}
+                </div>
+            </section>
+
+            <section class="profile-panel">
+                <div class="profile-panel-header">
+                    <h3>Saved For Later</h3>
+                    <button class="secondary-action compact-action" onclick="viewSaved()">Saved Tab</button>
+                </div>
+                <div class="profile-modal-list">
+                    ${savedThoughts.length ? savedThoughts.map(quote => `
+                        <button class="profile-thought-row" onclick="jumpToThought('${quote.id}')">
+                            <strong>${escapeHtml(quote.authorName || 'Anonymous')} · ${escapeHtml(quote.category)}</strong>
+                            <span>${escapeHtml(quote.text)}</span>
+                        </button>
+                    `).join('') : '<p class="thread-empty">Saved thoughts become your private reading list.</p>'}
+                </div>
+            </section>
+        </section>
+    `;
+}
+
+function saveMyProfileDetails() {
+    profileDetails = {
+        bio: document.getElementById('profile-bio-input')?.value.trim().slice(0, 160) || '',
+        status: document.getElementById('profile-status-input')?.value.trim().slice(0, 48) || 'Open to thoughtful replies',
+        intention: document.getElementById('profile-intention-input')?.value || 'Share honestly',
+        premiumBadge: Boolean(document.getElementById('profile-premium-input')?.checked)
+    };
+
+    saveProfileDetails();
+    addNotification({ type: 'profile', message: 'Profile saved for this browser.' });
+    renderProfilePage();
 }
 
 // Render quotes to the feed
@@ -2176,6 +2393,11 @@ function sendThreadReply(quoteId) {
 
 
 function applyFiltersAndSort() {
+    if (currentTab === 'profile') {
+        updateExperienceStats();
+        renderProfilePage();
+        return;
+    }
 
 
     if (currentTab === 'matches') {
@@ -2719,16 +2941,17 @@ function connect() {
     
 
 
-    socket.on('yourIdentity', (user) => {
+    socket.on('yourIdentity', (user) => {
 
 
         currentUser = user;
 
 
-        updateConnectionUI();
+        updateConnectionUI();
+        syncYourPostsFromQuotes();
 
 
-        saveIdentity(user);
+        saveIdentity(user);
 
 
     });
@@ -2737,16 +2960,17 @@ function connect() {
     
 
 
-    socket.on('identityUpdated', (user) => {
+    socket.on('identityUpdated', (user) => {
 
 
         currentUser = user;
 
 
-        updateConnectionUI();
+        updateConnectionUI();
+        syncYourPostsFromQuotes();
 
 
-        saveIdentity(user);
+        saveIdentity(user);
 
 
     });
@@ -2884,7 +3108,7 @@ function connect() {
     
 
 
-    socket.on('allQuotes', (serverQuotes) => {
+    socket.on('allQuotes', (serverQuotes) => {
 
 
         console.log('Received quotes:', serverQuotes);
@@ -2893,7 +3117,8 @@ function connect() {
         allQuotes = serverQuotes;
 
 
-        quotes = serverQuotes;
+        quotes = serverQuotes;
+        syncYourPostsFromQuotes();
 
 
         applyFiltersAndSort();

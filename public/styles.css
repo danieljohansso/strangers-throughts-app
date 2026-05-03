@@ -569,6 +569,166 @@ body::before {
     color: var(--text-primary);
 }
 
+.my-profile-page {
+    display: grid;
+    gap: 1rem;
+}
+
+.my-profile-hero,
+.profile-editor-panel,
+.profile-panel {
+    background: linear-gradient(145deg, rgba(18, 18, 18, 0.96), rgba(22, 26, 28, 0.92));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.my-profile-hero {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 1rem;
+    align-items: center;
+    padding: clamp(1rem, 3vw, 1.5rem);
+}
+
+.my-profile-avatar {
+    width: clamp(76px, 14vw, 112px);
+    height: clamp(76px, 14vw, 112px);
+    border-radius: 50%;
+    border: 4px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
+}
+
+.my-profile-copy h2 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    align-items: center;
+    margin-top: 0.55rem;
+    color: var(--text-primary);
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    line-height: 1.05;
+}
+
+.my-profile-copy p {
+    margin-top: 0.7rem;
+    color: var(--text-secondary);
+}
+
+.profile-signal-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.profile-signal-row span,
+.profile-pattern span {
+    padding: 0.45rem 0.65rem;
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.my-profile-grid,
+.profile-section-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.profile-section-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.profile-stat-card {
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.profile-stat-card strong {
+    display: block;
+    color: var(--text-primary);
+    font-size: 1.45rem;
+}
+
+.profile-stat-card span {
+    color: var(--text-muted);
+}
+
+.profile-editor-panel,
+.profile-panel {
+    display: grid;
+    gap: 0.85rem;
+    padding: 1rem;
+}
+
+.profile-editor-panel h3,
+.profile-panel h3 {
+    color: var(--text-primary);
+}
+
+.profile-editor-panel p {
+    color: var(--text-secondary);
+}
+
+.profile-editor-panel label {
+    display: grid;
+    gap: 0.4rem;
+    color: var(--text-secondary);
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.profile-editor-panel input,
+.profile-editor-panel select,
+.profile-editor-panel textarea {
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--bg-input);
+    color: var(--text-primary);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    font: inherit;
+}
+
+.profile-editor-panel textarea {
+    min-height: 96px;
+    resize: vertical;
+}
+
+.profile-editor-panel input:focus,
+.profile-editor-panel select:focus,
+.profile-editor-panel textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.profile-badge-toggle {
+    margin: 0;
+}
+
+.profile-pattern {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+}
+
+.profile-pattern strong {
+    color: var(--text-primary);
+}
+
+.profile-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
 .header {
     display: flex;
     align-items: center;
@@ -2270,6 +2430,14 @@ body::before {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
+    .my-profile-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .profile-section-grid {
+        grid-template-columns: 1fr;
+    }
+
     .safety-center {
         grid-template-columns: 1fr;
     }
@@ -2317,6 +2485,11 @@ body::before {
 
     .hero-copy h2 {
         font-size: 2.25rem;
+    }
+
+    .my-profile-hero {
+        grid-template-columns: 1fr;
+        justify-items: start;
     }
 
     .hero-actions {
@@ -2455,6 +2628,15 @@ body::before {
 @media (max-width: 480px) {
     .insight-strip {
         grid-template-columns: 1fr;
+    }
+
+    .my-profile-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-panel-header {
+        align-items: stretch;
+        flex-direction: column;
     }
 
     .header {

@@ -415,8 +415,13 @@ function endOneOnOneChat(socket, reason = 'left') {
 io.on('connection', (socket) => {
   console.log('New client connected:', socket.id);
 
-  // Generate random identity for new user
-  const user = {
+  const savedIdentity = socket.handshake.auth?.identity;
+  let user = savedIdentity?.id && savedIdentity?.name && savedIdentity?.color ? {
+    id: sanitizeText(savedIdentity.id, 80),
+    name: sanitizeText(savedIdentity.name, 20),
+    color: sanitizeText(savedIdentity.color, 20),
+    createdAt: savedIdentity.createdAt || new Date().toISOString()
+  } : {
     id: uuidv4(),
     name: generateRandomName(),
     color: generateRandomColor(),
@@ -705,17 +710,18 @@ io.on('connection', (socket) => {
   });
   
   socket.on('regenerateIdentity', () => {
-    const newUser = {
-      ...user,
+    user = {
+      id: uuidv4(),
       name: generateRandomName(),
-      color: generateRandomColor()
+      color: generateRandomColor(),
+      createdAt: new Date().toISOString()
     };
-    connectedUsers.set(socket.id, newUser);
-    socket.emit('identityUpdated', newUser);
+    connectedUsers.set(socket.id, user);
+    socket.emit('identityUpdated', user);
     
     broadcastActivity({
       type: 'identity',
-      message: `${newUser.name} regenerated their identity`,
+      message: `${user.name} regenerated their identity`,
       timestamp: new Date().toISOString()
     });
   });
@@ -727,7 +733,7 @@ io.on('connection', (socket) => {
 
   socket.on('getYourPosts', () => {
     const allQuotes = loadQuotes();
-    const userPosts = allQuotes.filter(q => q.userId === user.id);
+    const userPosts = allQuotes.filter(q => q.authorId === user.id);
     socket.emit('yourPosts', userPosts);
   });
 

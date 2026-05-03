@@ -27,7 +27,9 @@
                 <button class="tab-btn" data-tab="matches" onclick="switchTab('matches')">👥 Find Matches <span class="tab-badge" id="matches-badge">0</span></button>
                 <button class="tab-btn" data-tab="trending" onclick="switchTab('trending')">🔥 Trending</button>
                 <button class="tab-btn" data-tab="yours" onclick="switchTab('yours')">👤 Your Thoughts <span class="tab-badge" id="yours-badge">0</span></button>
-                <button class="tab-btn" data-tab="replies" onclick="switchTab('replies')">💬 Replies <span class="tab-badge" id="replies-badge">0</span></button>
+                <button class="tab-btn" data-tab="profile" onclick="switchTab('profile')">✨ Profile</button>
+
+                <button class="tab-btn" data-tab="replies" onclick="switchTab('replies')">💬 Replies <span class="tab-badge" id="replies-badge">0</span></button>
                 <button class="tab-btn" data-tab="saved" onclick="switchTab('saved')">🔖 Saved <span class="tab-badge" id="saved-badge">0</span></button>
             </div>
             
@@ -115,7 +117,15 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
                         <span>View Your Posts</span>
                     </div>
-                    <div class="profile-menu-item" onclick="viewSaved(); event.stopPropagation();">
+                    <div class="profile-menu-item" onclick="openMyProfile(); event.stopPropagation();">
+
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 5.3L20 8l-4 3.9.9 5.6L12 14.9 7.1 17.5 8 11.9 4 8l5.6-.7L12 2z"/></svg>
+
+                        <span>Profile Page</span>
+
+                    </div>
+
+                    <div class="profile-menu-item" onclick="viewSaved(); event.stopPropagation();">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
                         <span>View Saved Posts</span>
                     </div>
