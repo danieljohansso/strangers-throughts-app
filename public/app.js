@@ -912,6 +912,7 @@ function initializeProductShell() {
     updateExperienceStats();
     updateSpotlight();
     restoreThoughtDraft();
+    renderDraftLocker();
     showOnboarding();
 }
 
@@ -954,6 +955,7 @@ function saveThoughtDraft() {
     const input = document.getElementById('thought-input');
     const category = document.getElementById('new-category');
     const mood = document.getElementById('new-mood');
+    const boosted = document.getElementById('boost-thought');
     const quiet = document.getElementById('quiet-thought');
     if (!input) return;
 
@@ -961,6 +963,7 @@ function saveThoughtDraft() {
         text: input.value,
         category: category?.value || 'Deep',
         mood: mood?.value || 'Reflective',
+        boosted: Boolean(boosted?.checked),
         quiet: Boolean(quiet?.checked),
         updatedAt: new Date().toISOString()
     }));
@@ -974,10 +977,12 @@ function restoreThoughtDraft() {
         const input = document.getElementById('thought-input');
         const category = document.getElementById('new-category');
         const mood = document.getElementById('new-mood');
+        const boosted = document.getElementById('boost-thought');
         const quiet = document.getElementById('quiet-thought');
         if (input && !input.value) input.value = draft.text;
         if (category && draft.category) category.value = draft.category;
         if (mood && draft.mood) mood.value = draft.mood;
+        if (boosted) boosted.checked = Boolean(draft.boosted);
         if (quiet) quiet.checked = Boolean(draft.quiet);
         updateCharCount();
         addNotification({ type: 'draft', message: 'Your unfinished thought draft was restored.' });
@@ -988,6 +993,106 @@ function restoreThoughtDraft() {
 
 function clearThoughtDraft() {
     localStorage.removeItem('strangerThoughtDraft');
+}
+
+function getDraftLocker() {
+    try {
+        return JSON.parse(localStorage.getItem('strangerDraftLocker') || '[]');
+    } catch (err) {
+        localStorage.removeItem('strangerDraftLocker');
+        return [];
+    }
+}
+
+function saveDraftLocker(drafts) {
+    localStorage.setItem('strangerDraftLocker', JSON.stringify(drafts.slice(0, 6)));
+    renderDraftLocker();
+}
+
+function getCurrentComposerDraft() {
+    const input = document.getElementById('thought-input');
+    if (!input) return null;
+
+    const text = input.value.trim();
+    if (!text) return null;
+
+    return {
+        id: `draft-${Date.now()}`,
+        text,
+        category: document.getElementById('new-category')?.value || 'Deep',
+        mood: document.getElementById('new-mood')?.value || 'Reflective',
+        boosted: Boolean(document.getElementById('boost-thought')?.checked),
+        quiet: Boolean(document.getElementById('quiet-thought')?.checked),
+        updatedAt: new Date().toISOString()
+    };
+}
+
+function saveCurrentDraftToLocker() {
+    const draft = getCurrentComposerDraft();
+    if (!draft) {
+        addNotification({ type: 'draft', message: 'Write a little first, then save it to the locker.' });
+        focusThoughtInput();
+        return;
+    }
+
+    const drafts = getDraftLocker().filter(item => item.text !== draft.text);
+    saveDraftLocker([draft, ...drafts]);
+    addNotification({ type: 'draft', message: 'Draft saved to your locker.' });
+}
+
+function loadDraftFromLocker(id) {
+    const draft = getDraftLocker().find(item => item.id === id);
+    if (!draft) return;
+
+    const input = document.getElementById('thought-input');
+    const category = document.getElementById('new-category');
+    const mood = document.getElementById('new-mood');
+    const boosted = document.getElementById('boost-thought');
+    const quiet = document.getElementById('quiet-thought');
+
+    if (input) input.value = draft.text;
+    if (category) category.value = draft.category || 'Deep';
+    if (mood) mood.value = draft.mood || 'Reflective';
+    if (boosted) boosted.checked = Boolean(draft.boosted);
+    if (quiet) quiet.checked = Boolean(draft.quiet);
+
+    updateCharCount();
+    saveThoughtDraft();
+    updateComposerPreview();
+    focusThoughtInput();
+    addNotification({ type: 'draft', message: 'Draft loaded into the composer.' });
+}
+
+function deleteDraftFromLocker(id) {
+    saveDraftLocker(getDraftLocker().filter(item => item.id !== id));
+    addNotification({ type: 'draft', message: 'Draft removed from your locker.' });
+}
+
+function renderDraftLocker() {
+    const count = document.getElementById('draft-locker-count');
+    const list = document.getElementById('draft-locker-list');
+    if (!count || !list) return;
+
+    const drafts = getDraftLocker();
+    count.textContent = drafts.length === 1 ? '1 saved draft' : `${drafts.length} saved drafts`;
+
+    if (drafts.length === 0) {
+        list.innerHTML = '<p>Save unfinished thoughts here before they disappear from your head.</p>';
+        return;
+    }
+
+    list.innerHTML = drafts.map(draft => `
+        <div class="draft-locker-item">
+            <div>
+                <strong>${escapeHtml(draft.text)}</strong>
+                <span>${escapeHtml(draft.category || 'Deep')} · ${escapeHtml(draft.mood || 'Reflective')} · ${formatTimeAgo(new Date(draft.updatedAt || Date.now()))}</span>
+            </div>
+            <div class="draft-locker-actions">
+                <button onclick="loadDraftFromLocker('${draft.id}')">Load</button>
+                <button onclick="deleteDraftFromLocker('${draft.id}')">Delete</button>
+            </div>
+        </div>
+    `).join('');
 }
 
 function useThoughtTemplate(text, category, mood) {

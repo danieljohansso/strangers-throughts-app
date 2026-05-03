@@ -2784,6 +2784,93 @@ body.calm-mode .orbit-card:hover {
     word-break: break-word;
 }
 
+.draft-locker {
+    display: grid;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding: 0.85rem;
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.draft-locker-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.draft-locker-header strong {
+    display: block;
+    color: var(--text-primary);
+    margin-top: 0.2rem;
+}
+
+.draft-locker-list {
+    display: grid;
+    gap: 0.55rem;
+}
+
+.draft-locker-list p {
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    line-height: 1.45;
+}
+
+.draft-locker-item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.75rem;
+    align-items: center;
+    padding: 0.7rem;
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.draft-locker-item strong,
+.draft-locker-item span {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.draft-locker-item strong {
+    color: var(--text-primary);
+    font-size: 0.94rem;
+}
+
+.draft-locker-item span {
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    margin-top: 0.2rem;
+}
+
+.draft-locker-actions {
+    display: flex;
+    gap: 0.35rem;
+}
+
+.draft-locker-actions button {
+    padding: 0.45rem 0.55rem;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+.draft-locker-actions button:hover {
+    color: var(--text-primary);
+    border-color: rgba(0, 191, 255, 0.24);
+}
+
 .char-count.warning {
     color: var(--warning);
 }
@@ -3248,6 +3335,10 @@ body.calm-mode .orbit-card:hover {
     
     #thought-input {
         min-height: 100px;
+    }
+
+    .draft-locker-item {
+        grid-template-columns: 1fr;
     }
     
     #submit-btn {

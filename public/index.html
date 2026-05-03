@@ -515,7 +515,7 @@
 
         <label class="boost-toggle">
 
-            <input type="checkbox" id="boost-thought">
+            <input type="checkbox" id="boost-thought" onchange="saveThoughtDraft(); updateComposerPreview()">
 
             <span>Feature this thought preview</span>
 
@@ -544,8 +544,21 @@
             <p>Your thought preview will appear here.</p>
         </div>
 
+        <div class="draft-locker">
+            <div class="draft-locker-header">
+                <div>
+                    <span class="hero-kicker">Draft locker</span>
+                    <strong id="draft-locker-count">No saved drafts</strong>
+                </div>
+                <button class="secondary-action compact-action" onclick="saveCurrentDraftToLocker()">Save Draft</button>
+            </div>
+            <div class="draft-locker-list" id="draft-locker-list">
+                <p>Save unfinished thoughts here before they disappear from your head.</p>
+            </div>
+        </div>
+
         <button id="submit-btn" onclick="submitThought()" disabled>Share Anonymously</button>
-    </div>
+    </div>
     
     </main>
 
