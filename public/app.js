@@ -1683,14 +1683,18 @@ function showRandomThought() {
     rememberViewedThought(quote.id);
     currentTab = 'all';
     currentFilter = 'all';
+    currentMoodFilter = 'all';
     searchQuery = quote.text.slice(0, 24).toLowerCase();
 
     const searchInput = document.getElementById('search-input');
+    const searchClear = document.getElementById('search-clear');
     const filterSelect = document.getElementById('category-filter');
     if (searchInput) searchInput.value = searchQuery;
+    if (searchClear) searchClear.style.display = 'block';
     if (filterSelect) filterSelect.value = 'all';
 
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === 'all'));
+    document.querySelectorAll('.mood-chip').forEach(chip => chip.classList.toggle('active', chip.dataset.mood === 'all'));
     applyFiltersAndSort();
 
     setTimeout(() => {
@@ -2968,8 +2972,10 @@ function jumpToThought(quoteId) {
     searchQuery = '';
 
     const searchInput = document.getElementById('search-input');
+    const searchClear = document.getElementById('search-clear');
     const filterSelect = document.getElementById('category-filter');
     if (searchInput) searchInput.value = '';
+    if (searchClear) searchClear.style.display = 'none';
     if (filterSelect) filterSelect.value = 'all';
 
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === 'all'));
