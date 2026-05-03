@@ -103,6 +103,8 @@ let expandedThreads = new Set();
 
 let followedThreads = [];
 
+let recentlyViewedThoughts = [];
+
 let profileDetails = {
     bio: '',
     status: 'Open to thoughtful replies',
@@ -498,6 +500,29 @@ function saveFollowedThreads() {
     localStorage.setItem('strangerFollowedThreads', JSON.stringify(followedThreads));
 }
 
+function loadRecentlyViewedThoughts() {
+    try {
+        recentlyViewedThoughts = JSON.parse(localStorage.getItem('strangerRecentlyViewedThoughts') || '[]');
+    } catch (err) {
+        recentlyViewedThoughts = [];
+        localStorage.removeItem('strangerRecentlyViewedThoughts');
+    }
+}
+
+function saveRecentlyViewedThoughts() {
+    localStorage.setItem('strangerRecentlyViewedThoughts', JSON.stringify(recentlyViewedThoughts));
+}
+
+function rememberViewedThought(quoteId) {
+    if (!quoteId || !allQuotes.some(quote => quote.id === quoteId)) return;
+    recentlyViewedThoughts = [
+        quoteId,
+        ...recentlyViewedThoughts.filter(id => id !== quoteId)
+    ].slice(0, 8);
+    saveRecentlyViewedThoughts();
+    updateOrbitPanel();
+}
+
 function loadProfileDetails() {
     try {
         profileDetails = {
@@ -737,6 +762,7 @@ function updateOrbitPanel() {
     const latestSaved = [...savedPosts].reverse().map(getQuotePreviewById).find(Boolean);
     const oldestSaved = savedPosts.map(getQuotePreviewById).find(Boolean);
     const latestFollowed = [...followedThreads].reverse().map(getQuotePreviewById).find(Boolean);
+    const latestViewed = recentlyViewedThoughts.map(getQuotePreviewById).find(Boolean);
     const strongest = stats.myThoughts.slice().sort((a, b) => getEngagementScore(b) - getEngagementScore(a))[0];
     const unlocked = getProfileAchievements(stats).filter(item => item.unlocked).length;
 
@@ -768,6 +794,12 @@ function updateOrbitPanel() {
             label: latestFollowed ? latestFollowed.text : 'Follow threads to track replies.',
             action: latestFollowed ? `jumpToThought('${latestFollowed.id}')` : "switchTab('following')",
             cta: latestFollowed ? 'Open thread' : 'Following tab'
+        },
+        {
+            title: 'Recently viewed',
+            label: latestViewed ? latestViewed.text : 'Open thoughts to build a private trail back.',
+            action: latestViewed ? `jumpToThought('${latestViewed.id}')` : 'showRandomThought()',
+            cta: latestViewed ? 'Return' : 'Find one'
         },
         {
             title: 'Best signal',
@@ -1185,6 +1217,7 @@ function initializeProductShell() {
     loadTodayIntention();
     loadProfileDetails();
     loadFollowedThreads();
+    loadRecentlyViewedThoughts();
     loadCalmMode();
     updateVisitStreak();
     updateExperienceStats();
@@ -1545,6 +1578,7 @@ function showRandomThought() {
     }
 
     const quote = visibleQuotes[Math.floor(Math.random() * visibleQuotes.length)];
+    rememberViewedThought(quote.id);
     currentTab = 'all';
     currentFilter = 'all';
     searchQuery = quote.text.slice(0, 24).toLowerCase();
@@ -2824,6 +2858,7 @@ function getMostCommon(values) {
 
 function jumpToThought(quoteId) {
     closeAuthorModal();
+    rememberViewedThought(quoteId);
     currentTab = 'all';
     currentFilter = 'all';
     currentMoodFilter = 'all';
