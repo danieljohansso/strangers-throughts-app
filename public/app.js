@@ -3400,6 +3400,7 @@ function renderQuotes() {
         const isFollowingThread = followedThreads.includes(quote.id);
         const isPinned = profileDetails.pinnedThoughtId === quote.id;
         const health = getConversationHealth(quote);
+        const quickReplyNudges = getThreadNudges(quote).slice(0, 3);
 
 
         
@@ -3480,6 +3481,11 @@ function renderQuotes() {
                 <div class="quote-actions">
 
 
+                    <div class="quick-reply-pack">
+                        <span>Start a reply</span>
+                        ${quickReplyNudges.map(nudge => `<button onclick="startThreadReplyFromCard('${quote.id}', ${JSON.stringify(nudge.text).replace(/"/g, '&quot;')}, event)">${escapeHtml(nudge.label)}</button>`).join('')}
+                    </div>
+
                     <button class="join-btn" onclick="toggleThread('${quote.id}')">${isThreadOpen ? 'Hide Thread' : 'Reply in Thread'}</button>
                     ${isYours ? `<button class="action-btn ${isPinned ? 'active-action' : ''}" onclick="pinThoughtToProfile('${quote.id}', event)">${isPinned ? 'Unpin' : 'Pin'}</button>` : ''}
                     <button class="action-btn" onclick="copyThoughtLink('${quote.id}', event)">Copy Link</button>
@@ -3706,6 +3712,24 @@ function insertThreadStarter(quoteId, starter) {
     input.focus();
     input.setSelectionRange(input.value.length, input.value.length);
     saveThreadReplyDraft(quoteId);
+}
+
+function startThreadReplyFromCard(quoteId, starter, event) {
+    if (event) event.stopPropagation();
+
+    if (!expandedThreads.has(quoteId)) {
+        expandedThreads.add(quoteId);
+        if (!threadReplies[quoteId] && socket) {
+            socket.emit('getThreadReplies', quoteId);
+        }
+        applyFiltersAndSort();
+    }
+
+    setTimeout(() => {
+        insertThreadStarter(quoteId, starter);
+        const input = document.getElementById(`thread-input-${quoteId}`);
+        if (input) input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 80);
 }
 
 function toggleFollowThread(quoteId) {
