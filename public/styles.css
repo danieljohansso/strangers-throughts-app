@@ -2855,7 +2855,8 @@ body.calm-mode .orbit-card:hover {
     background: rgba(255, 215, 0, 0.1);
 }
 
-.save-btn.active {
+.save-btn.active,
+.save-btn.saved {
     border-color: var(--gold);
     color: var(--gold);
     background: rgba(255, 215, 0, 0.2);
@@ -2864,6 +2865,7 @@ body.calm-mode .orbit-card:hover {
 /* ==================== QUOTE ACTIONS BAR ==================== */
 .quote-actions {
     display: flex;
+    flex-wrap: wrap;
     gap: 0.5rem;
     margin-top: 0.75rem;
     padding-top: 0.75rem;
