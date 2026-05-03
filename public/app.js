@@ -863,12 +863,14 @@ function saveThoughtDraft() {
     const input = document.getElementById('thought-input');
     const category = document.getElementById('new-category');
     const mood = document.getElementById('new-mood');
+    const quiet = document.getElementById('quiet-thought');
     if (!input) return;
 
     localStorage.setItem('strangerThoughtDraft', JSON.stringify({
         text: input.value,
         category: category?.value || 'Deep',
         mood: mood?.value || 'Reflective',
+        quiet: Boolean(quiet?.checked),
         updatedAt: new Date().toISOString()
     }));
 }
@@ -881,9 +883,11 @@ function restoreThoughtDraft() {
         const input = document.getElementById('thought-input');
         const category = document.getElementById('new-category');
         const mood = document.getElementById('new-mood');
+        const quiet = document.getElementById('quiet-thought');
         if (input && !input.value) input.value = draft.text;
         if (category && draft.category) category.value = draft.category;
         if (mood && draft.mood) mood.value = draft.mood;
+        if (quiet) quiet.checked = Boolean(draft.quiet);
         updateCharCount();
         addNotification({ type: 'draft', message: 'Your unfinished thought draft was restored.' });
     } catch (err) {
@@ -919,12 +923,13 @@ function updateComposerPreview() {
     const input = document.getElementById('thought-input');
     const category = document.getElementById('new-category')?.value || 'Deep';
     const mood = document.getElementById('new-mood')?.value || 'Reflective';
+    const quiet = Boolean(document.getElementById('quiet-thought')?.checked);
     if (!preview || !input) return;
 
     const text = input.value.trim();
     const remaining = MAX_LENGTH - input.value.length;
     preview.innerHTML = `
-        <span>${escapeHtml(category)} · ${escapeHtml(mood)}</span>
+        <span>${escapeHtml(category)} · ${escapeHtml(mood)}${quiet ? ' · Quiet hours' : ''}</span>
         <p>${text ? escapeHtml(text) : 'Your thought preview will appear here.'}</p>
     `;
     preview.classList.toggle('ready', text.length >= MIN_LENGTH);
@@ -1601,6 +1606,8 @@ function sendOneOnOneMessage() {
     clearThoughtDraft();
     const boostToggle = document.getElementById('boost-thought');
     if (boostToggle) boostToggle.checked = false;
+    const quietToggle = document.getElementById('quiet-thought');
+    if (quietToggle) quietToggle.checked = false;
 
 
 }
@@ -2637,6 +2644,7 @@ function renderQuotes() {
 
         const isSaved = isPostSaved(quote.id);
         const isFeatured = quote.boosted || getEngagementScore(quote) >= 5;
+        const isQuiet = Boolean(quote.quiet);
         const mood = quote.mood || 'Reflective';
         const replies = threadReplies[quote.id] || [];
         const isThreadOpen = expandedThreads.has(quote.id);
@@ -2651,7 +2659,7 @@ function renderQuotes() {
         return `
 
 
-            <div class="quote-card ${isYours ? 'yours' : ''} ${isFeatured ? 'featured' : ''}" data-category="${quote.category}" data-quote-id="${quote.id}">
+            <div class="quote-card ${isYours ? 'yours' : ''} ${isFeatured ? 'featured' : ''} ${isQuiet ? 'quiet-thought-card' : ''}" data-category="${quote.category}" data-quote-id="${quote.id}">
 
 
                 <div class="quote-header">
@@ -2665,6 +2673,7 @@ function renderQuotes() {
 
                     <span class="quote-category">${escapeHtml(quote.category)}</span>
                     <span class="mood-tag">${escapeHtml(mood)}</span>
+                    ${isQuiet ? '<span class="quiet-tag">Quiet hours</span>' : ''}
                     ${isFeatured ? '<span class="premium-badge">Featured</span>' : ''}
 
 
@@ -3202,6 +3211,7 @@ function submitThought() {
     const category = document.getElementById('new-category').value;
     const mood = document.getElementById('new-mood')?.value || 'Reflective';
     const boosted = Boolean(document.getElementById('boost-thought')?.checked);
+    const quiet = Boolean(document.getElementById('quiet-thought')?.checked);
 
 
     
@@ -3243,6 +3253,7 @@ function submitThought() {
         category: category,
         mood: mood,
         boosted: boosted,
+        quiet: quiet,
 
 
         timestamp: new Date().toISOString(),

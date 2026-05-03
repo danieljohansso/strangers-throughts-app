@@ -692,6 +692,7 @@ io.on('connection', (socket) => {
       category,
       mood,
       boosted: Boolean(newQuote?.boosted),
+      quiet: Boolean(newQuote?.quiet),
       authorId: user.id,
       authorName: user.name,
       authorColor: user.color,

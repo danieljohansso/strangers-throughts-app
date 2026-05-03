@@ -1883,6 +1883,21 @@ body.calm-mode .orbit-card:hover {
     box-shadow: 0 10px 34px rgba(246, 212, 122, 0.08);
 }
 
+.quote-card.quiet-thought-card {
+    border-color: rgba(152, 240, 192, 0.18);
+    background: linear-gradient(145deg, rgba(18, 18, 18, 0.98), rgba(18, 28, 25, 0.72));
+}
+
+.quiet-tag {
+    font-size: 0.74rem;
+    color: #b7e7dd;
+    background: rgba(152, 240, 192, 0.09);
+    border: 1px solid rgba(152, 240, 192, 0.16);
+    padding: 0.125rem 0.5rem;
+    border-radius: var(--radius-pill);
+    font-weight: 800;
+}
+
 .quote-card.pulse-focus {
     animation: focusPulse 1.4s ease;
 }
