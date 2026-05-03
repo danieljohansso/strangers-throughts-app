@@ -488,8 +488,39 @@ function getMyProfileStats() {
     };
 }
 
+function getProfileAchievements(stats = getMyProfileStats()) {
+    return [
+        {
+            title: 'First Thought',
+            detail: 'Posted at least one anonymous thought',
+            unlocked: stats.myThoughts.length > 0
+        },
+        {
+            title: 'Conversation Starter',
+            detail: 'Earned 5 thread replies',
+            unlocked: stats.totalReplies >= 5
+        },
+        {
+            title: 'Signal Found',
+            detail: 'Earned 10 reactions',
+            unlocked: stats.totalReactions >= 10
+        },
+        {
+            title: 'Curator',
+            detail: 'Saved 3 thoughts for later',
+            unlocked: stats.savedCount >= 3
+        },
+        {
+            title: 'Thread Watcher',
+            detail: 'Followed 3 conversations',
+            unlocked: stats.followedCount >= 3
+        }
+    ];
+}
+
 function updateProfileStats() {
     const stats = getMyProfileStats();
+    const achievements = getProfileAchievements(stats);
     const posts = document.getElementById('profile-posts');
     const replies = document.getElementById('profile-replies');
     const reactions = document.getElementById('profile-reactions');
@@ -2169,6 +2200,21 @@ function renderProfilePage() {
                     ` : '<p class="thread-empty">Share a thought to start building your profile signal.</p>'}
                 </section>
             </div>
+
+            <section class="profile-panel">
+                <div class="profile-panel-header">
+                    <h3>Achievements</h3>
+                    <span class="profile-progress">${achievements.filter(item => item.unlocked).length}/${achievements.length} unlocked</span>
+                </div>
+                <div class="achievement-grid">
+                    ${achievements.map(item => `
+                        <div class="achievement-card ${item.unlocked ? 'unlocked' : ''}">
+                            <strong>${escapeHtml(item.title)}</strong>
+                            <span>${escapeHtml(item.detail)}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            </section>
 
             <section class="profile-panel">
                 <div class="profile-panel-header">
