@@ -2994,11 +2994,20 @@ function renderInlineThreads() {
 
         const replies = threadReplies[quote.id] || [];
         const isThreadOpen = expandedThreads.has(quote.id);
+        const isFollowingThread = followedThreads.includes(quote.id);
         const latestReplies = replies.slice(-3);
+        const replyTotal = replies.length || quote.replyCount || 0;
+        const recapText = replyTotal === 0
+            ? 'No replies yet. A thoughtful first reply can set the tone.'
+            : `${replyTotal} ${replyTotal === 1 ? 'reply' : 'replies'} in this thread${isFollowingThread ? ' · following' : ''}.`;
         const panel = document.createElement('div');
         panel.className = `thread-panel ${isThreadOpen ? 'open' : ''}`;
         panel.id = `thread-${quote.id}`;
         panel.innerHTML = `
+            <div class="thread-recap">
+                <strong>Thread recap</strong>
+                <span>${escapeHtml(recapText)}</span>
+            </div>
             <div class="thread-replies">
                 ${latestReplies.length > 0 ? latestReplies.map(reply => renderThreadReply(reply)).join('') : '<div class="thread-empty">No replies yet. Start the thread.</div>'}
             </div>
