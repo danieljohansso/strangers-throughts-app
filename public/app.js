@@ -549,6 +549,15 @@ function getEngagementScore(quote) {
     return (quote.reactionCount || 0) + (quote.replyCount || 0) * 2 + (quote.boosted ? 4 : 0);
 }
 
+function getConversationHealth(quote) {
+    const replies = quote.replyCount || 0;
+    const reactions = quote.reactionCount || 0;
+    if (replies >= 5) return { label: 'Active thread', level: 'hot' };
+    if (replies >= 1) return { label: 'Conversation started', level: 'warm' };
+    if (reactions >= 5) return { label: 'Waiting for replies', level: 'spark' };
+    return { label: 'Fresh thought', level: 'fresh' };
+}
+
 function updateExperienceStats() {
     const thoughtStat = document.getElementById('stat-thoughts');
     const savedStat = document.getElementById('stat-saved');
@@ -2155,6 +2164,11 @@ function renderMatchLobby() {
                     <span class="quote-category">${waitingCount} waiting</span>
                 </div>
                 <div class="quote-content match-lobby-content">${helperText}</div>
+                <div class="conversation-health health-${health.level}">
+                    <span>${escapeHtml(health.label)}</span>
+                    <i style="width: ${Math.min(100, 18 + getEngagementScore(quote) * 8)}%"></i>
+                </div>
+
                 <div class="quote-actions">
                     <button class="join-btn match-button" onclick="${buttonAction}" ${disabled ? 'disabled' : ''}>${buttonText}</button>
                 </div>
@@ -2651,6 +2665,7 @@ function renderQuotes() {
         const latestReplies = replies.slice(-3);
         const isFollowingThread = followedThreads.includes(quote.id);
         const isPinned = profileDetails.pinnedThoughtId === quote.id;
+        const health = getConversationHealth(quote);
 
 
         

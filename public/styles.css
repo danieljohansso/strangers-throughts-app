@@ -2109,6 +2109,46 @@ body.calm-mode .orbit-card:hover {
     gap: 0.25rem;
 }
 
+.conversation-health {
+    display: grid;
+    gap: 0.35rem;
+    margin-top: 0.8rem;
+}
+
+.conversation-health span {
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+.conversation-health::after {
+    content: '';
+    display: block;
+    height: 6px;
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.conversation-health i {
+    display: block;
+    height: 6px;
+    margin-top: -6px;
+    border-radius: var(--radius-pill);
+    background: var(--primary);
+}
+
+.conversation-health.health-warm i {
+    background: var(--accent-3);
+}
+
+.conversation-health.health-hot i {
+    background: linear-gradient(90deg, var(--accent-2), var(--gold));
+}
+
+.conversation-health.health-spark i {
+    background: var(--accent);
+}
+
 .quote-time {
     font-style: italic;
 }
