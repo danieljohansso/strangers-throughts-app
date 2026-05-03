@@ -2549,6 +2549,17 @@ body.calm-mode .orbit-card:hover {
     gap: 0.65rem;
 }
 
+.thread-draft-note {
+    width: fit-content;
+    padding: 0.4rem 0.6rem;
+    border-radius: var(--radius-pill);
+    background: rgba(255, 193, 7, 0.11);
+    border: 1px solid rgba(255, 193, 7, 0.18);
+    color: var(--warning);
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
 .thread-compose textarea {
     width: 100%;
     min-height: 90px;

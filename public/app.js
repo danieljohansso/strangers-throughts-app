@@ -2995,6 +2995,7 @@ function renderInlineThreads() {
         if (!card) return;
 
         const replies = threadReplies[quote.id] || [];
+        const draft = getThreadReplyDraft(quote.id);
         const isThreadOpen = expandedThreads.has(quote.id);
         const isFollowingThread = followedThreads.includes(quote.id);
         const latestReplies = replies.slice(-3);
@@ -3015,7 +3016,8 @@ function renderInlineThreads() {
             </div>
             ${replies.length > 3 ? `<button class="thread-more" onclick="expandAllThreadReplies('${quote.id}')">Show all ${replies.length} replies</button>` : ''}
             <div class="thread-compose">
-                <textarea id="thread-input-${quote.id}" placeholder="Reply to this thought..." maxlength="500"></textarea>
+                ${draft ? `<div class="thread-draft-note">Draft restored from ${formatTimeAgo(new Date(draft.updatedAt || Date.now()))}.</div>` : ''}
+                <textarea id="thread-input-${quote.id}" placeholder="Reply to this thought..." maxlength="500" oninput="saveThreadReplyDraft('${quote.id}')">${escapeHtml(draft?.text || '')}</textarea>
                 <div class="thread-starters">
                     <button onclick="insertThreadStarter('${quote.id}', 'I relate to this because ')">Relate</button>
                     <button onclick="insertThreadStarter('${quote.id}', 'A question this brings up for me is ')">Ask</button>
@@ -3025,6 +3027,7 @@ function renderInlineThreads() {
                 <div class="thread-compose-actions">
                     <button class="secondary-action compact-action" onclick="toggleFollowThread('${quote.id}')">${isFollowingThread ? 'Unfollow' : 'Follow Thread'}</button>
                     <button class="secondary-action compact-action" onclick="quoteOriginalInReply('${quote.id}')">Quote Thought</button>
+                    <button class="secondary-action compact-action" onclick="clearThreadReplyDraft('${quote.id}', true)">Clear Draft</button>
                     <button class="primary-action compact-action" onclick="sendThreadReply('${quote.id}')">Reply</button>
                 </div>
                 <div class="thread-compose-status" id="thread-status-${quote.id}"></div>
@@ -3033,6 +3036,44 @@ function renderInlineThreads() {
 
         card.appendChild(panel);
     });
+}
+
+function getThreadDraftKey(quoteId) {
+    return `strangerThreadDraft:${quoteId}`;
+}
+
+function getThreadReplyDraft(quoteId) {
+    try {
+        return JSON.parse(localStorage.getItem(getThreadDraftKey(quoteId)) || 'null');
+    } catch (err) {
+        localStorage.removeItem(getThreadDraftKey(quoteId));
+        return null;
+    }
+}
+
+function saveThreadReplyDraft(quoteId) {
+    const input = document.getElementById(`thread-input-${quoteId}`);
+    if (!input) return;
+
+    const text = input.value.trim();
+    if (!text) {
+        localStorage.removeItem(getThreadDraftKey(quoteId));
+        return;
+    }
+
+    localStorage.setItem(getThreadDraftKey(quoteId), JSON.stringify({
+        text: input.value,
+        updatedAt: new Date().toISOString()
+    }));
+}
+
+function clearThreadReplyDraft(quoteId, updateUi = false) {
+    localStorage.removeItem(getThreadDraftKey(quoteId));
+    if (updateUi) {
+        const input = document.getElementById(`thread-input-${quoteId}`);
+        if (input) input.value = '';
+        addNotification({ type: 'draft', message: 'Thread reply draft cleared.' });
+    }
 }
 
 function renderThreadReply(reply) {
@@ -3086,6 +3127,7 @@ function quoteOriginalInReply(quoteId) {
 
     input.value = `> ${quote.text}\n\n${input.value}`;
     input.focus();
+    saveThreadReplyDraft(quoteId);
 }
 
 function insertThreadStarter(quoteId, starter) {
@@ -3096,6 +3138,7 @@ function insertThreadStarter(quoteId, starter) {
     input.value = `${prefix}${starter}`;
     input.focus();
     input.setSelectionRange(input.value.length, input.value.length);
+    saveThreadReplyDraft(quoteId);
 }
 
 function toggleFollowThread(quoteId) {
@@ -3135,6 +3178,7 @@ function sendThreadReply(quoteId) {
         }
 
         input.value = '';
+        clearThreadReplyDraft(quoteId);
         if (status) status.textContent = 'Reply posted.';
         setTimeout(() => {
             if (status) status.textContent = '';
