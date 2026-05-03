@@ -161,6 +161,8 @@ let availableMatches = []; // Users currently waiting for matches
 
 let discoveryQueueIndex = 0;
 
+let savedReadingQueueIndex = 0;
+
 let currentShareCardText = '';
 
 let calmMode = false;
@@ -1063,6 +1065,27 @@ function getSavedQuotes() {
         .filter(quote => quote && !isQuoteHiddenLocally(quote));
 }
 
+function getSavedQueueThought() {
+    const savedQuotes = getSavedQuotes();
+    if (savedQuotes.length === 0) return null;
+    savedReadingQueueIndex = savedReadingQueueIndex % savedQuotes.length;
+    return savedQuotes[savedReadingQueueIndex];
+}
+
+function openSavedReadingQueue(step = 0) {
+    const savedQuotes = getSavedQuotes();
+    if (savedQuotes.length === 0) {
+        addNotification({ type: 'saved', message: 'Save a thought to start a reading queue.' });
+        switchTab('all');
+        return;
+    }
+
+    savedReadingQueueIndex = (savedReadingQueueIndex + step + savedQuotes.length) % savedQuotes.length;
+    const quote = savedQuotes[savedReadingQueueIndex];
+    addNotification({ type: 'saved', message: `Saved queue ${savedReadingQueueIndex + 1}/${savedQuotes.length}.` });
+    jumpToThought(quote.id);
+}
+
 function updateSavedDigest() {
     const summary = document.getElementById('saved-digest-summary');
     const grid = document.getElementById('saved-digest-grid');
@@ -1085,6 +1108,7 @@ function updateSavedDigest() {
     const newest = savedQuotes[savedQuotes.length - 1];
     const strongest = savedQuotes.slice().sort((a, b) => getEngagementScore(b) - getEngagementScore(a))[0];
     const discussed = savedQuotes.slice().sort((a, b) => (b.replyCount || 0) - (a.replyCount || 0))[0];
+    const queueThought = getSavedQueueThought();
     const cards = [
         {
             label: 'Continue reading',
@@ -1104,7 +1128,17 @@ function updateSavedDigest() {
     ];
 
     summary.textContent = `${savedQuotes.length} saved ${savedQuotes.length === 1 ? 'thought' : 'thoughts'} in your private queue.`;
-    grid.innerHTML = cards.map(card => `
+    grid.innerHTML = `
+        <article class="saved-digest-card saved-queue-card">
+            <span>Reading queue</span>
+            <p>${escapeHtml(queueThought.text)}</p>
+            <small>${savedReadingQueueIndex + 1}/${savedQuotes.length} saved - ${escapeHtml(queueThought.mood || 'Reflective')}</small>
+            <div class="saved-queue-actions">
+                <button class="primary-action compact-action" onclick="openSavedReadingQueue(0)">Continue</button>
+                <button class="secondary-action compact-action" onclick="openSavedReadingQueue(1)">Next Saved</button>
+            </div>
+        </article>
+    ` + cards.map(card => `
         <article class="saved-digest-card">
             <span>${escapeHtml(card.label)}</span>
             <p>${escapeHtml(card.quote.text)}</p>

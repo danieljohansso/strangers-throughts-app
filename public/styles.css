@@ -873,6 +873,17 @@ body.calm-mode .orbit-card:hover {
     width: fit-content;
 }
 
+.saved-queue-card {
+    border-color: rgba(246, 212, 122, 0.18);
+    background: linear-gradient(145deg, rgba(246, 212, 122, 0.08), rgba(255, 255, 255, 0.04));
+}
+
+.saved-queue-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
 .compact-action {
     padding: 0.5rem 0.75rem;
 }
