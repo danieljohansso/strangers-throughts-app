@@ -2751,6 +2751,12 @@ function renderInlineThreads() {
             ${replies.length > 3 ? `<button class="thread-more" onclick="expandAllThreadReplies('${quote.id}')">Show all ${replies.length} replies</button>` : ''}
             <div class="thread-compose">
                 <textarea id="thread-input-${quote.id}" placeholder="Reply to this thought..." maxlength="500"></textarea>
+                <div class="thread-starters">
+                    <button onclick="insertThreadStarter('${quote.id}', 'I relate to this because ')">Relate</button>
+                    <button onclick="insertThreadStarter('${quote.id}', 'A question this brings up for me is ')">Ask</button>
+                    <button onclick="insertThreadStarter('${quote.id}', 'Another way to look at this is ')">Reframe</button>
+                    <button onclick="insertThreadStarter('${quote.id}', 'If I were sitting with you, I would say ')">Support</button>
+                </div>
                 <div class="thread-compose-actions">
                     <button class="secondary-action compact-action" onclick="toggleFollowThread('${quote.id}')">${isFollowingThread ? 'Unfollow' : 'Follow Thread'}</button>
                     <button class="secondary-action compact-action" onclick="quoteOriginalInReply('${quote.id}')">Quote Thought</button>
@@ -2815,6 +2821,16 @@ function quoteOriginalInReply(quoteId) {
 
     input.value = `> ${quote.text}\n\n${input.value}`;
     input.focus();
+}
+
+function insertThreadStarter(quoteId, starter) {
+    const input = document.getElementById(`thread-input-${quoteId}`);
+    if (!input) return;
+
+    const prefix = input.value.trim() ? `${input.value.trim()}\n\n` : '';
+    input.value = `${prefix}${starter}`;
+    input.focus();
+    input.setSelectionRange(input.value.length, input.value.length);
 }
 
 function toggleFollowThread(quoteId) {

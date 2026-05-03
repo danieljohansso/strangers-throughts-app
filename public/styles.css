@@ -2405,6 +2405,30 @@ body::before {
     border-color: var(--primary);
 }
 
+.thread-starters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+}
+
+.thread-starters button {
+    padding: 0.4rem 0.6rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.82rem;
+    font-weight: 800;
+}
+
+.thread-starters button:hover {
+    border-color: rgba(0, 191, 255, 0.22);
+    color: var(--accent);
+    background: rgba(0, 191, 255, 0.08);
+}
+
 .thread-compose-actions {
     display: flex;
     justify-content: flex-end;
