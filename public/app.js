@@ -582,6 +582,7 @@ function updateExperienceStats() {
     updateSpotlight();
     updateDiscoveryQueue();
     updateMoodPulse();
+    updateThoughtDna();
     updateOrbitPanel();
 }
 
@@ -697,6 +698,80 @@ function updateMoodPulse() {
             </button>
         `;
     }).join('');
+}
+
+function getVisibleQuotes() {
+    return allQuotes.filter(quote => !blockedAuthors.includes(quote.authorId) && !reportedPosts.includes(quote.id));
+}
+
+function getTopCount(items, getKey) {
+    return Object.entries(items.reduce((acc, item) => {
+        const key = getKey(item) || 'Unknown';
+        acc[key] = (acc[key] || 0) + 1;
+        return acc;
+    }, {})).sort((a, b) => b[1] - a[1])[0] || null;
+}
+
+function updateThoughtDna() {
+    const summary = document.getElementById('thought-dna-summary');
+    const grid = document.getElementById('thought-dna-grid');
+    if (!summary || !grid) return;
+
+    const visibleQuotes = getVisibleQuotes();
+    const hasActiveFeedFilter = Boolean(searchQuery) || currentFilter !== 'all' || currentMoodFilter !== 'all' || currentTab !== 'all';
+    const feedQuotes = quotes.length || hasActiveFeedFilter ? quotes : visibleQuotes;
+
+    if (feedQuotes.length === 0) {
+        summary.textContent = 'No visible signal in this view yet.';
+        grid.innerHTML = `
+            <div class="thought-dna-card">
+                <span>Next move</span>
+                <strong>Start it</strong>
+                <em>Post, clear filters, or follow a thread to give this feed a pulse.</em>
+            </div>
+        `;
+        return;
+    }
+
+    const topCategory = getTopCount(feedQuotes, quote => quote.category);
+    const topMood = getTopCount(feedQuotes, quote => quote.mood || 'Reflective');
+    const quietCount = feedQuotes.filter(quote => quote.quiet).length;
+    const featuredCount = feedQuotes.filter(quote => quote.boosted).length;
+    const totalSignal = feedQuotes.reduce((sum, quote) => sum + getEngagementScore(quote), 0);
+    const replyCount = feedQuotes.reduce((sum, quote) => sum + (quote.replyCount || 0), 0);
+    const replyRate = Math.round((replyCount / feedQuotes.length) * 10) / 10;
+    const moodShare = Math.round(((topMood?.[1] || 0) / feedQuotes.length) * 100);
+
+    summary.textContent = `${topMood?.[0] || 'Mixed'} energy, ${topCategory?.[0] || 'open'} themes, ${totalSignal} signal points.`;
+
+    grid.innerHTML = [
+        {
+            label: 'Dominant mood',
+            value: topMood?.[0] || 'Mixed',
+            detail: `${moodShare}% of this view leans this way.`
+        },
+        {
+            label: 'Main theme',
+            value: topCategory?.[0] || 'Open',
+            detail: `${topCategory?.[1] || 0} thoughts are clustered here.`
+        },
+        {
+            label: 'Reply gravity',
+            value: `${replyRate}x`,
+            detail: 'Average replies per thought in this view.'
+        },
+        {
+            label: 'Premium signal',
+            value: featuredCount ? `${featuredCount} boosted` : `${quietCount} quiet`,
+            detail: featuredCount ? 'Featured thoughts are shaping discovery.' : 'Quiet posts are adding softer texture.'
+        }
+    ].map(card => `
+        <div class="thought-dna-card">
+            <span>${escapeHtml(card.label)}</span>
+            <strong>${escapeHtml(card.value)}</strong>
+            <em>${escapeHtml(card.detail)}</em>
+        </div>
+    `).join('');
 }
 
 function focusThoughtInput() {
