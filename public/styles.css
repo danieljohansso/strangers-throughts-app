@@ -336,6 +336,73 @@ body::before {
     background: rgba(76, 175, 80, 0.12);
 }
 
+.mood-pulse-panel {
+    display: grid;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: var(--radius-lg);
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.mood-pulse-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.mood-pulse-header strong {
+    color: var(--text-primary);
+}
+
+.mood-pulse-bars {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.mood-pulse-row {
+    display: grid;
+    grid-template-columns: 100px minmax(0, 1fr) 32px;
+    gap: 0.65rem;
+    align-items: center;
+    width: 100%;
+    padding: 0.45rem;
+    border: 0;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
+}
+
+.mood-pulse-row:hover {
+    background: rgba(255, 255, 255, 0.045);
+    color: var(--text-primary);
+}
+
+.mood-pulse-row div {
+    height: 8px;
+    overflow: hidden;
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.mood-pulse-row i {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--primary), var(--accent-3));
+}
+
+.mood-pulse-row strong {
+    color: var(--text-primary);
+    text-align: right;
+}
+
 .compact-action {
     padding: 0.5rem 0.75rem;
 }
@@ -2683,6 +2750,10 @@ body::before {
         grid-template-columns: 1fr;
     }
 
+    .mood-pulse-row {
+        grid-template-columns: 92px minmax(0, 1fr) 28px;
+    }
+
     .safety-actions {
         justify-content: flex-start;
     }
@@ -2870,6 +2941,14 @@ body::before {
     .profile-panel-header {
         align-items: stretch;
         flex-direction: column;
+    }
+
+    .mood-pulse-row {
+        grid-template-columns: 1fr;
+    }
+
+    .mood-pulse-row strong {
+        text-align: left;
     }
 
     .achievement-grid {

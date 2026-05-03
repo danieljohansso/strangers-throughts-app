@@ -564,6 +564,7 @@ function updateExperienceStats() {
     updateProfileStats();
     updateSpotlight();
     updateDiscoveryQueue();
+    updateMoodPulse();
 }
 
 function getSpotlightQuote() {
@@ -586,6 +587,35 @@ function updateSpotlight() {
 
     spotlightText.textContent = `"${quote.text}"`;
     spotlightMeta.textContent = `${quote.category} · ${quote.mood || 'Reflective'} · ${getEngagementScore(quote)} signal`;
+}
+
+function updateMoodPulse() {
+    const summary = document.getElementById('mood-pulse-summary');
+    const bars = document.getElementById('mood-pulse-bars');
+    if (!summary || !bars) return;
+
+    const visibleQuotes = allQuotes.filter(quote => !blockedAuthors.includes(quote.authorId) && !reportedPosts.includes(quote.id));
+    const counts = MOODS.map(mood => ({
+        mood,
+        count: visibleQuotes.filter(quote => (quote.mood || 'Reflective') === mood).length
+    }));
+    const top = counts.slice().sort((a, b) => b.count - a.count)[0];
+    const total = visibleQuotes.length || 1;
+
+    summary.textContent = top?.count
+        ? `${top.mood} is leading the room right now.`
+        : 'The room has no clear mood yet.';
+
+    bars.innerHTML = counts.map(item => {
+        const width = Math.max(6, Math.round((item.count / total) * 100));
+        return `
+            <button class="mood-pulse-row" onclick="filterByMood('${item.mood}')">
+                <span>${escapeHtml(item.mood)}</span>
+                <div><i style="width: ${width}%"></i></div>
+                <strong>${item.count}</strong>
+            </button>
+        `;
+    }).join('');
 }
 
 function focusThoughtInput() {
