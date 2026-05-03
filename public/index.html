@@ -383,7 +383,7 @@
         <h2>Share Your Thought</h2>
         <div class="category-selector">
             <span>Category:</span>
-            <select id="new-category" onchange="saveThoughtDraft()">
+            <select id="new-category" onchange="saveThoughtDraft(); updateComposerPreview()">
                 <option value="Deep">Deep</option>
                 <option value="Confessions">Confessions</option>
                 <option value="Advice">Advice</option>
@@ -391,11 +391,19 @@
                 <option value="Funny">Funny</option>
             </select>
         </div>
+        <div class="composer-prompts">
+            <button onclick="useThoughtTemplate('I keep thinking about ', 'Deep', 'Reflective')">Deep</button>
+            <button onclick="useThoughtTemplate('I need advice about ', 'Advice', 'Curious')">Advice</button>
+            <button onclick="useThoughtTemplate('A confession I have not said out loud: ', 'Confessions', 'Heavy')">Confession</button>
+            <button onclick="useThoughtTemplate('Tonight feels like ', 'Late Night', 'Unfiltered')">Late Night</button>
+            <button onclick="useThoughtTemplate('Something unexpectedly funny: ', 'Funny', 'Celebrating')">Funny</button>
+        </div>
+
         <div class="category-selector">
 
             <span>Mood:</span>
 
-            <select id="new-mood" onchange="saveThoughtDraft()">
+            <select id="new-mood" onchange="saveThoughtDraft(); updateComposerPreview()">
 
                 <option value="Reflective">Reflective</option>
 
@@ -429,7 +437,12 @@
             disabled
         ></textarea>
         <div class="char-count"><span id="char-count">0</span>/200</div>
-        <button id="submit-btn" onclick="submitThought()" disabled>Share Anonymously</button>
+        <div class="composer-preview" id="composer-preview">
+            <span>Preview</span>
+            <p>Your thought preview will appear here.</p>
+        </div>
+
+        <button id="submit-btn" onclick="submitThought()" disabled>Share Anonymously</button>
     </div>
     
     </main>

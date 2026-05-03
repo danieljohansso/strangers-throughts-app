@@ -730,6 +730,39 @@ function clearThoughtDraft() {
     localStorage.removeItem('strangerThoughtDraft');
 }
 
+function useThoughtTemplate(text, category, mood) {
+    const input = document.getElementById('thought-input');
+    const categorySelect = document.getElementById('new-category');
+    const moodSelect = document.getElementById('new-mood');
+
+    if (categorySelect) categorySelect.value = category;
+    if (moodSelect) moodSelect.value = mood;
+    if (input) {
+        input.value = input.value.trim() ? `${input.value.trim()} ${text}` : text;
+        input.focus();
+        input.setSelectionRange(input.value.length, input.value.length);
+    }
+
+    updateCharCount();
+    saveThoughtDraft();
+    updateComposerPreview();
+}
+
+function updateComposerPreview() {
+    const preview = document.getElementById('composer-preview');
+    const input = document.getElementById('thought-input');
+    const category = document.getElementById('new-category')?.value || 'Deep';
+    const mood = document.getElementById('new-mood')?.value || 'Reflective';
+    if (!preview || !input) return;
+
+    const text = input.value.trim();
+    preview.innerHTML = `
+        <span>${escapeHtml(category)} · ${escapeHtml(mood)}</span>
+        <p>${text ? escapeHtml(text) : 'Your thought preview will appear here.'}</p>
+    `;
+    preview.classList.toggle('ready', text.length >= MIN_LENGTH);
+}
+
 function filterByMood(mood) {
     currentMoodFilter = mood;
     document.querySelectorAll('.mood-chip').forEach(chip => {
@@ -2870,7 +2903,8 @@ function submitThought() {
     input.value = '';
 
 
-    document.getElementById('char-count').textContent = '0';
+    document.getElementById('char-count').textContent = '0';
+    updateComposerPreview();
 
 
     document.getElementById('submit-btn').disabled = true;
@@ -2917,6 +2951,7 @@ function updateCharCount() {
 
     if (charCount) charCount.textContent = count;
     saveThoughtDraft();
+    updateComposerPreview();
 
 
     
