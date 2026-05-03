@@ -2461,6 +2461,7 @@ function jumpToThought(quoteId) {
     closeAuthorModal();
     currentTab = 'all';
     currentFilter = 'all';
+    currentMoodFilter = 'all';
     searchQuery = '';
 
     const searchInput = document.getElementById('search-input');
@@ -2469,6 +2470,7 @@ function jumpToThought(quoteId) {
     if (filterSelect) filterSelect.value = 'all';
 
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === 'all'));
+    document.querySelectorAll('.mood-chip').forEach(chip => chip.classList.toggle('active', chip.dataset.mood === 'all'));
     applyFiltersAndSort();
 
     setTimeout(() => {
