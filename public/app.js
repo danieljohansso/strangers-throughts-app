@@ -584,6 +584,7 @@ function showSafetyCenter() {
     const panel = document.getElementById('safety-center');
     if (panel) {
         panel.style.display = panel.style.display === 'none' ? 'grid' : 'none';
+        renderSafetyControls();
         panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 }
@@ -594,6 +595,76 @@ function clearHiddenContent() {
     saveSafetyPreferences();
     applyFiltersAndSort();
     addNotification({ type: 'safety', message: 'Hidden and reported local filters were cleared.' });
+    renderSafetyControls();
+}
+
+function getAuthorSummary(authorId) {
+    const authorQuotes = allQuotes.filter(quote => quote.authorId === authorId);
+    const firstQuote = authorQuotes[0];
+    return {
+        name: firstQuote?.authorName || 'Hidden stranger',
+        color: firstQuote?.authorColor || '#444',
+        count: authorQuotes.length
+    };
+}
+
+function renderSafetyControls() {
+    const list = document.getElementById('safety-list');
+    if (!list) return;
+
+    const blockedRows = blockedAuthors.map(authorId => {
+        const author = getAuthorSummary(authorId);
+        return `
+            <div class="safety-row">
+                <div class="safety-row-avatar" style="background-color: ${author.color}"></div>
+                <div>
+                    <strong>${escapeHtml(author.name)}</strong>
+                    <span>${author.count} hidden ${author.count === 1 ? 'thought' : 'thoughts'}</span>
+                </div>
+                <button class="secondary-action compact-action" onclick="unblockAuthor('${authorId}')">Unblock</button>
+            </div>
+        `;
+    }).join('');
+
+    const reportedRows = reportedPosts.map(quoteId => {
+        const quote = allQuotes.find(item => item.id === quoteId);
+        return `
+            <div class="safety-row">
+                <div>
+                    <strong>${quote ? escapeHtml(quote.authorName || 'Anonymous') : 'Reported thought'}</strong>
+                    <span>${quote ? escapeHtml(quote.text) : 'This thought is hidden locally.'}</span>
+                </div>
+                <button class="secondary-action compact-action" onclick="restoreReportedThought('${quoteId}')">Restore</button>
+            </div>
+        `;
+    }).join('');
+
+    list.innerHTML = `
+        <div class="safety-list-section">
+            <h4>Blocked Strangers</h4>
+            ${blockedRows || '<p class="thread-empty">No blocked strangers in this browser.</p>'}
+        </div>
+        <div class="safety-list-section">
+            <h4>Hidden Reports</h4>
+            ${reportedRows || '<p class="thread-empty">No locally hidden reports.</p>'}
+        </div>
+    `;
+}
+
+function unblockAuthor(authorId) {
+    blockedAuthors = blockedAuthors.filter(id => id !== authorId);
+    saveSafetyPreferences();
+    applyFiltersAndSort();
+    renderSafetyControls();
+    addNotification({ type: 'safety', message: 'Stranger restored to your feed.' });
+}
+
+function restoreReportedThought(quoteId) {
+    reportedPosts = reportedPosts.filter(id => id !== quoteId);
+    saveSafetyPreferences();
+    applyFiltersAndSort();
+    renderSafetyControls();
+    addNotification({ type: 'safety', message: 'Thought restored to your feed.' });
 }
 
 function showOnboarding(force = false) {
@@ -1802,6 +1873,7 @@ async function reportThought(quoteId, authorId, event) {
     reportedPosts.push(quoteId);
     saveSafetyPreferences();
     applyFiltersAndSort();
+    renderSafetyControls();
     addNotification({ type: 'safety', message: 'Thanks. That thought is hidden for you and saved for review.' });
 
     try {
@@ -1827,6 +1899,7 @@ function blockAuthor(authorId, event) {
     blockedAuthors.push(authorId);
     saveSafetyPreferences();
     applyFiltersAndSort();
+    renderSafetyControls();
     addNotification({ type: 'safety', message: 'That stranger is now hidden from your feed.' });
 }
 
