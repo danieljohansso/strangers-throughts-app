@@ -79,6 +79,14 @@ const MOOD_COMPASS = {
     }
 };
 
+const CATEGORY_COMPASS = {
+    Deep: 'Explore a question, pattern, or meaning.',
+    Confessions: 'Say the part you have been editing out.',
+    Advice: 'Name the situation and what kind of help would land.',
+    'Late Night': 'Let it be softer, stranger, or more unfinished.',
+    Funny: 'Keep the setup clear enough for strangers to get it.'
+};
+
 const DAILY_PROMPTS = [
     'What thought keeps coming back when the world gets quiet?',
     'What would you tell someone who feels exactly like you tonight?',
@@ -1375,6 +1383,7 @@ function initializeProductShell() {
     updateSpotlight();
     restoreThoughtDraft();
     updateMoodCompass();
+    updateCategoryCompass();
     renderDraftLocker();
     showOnboarding();
 }
@@ -1667,6 +1676,7 @@ function useThoughtTemplate(text, category, mood) {
     saveThoughtDraft();
     updateComposerPreview();
     updateMoodCompass();
+    updateCategoryCompass();
 }
 
 function getMoodCompass() {
@@ -1682,6 +1692,14 @@ function updateMoodCompass() {
     const compass = getMoodCompass();
     prompt.textContent = compass.prompt;
     tone.textContent = compass.tone;
+}
+
+function updateCategoryCompass() {
+    const target = document.getElementById('category-compass-copy');
+    if (!target) return;
+
+    const category = document.getElementById('new-category')?.value || 'Deep';
+    target.textContent = CATEGORY_COMPASS[category] || CATEGORY_COMPASS.Deep;
 }
 
 function useMoodCompassStarter() {

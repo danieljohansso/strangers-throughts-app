@@ -570,7 +570,7 @@
         <h2>Share Your Thought</h2>
         <div class="category-selector">
             <span>Category:</span>
-            <select id="new-category" onchange="saveThoughtDraft(); updateComposerPreview()">
+            <select id="new-category" onchange="saveThoughtDraft(); updateComposerPreview(); updateCategoryCompass()">
                 <option value="Deep">Deep</option>
                 <option value="Confessions">Confessions</option>
                 <option value="Advice">Advice</option>
@@ -631,6 +631,11 @@
                 <small id="mood-compass-tone">Slow, honest, observant</small>
             </div>
             <button class="secondary-action compact-action" onclick="useMoodCompassStarter()">Use Starter</button>
+        </div>
+
+        <div class="category-compass" id="category-compass">
+            <span>Category compass</span>
+            <strong id="category-compass-copy">Explore a question, pattern, or meaning.</strong>
         </div>
 
         <textarea

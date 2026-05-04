@@ -3239,6 +3239,29 @@ body.calm-mode .orbit-card:hover {
     font-weight: 700;
 }
 
+.category-compass {
+    display: grid;
+    gap: 0.3rem;
+    margin: -0.45rem 0 1rem;
+    padding: 0.7rem 0.85rem;
+    border-radius: var(--radius-md);
+    background: rgba(0, 191, 255, 0.05);
+    border: 1px solid rgba(0, 191, 255, 0.1);
+}
+
+.category-compass span {
+    color: var(--accent);
+    font-size: 0.72rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.category-compass strong {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
 #thought-input {
     width: 100%;
     min-height: 120px;
