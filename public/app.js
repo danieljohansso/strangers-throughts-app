@@ -620,69 +620,6 @@ function updateDashboardPanelVisibility() {
 
     const hasFocusedFeedState = currentTab !== 'all' || Boolean(searchQuery) || currentFilter !== 'all' || currentMoodFilter !== 'all';
     shell.classList.toggle('dashboard-collapsed', hasFocusedFeedState);
-    updateFocusedViewBar(hasFocusedFeedState);
-}
-
-function getFocusedViewMeta() {
-    const tabLabels = {
-        all: 'The room',
-        trending: 'Resonating now',
-        yours: 'Your truths',
-        profile: 'Profile',
-        replies: 'Reflections',
-        following: 'Following',
-        saved: 'Saved signals'
-    };
-    const filters = [];
-
-    if (searchQuery) filters.push(`search: "${searchQuery}"`);
-    if (currentFilter !== 'all') filters.push(`category: ${currentFilter}`);
-    if (currentMoodFilter !== 'all') filters.push(`mood: ${currentMoodFilter}`);
-
-    return {
-        kicker: currentTab === 'all' ? 'Filtered feed' : 'Focused view',
-        title: tabLabels[currentTab] || 'Focused signals',
-        detail: filters.length
-            ? `Showing ${filters.join(' - ')}.`
-            : 'Dashboard panels are tucked away so this view has room.'
-    };
-}
-
-function getFocusedViewMetrics() {
-    const hiddenCount = blockedAuthors.length + reportedPosts.length + snoozedThoughts.length;
-    const visibleCount = getVisibleQuotes().length;
-    const renderedCount = currentTab === 'profile'
-        ? getMyProfileStats().myThoughts.length
-        : quotes.length;
-
-    return [
-        { label: 'showing', value: renderedCount },
-        { label: 'visible room', value: visibleCount },
-        { label: 'hidden locally', value: hiddenCount }
-    ];
-}
-
-function updateFocusedViewBar(shouldShow) {
-    const bar = document.getElementById('focused-view-bar');
-    if (!bar) return;
-
-    bar.style.display = shouldShow ? 'grid' : 'none';
-    if (!shouldShow) return;
-
-    const meta = getFocusedViewMeta();
-    const kicker = document.getElementById('focused-view-kicker');
-    const title = document.getElementById('focused-view-title');
-    const detail = document.getElementById('focused-view-detail');
-    const metrics = document.getElementById('focused-view-metrics');
-
-    if (kicker) kicker.textContent = meta.kicker;
-    if (title) title.textContent = meta.title;
-    if (detail) detail.textContent = meta.detail;
-    if (metrics) {
-        metrics.innerHTML = getFocusedViewMetrics().map(item => `
-            <span><strong>${item.value}</strong>${escapeHtml(item.label)}</span>
-        `).join('');
-    }
 }
 
 function getSelectedAnimalAvatar() {
@@ -2613,7 +2550,6 @@ function closeOneOnOneChatInterface() {
     if (currentTab === 'profile') {
         updateExperienceStats();
         renderProfilePage();
-        updateFocusedViewBar(true);
         return;
     }
 
@@ -4197,7 +4133,6 @@ function applyFiltersAndSort() {
 
 
     quotes = filtered;
-    updateFocusedViewBar(currentTab !== 'all' || Boolean(searchQuery) || currentFilter !== 'all' || currentMoodFilter !== 'all');
     updateExperienceStats();
 
 

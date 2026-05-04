@@ -199,68 +199,6 @@ body.calm-mode .orbit-card:hover {
     margin-top: 1rem;
 }
 
-.focused-view-bar {
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 0.55rem;
-    align-items: center;
-    margin: 1rem 0;
-    padding: 0.9rem 1rem;
-    border-radius: var(--radius-lg);
-    background: linear-gradient(145deg, rgba(18, 18, 18, 0.94), rgba(28, 30, 34, 0.9));
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: var(--shadow-sm);
-}
-
-.focused-view-bar strong,
-.focused-view-bar p {
-    display: block;
-}
-
-.focused-view-bar strong {
-    margin-top: 0.45rem;
-    color: var(--text-primary);
-    font-size: 1.05rem;
-}
-
-.focused-view-bar p {
-    margin-top: 0.2rem;
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-}
-
-.focused-view-metrics {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.45rem;
-    margin-top: 0.7rem;
-}
-
-.focused-view-metrics span {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    padding: 0.35rem 0.55rem;
-    border-radius: var(--radius-pill);
-    background: rgba(255, 255, 255, 0.055);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    color: var(--text-muted);
-    font-size: 0.78rem;
-    font-weight: 700;
-}
-
-.focused-view-metrics strong {
-    margin: 0;
-    color: var(--text-primary);
-    font-size: 0.82rem;
-}
-
-.focused-view-actions {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: 0.45rem;
-}
-
 .hero-panel {
     display: grid;
     grid-template-columns: minmax(0, 1.7fr) minmax(280px, 0.9fr);
@@ -4084,18 +4022,6 @@ body.calm-mode .orbit-card:hover {
         display: grid;
     }
 
-    .focused-view-bar {
-        grid-template-columns: 1fr;
-    }
-
-    .focused-view-actions {
-        justify-content: stretch;
-    }
-
-    .focused-view-actions button {
-        flex: 1 1 120px;
-    }
-
     .onboarding-grid {
         grid-template-columns: 1fr;
     }
@@ -4840,13 +4766,6 @@ body::before {
 .secondary-action {
     color: var(--text-secondary);
     background: rgba(255, 255, 255, 0.045);
-    border-color: rgba(148, 163, 184, 0.12);
-}
-
-.focused-view-bar {
-    order: 2;
-    margin: 0;
-    background: rgba(20, 23, 29, 0.72);
     border-color: rgba(148, 163, 184, 0.12);
 }
 
