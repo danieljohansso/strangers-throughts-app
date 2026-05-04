@@ -4935,6 +4935,37 @@ body::before {
     font-weight: 730;
 }
 
+.follow-author-btn {
+    min-height: 28px;
+    padding: 0.22rem 0.52rem;
+    border: 1px solid rgba(148, 163, 184, 0.12);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-muted);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.76rem;
+    font-weight: 700;
+}
+
+.follow-author-btn:hover,
+.follow-author-btn.following {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+    border-color: rgba(148, 163, 184, 0.22);
+}
+
+.profile-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.85rem;
+}
+
+.profile-modal-actions button:disabled {
+    opacity: 0.55;
+    cursor: default;
+}
+
 .quote-category,
 .mood-tag {
     padding: 0;

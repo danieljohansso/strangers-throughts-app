@@ -154,6 +154,10 @@ let expandedThreads = new Set();
 
 let followedThreads = [];
 
+let followedAuthors = [];
+
+let activeAuthorProfileId = '';
+
 let recentlyViewedThoughts = [];
 
 let profileDetails = {
@@ -574,6 +578,18 @@ function loadFollowedThreads() {
 
 function saveFollowedThreads() {
     localStorage.setItem('strangerFollowedThreads', JSON.stringify(followedThreads));
+}
+
+function loadFollowedAuthors() {
+    try {
+        followedAuthors = JSON.parse(localStorage.getItem('strangerFollowedAuthors') || '[]');
+    } catch (err) {
+        followedAuthors = [];
+    }
+}
+
+function saveFollowedAuthors() {
+    localStorage.setItem('strangerFollowedAuthors', JSON.stringify(followedAuthors));
 }
 
 function loadRecentlyViewedThoughts() {
@@ -1318,6 +1334,7 @@ function initializeProductShell() {
     loadTodayIntention();
     loadProfileDetails();
     loadFollowedThreads();
+    loadFollowedAuthors();
     loadRecentlyViewedThoughts();
     loadCalmMode();
     updateVisitStreak();
@@ -2683,7 +2700,7 @@ function updateTabBadges() {
 
     const followingBadge = document.getElementById('following-badge');
     if (followingBadge) {
-        followingBadge.textContent = followedThreads.length;
+        followingBadge.textContent = followedAuthors.length + followedThreads.length;
     }
 
     // Update Saved badge
@@ -3056,10 +3073,38 @@ function blockAuthor(authorId, event) {
     if (!authorId || blockedAuthors.includes(authorId)) return;
 
     blockedAuthors.push(authorId);
+    followedAuthors = followedAuthors.filter(id => id !== authorId);
+    saveFollowedAuthors();
     saveSafetyPreferences();
     applyFiltersAndSort();
     renderSafetyControls();
     addNotification({ type: 'safety', message: 'That stranger is now hidden from your feed.' });
+}
+
+function isAuthorFollowed(authorId) {
+    return Boolean(authorId && followedAuthors.includes(authorId));
+}
+
+function toggleFollowAuthor(authorId, event) {
+    if (event) event.stopPropagation();
+    if (!authorId || authorId === currentUser?.id) return;
+
+    if (isAuthorFollowed(authorId)) {
+        followedAuthors = followedAuthors.filter(id => id !== authorId);
+        addNotification({ type: 'follow', message: 'Stranger unfollowed.' });
+    } else {
+        followedAuthors.push(authorId);
+        addNotification({ type: 'follow', message: 'Stranger followed. Their thoughts will appear in Following.' });
+    }
+
+    saveFollowedAuthors();
+    updateTabBadges();
+    applyFiltersAndSort();
+}
+
+function toggleFollowAuthorFromModal(event) {
+    toggleFollowAuthor(activeAuthorProfileId, event);
+    if (activeAuthorProfileId) openAuthorProfile(activeAuthorProfileId, event);
 }
 
 function openAuthorProfile(authorId, event) {
@@ -3073,6 +3118,7 @@ function openAuthorProfile(authorId, event) {
 
     if (authorQuotes.length === 0) return;
 
+    activeAuthorProfileId = authorId;
     const firstQuote = authorQuotes[0];
     const totalReactions = authorQuotes.reduce((sum, q) => sum + (q.reactionCount || 0), 0);
     const totalReplies = authorQuotes.reduce((sum, q) => sum + (q.replyCount || 0), 0);
@@ -3087,6 +3133,16 @@ function openAuthorProfile(authorId, event) {
 
     const avatar = document.getElementById('author-modal-avatar');
     if (avatar) avatar.style.backgroundColor = firstQuote.authorColor || '#444';
+
+    const followButton = document.getElementById('author-follow-btn');
+    if (followButton) {
+        const isSelf = authorId === currentUser?.id;
+        const isFollowing = isAuthorFollowed(authorId);
+        followButton.textContent = isSelf ? 'This is you' : isFollowing ? 'Following' : 'Follow stranger';
+        followButton.disabled = isSelf;
+        followButton.classList.toggle('secondary-action', isFollowing);
+        followButton.classList.toggle('primary-action', !isFollowing);
+    }
 
     const list = document.getElementById('author-modal-list');
     if (list) {
@@ -3105,6 +3161,7 @@ function closeAuthorModal(event) {
     if (event && event.target.id !== 'author-modal') return;
     const modal = document.getElementById('author-modal');
     if (modal) modal.style.display = 'none';
+    activeAuthorProfileId = '';
 }
 
 function getMostCommon(values) {
@@ -3541,7 +3598,7 @@ function renderQuotes() {
             : currentTab === 'saved'
                 ? 'Saved thoughts will appear here when one is worth coming back to.'
                 : currentTab === 'following'
-                    ? 'Follow a thread to keep an eye on replies and return to it fast.'
+                    ? 'Follow interesting strangers to collect their thoughts here.'
                 : currentTab === 'yours'
                     ? 'Your anonymous thoughts will collect here after you post.'
                     : 'No thoughts to show yet. Start the room with something honest.';
@@ -3612,6 +3669,7 @@ function renderQuotes() {
 
 
                     <button class="quote-author author-link" onclick="openAuthorProfile('${quote.authorId || ''}', event)">${escapeHtml(quote.authorName || 'Anonymous')}${isYours ? ' (You)' : ''}</button>
+                    ${!isYours && quote.authorId ? `<button class="follow-author-btn ${isAuthorFollowed(quote.authorId) ? 'following' : ''}" onclick="toggleFollowAuthor('${quote.authorId}', event)">${isAuthorFollowed(quote.authorId) ? 'Following' : 'Follow'}</button>` : ''}
 
 
                     <span class="quote-category">${escapeHtml(quote.category)}</span>
@@ -4057,7 +4115,10 @@ function applyFiltersAndSort() {
 
 
 
-        filtered = allQuotes.filter(q => followedThreads.includes(q.id) && !isQuoteHiddenLocally(q));
+        filtered = allQuotes.filter(q =>
+            (followedAuthors.includes(q.authorId) || followedThreads.includes(q.id)) &&
+            !isQuoteHiddenLocally(q)
+        );
 
 
 

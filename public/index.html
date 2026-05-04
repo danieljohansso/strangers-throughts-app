@@ -122,6 +122,12 @@
                         <span>Saved signals</span>
                     </div>
 
+                    <div class="profile-menu-item" onclick="switchTab('following'); closeProfileDropdown(); event.stopPropagation();">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 18a5 5 0 0 0-10 0"/><circle cx="12" cy="8" r="4"/><path d="M19 8v6M22 11h-6"/></svg>
+
+                        <span>Following</span>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -466,6 +472,10 @@
 
                 <div><strong id="author-modal-replies">0</strong><span>replies</span></div>
 
+            </div>
+
+            <div class="profile-modal-actions">
+                <button class="primary-action compact-action" id="author-follow-btn" onclick="toggleFollowAuthorFromModal(event)">Follow</button>
             </div>
 
             <div class="profile-modal-list" id="author-modal-list"></div>
