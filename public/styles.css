@@ -4306,6 +4306,136 @@ body.calm-mode .orbit-card:hover {
     }
 }
 
+/* Menu polish */
+.header {
+    grid-template-columns: minmax(180px, auto) minmax(360px, 680px) auto;
+    align-items: center;
+}
+
+.header-left {
+    gap: 0.7rem;
+}
+
+.logo h1 {
+    font-size: 1rem;
+}
+
+.header-center {
+    gap: 0.5rem;
+}
+
+.tabs {
+    justify-content: center;
+    gap: 0.25rem;
+}
+
+.tab-btn {
+    min-height: 34px;
+    padding: 0.42rem 0.72rem;
+}
+
+.tab-badge {
+    min-width: 16px;
+    padding: 0.04rem 0.34rem;
+    background: rgba(255, 255, 255, 0.12);
+    color: var(--text-primary);
+}
+
+.controls {
+    justify-content: center;
+    gap: 0.4rem;
+}
+
+.search-box {
+    min-width: 230px;
+}
+
+.search-box input,
+.search-box input:focus {
+    width: 170px;
+}
+
+.sort-controls {
+    gap: 0.12rem;
+}
+
+.sort-btn {
+    padding: 0.34rem 0.58rem;
+}
+
+.filter-controls select {
+    min-height: 34px;
+    padding: 0.34rem 0.58rem;
+}
+
+.user-profile {
+    min-height: 38px;
+    padding: 0.25rem 0.35rem;
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.profile-dropdown {
+    width: min(320px, calc(100vw - 1rem));
+    border-color: rgba(148, 163, 184, 0.16);
+    background: rgba(20, 23, 29, 0.98);
+}
+
+.profile-menu-item {
+    min-height: 42px;
+}
+
+@media (max-width: 920px) {
+    .header {
+        grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .header-center {
+        grid-column: 1 / -1;
+        width: 100%;
+    }
+
+    .controls {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto auto;
+        width: 100%;
+    }
+
+    .search-box {
+        min-width: 0;
+    }
+
+    .search-box input,
+    .search-box input:focus {
+        width: 100%;
+    }
+}
+
+@media (max-width: 560px) {
+    .header {
+        gap: 0.65rem;
+        padding: 0.65rem 0.75rem;
+    }
+
+    .live-indicator,
+    .user-name,
+    .sort-controls {
+        display: none;
+    }
+
+    .tabs {
+        justify-content: flex-start;
+    }
+
+    .tab-btn {
+        padding: 0.4rem 0.58rem;
+    }
+
+    .controls {
+        grid-template-columns: minmax(0, 1fr) auto;
+    }
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
     width: 8px;
