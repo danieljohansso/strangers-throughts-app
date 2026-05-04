@@ -19,6 +19,8 @@ const MATCH_CATEGORIES = ['Deep', 'Confessions', 'Advice', 'Late Night', 'Funny'
 
 const MOODS = ['Reflective', 'Hopeful', 'Heavy', 'Curious', 'Unfiltered', 'Celebrating'];
 
+const IDENTITY_MODES = ['The Overthinker', 'The Romantic', 'The Cynic', 'The Observer'];
+
 const THREAD_NUDGES = {
     Reflective: [
         { label: 'Mirror', text: 'What I hear in this is ' },
@@ -45,6 +47,12 @@ const THREAD_NUDGES = {
         { label: 'Savor', text: 'The good part worth holding onto is ' }
     ]
 };
+
+const CHAIN_NUDGES = [
+    { label: 'Continue', text: 'Continuing this thought: ' },
+    { label: 'Darker', text: 'A darker version of this is ' },
+    { label: 'Hopeful', text: 'A more hopeful version might be ' }
+];
 
 const MOOD_COMPASS = {
     Reflective: {
@@ -1501,6 +1509,7 @@ function saveThoughtDraft() {
     const input = document.getElementById('thought-input');
     const category = document.getElementById('new-category');
     const mood = document.getElementById('new-mood');
+    const mode = document.getElementById('new-mode');
     const boosted = document.getElementById('boost-thought');
     const quiet = document.getElementById('quiet-thought');
     if (!input) return;
@@ -1514,6 +1523,7 @@ function saveThoughtDraft() {
         text: input.value,
         category: category?.value || 'Deep',
         mood: mood?.value || 'Reflective',
+        mode: mode?.value || 'The Observer',
         boosted: Boolean(boosted?.checked),
         quiet: Boolean(quiet?.checked),
         updatedAt
@@ -1529,11 +1539,13 @@ function restoreThoughtDraft() {
         const input = document.getElementById('thought-input');
         const category = document.getElementById('new-category');
         const mood = document.getElementById('new-mood');
+        const mode = document.getElementById('new-mode');
         const boosted = document.getElementById('boost-thought');
         const quiet = document.getElementById('quiet-thought');
         if (input && !input.value) input.value = draft.text;
         if (category && draft.category) category.value = draft.category;
         if (mood && draft.mood) mood.value = draft.mood;
+        if (mode && draft.mode) mode.value = draft.mode;
         if (boosted) boosted.checked = Boolean(draft.boosted);
         if (quiet) quiet.checked = Boolean(draft.quiet);
         updateCharCount();
@@ -1552,10 +1564,52 @@ function clearThoughtDraft() {
 function clearComposerDraft() {
     const input = document.getElementById('thought-input');
     if (input) input.value = '';
+    const unsent = document.getElementById('unsent-reflection');
+    if (unsent) {
+        unsent.hidden = true;
+        unsent.innerHTML = '';
+    }
     updateCharCount();
     updateComposerPreview();
     clearThoughtDraft();
     addNotification({ type: 'draft', message: 'Composer draft cleared.' });
+}
+
+function keepThoughtUnsent() {
+    const draft = getCurrentComposerDraft();
+    const panel = document.getElementById('unsent-reflection');
+    if (!draft || !panel) {
+        addNotification({ type: 'draft', message: 'Write the unsent thought first.' });
+        focusThoughtInput();
+        return;
+    }
+
+    const similarCount = getVisibleQuotes().filter(quote =>
+        quote.mood === draft.mood || quote.category === draft.category
+    ).length;
+    const words = draft.text.split(/\s+/).filter(Boolean);
+    const anchor = words.slice(0, 7).join(' ');
+    const reflection = draft.mood === 'Heavy'
+        ? 'This sounds like something that needed gentleness before answers.'
+        : draft.mood === 'Hopeful'
+            ? 'There is a future-facing part of this, even if it is small.'
+            : draft.mood === 'Unfiltered'
+                ? 'The honesty is the signal here. It does not need to be polished to be real.'
+                : 'The feeling underneath this is already specific enough to matter.';
+
+    panel.hidden = false;
+    panel.innerHTML = `
+        <span class="hero-kicker">Kept unsent</span>
+        <strong>${escapeHtml(reflection)}</strong>
+        <p>${similarCount} ${similarCount === 1 ? 'person has' : 'people have'} shared nearby emotional signals in ${escapeHtml(draft.category)} or ${escapeHtml(draft.mood)}.</p>
+        <blockquote>${escapeHtml(anchor)}${words.length > 7 ? '...' : ''}</blockquote>
+        <div class="thread-compose-actions">
+            <button class="secondary-action compact-action" onclick="saveCurrentDraftToLocker()">Save Privately</button>
+            <button class="primary-action compact-action" onclick="submitThought()">Send Anyway</button>
+        </div>
+    `;
+    saveCurrentDraftToLocker();
+    addNotification({ type: 'draft', message: 'Kept unsent and reflected privately.' });
 }
 
 function updateDraftFreshness(updatedAt) {
@@ -1598,6 +1652,7 @@ function getCurrentComposerDraft() {
         text,
         category: document.getElementById('new-category')?.value || 'Deep',
         mood: document.getElementById('new-mood')?.value || 'Reflective',
+        mode: document.getElementById('new-mode')?.value || 'The Observer',
         boosted: Boolean(document.getElementById('boost-thought')?.checked),
         quiet: Boolean(document.getElementById('quiet-thought')?.checked),
         updatedAt: new Date().toISOString()
@@ -1624,12 +1679,14 @@ function loadDraftFromLocker(id) {
     const input = document.getElementById('thought-input');
     const category = document.getElementById('new-category');
     const mood = document.getElementById('new-mood');
+    const mode = document.getElementById('new-mode');
     const boosted = document.getElementById('boost-thought');
     const quiet = document.getElementById('quiet-thought');
 
     if (input) input.value = draft.text;
     if (category) category.value = draft.category || 'Deep';
     if (mood) mood.value = draft.mood || 'Reflective';
+    if (mode) mode.value = draft.mode || 'The Observer';
     if (boosted) boosted.checked = Boolean(draft.boosted);
     if (quiet) quiet.checked = Boolean(draft.quiet);
 
@@ -1758,13 +1815,14 @@ function updateComposerPreview() {
     const input = document.getElementById('thought-input');
     const category = document.getElementById('new-category')?.value || 'Deep';
     const mood = document.getElementById('new-mood')?.value || 'Reflective';
+    const mode = document.getElementById('new-mode')?.value || 'The Observer';
     const quiet = Boolean(document.getElementById('quiet-thought')?.checked);
     if (!preview || !input) return;
 
     const text = input.value.trim();
     const remaining = MAX_LENGTH - input.value.length;
     preview.innerHTML = `
-        <span>${escapeHtml(category)} · ${escapeHtml(mood)}${quiet ? ' · Quiet hours' : ''}</span>
+        <span>${escapeHtml(mode)} · ${escapeHtml(category)} · ${escapeHtml(mood)}${quiet ? ' · Quiet hours' : ''}</span>
         <p>${text ? escapeHtml(text) : 'Your thought preview will appear here.'}</p>
     `;
     preview.classList.toggle('ready', text.length >= MIN_LENGTH);
@@ -3596,6 +3654,7 @@ function renderQuotes() {
         const isFeatured = quote.boosted || getEngagementScore(quote) >= 5;
         const isQuiet = Boolean(quote.quiet);
         const mood = quote.mood || 'Reflective';
+        const mode = quote.mode || 'The Observer';
         const replies = threadReplies[quote.id] || [];
         const isThreadOpen = expandedThreads.has(quote.id);
         const latestReplies = replies.slice(-3);
@@ -3625,6 +3684,7 @@ function renderQuotes() {
 
                     <span class="quote-category">${escapeHtml(quote.category)}</span>
                     <span class="mood-tag">${escapeHtml(mood)}</span>
+                    <span class="mode-tag">${escapeHtml(mode)}</span>
                     ${isQuiet ? '<span class="quiet-tag">Quiet hours</span>' : ''}
                     ${isFeatured ? '<span class="premium-badge">Featured</span>' : ''}
 
@@ -3635,7 +3695,9 @@ function renderQuotes() {
                 </div>
 
 
-                <div class="quote-content">"${escapeHtml(quote.text)}"</div>
+                <div class="thought-evolving">${replyCount > 0 ? 'This thought is evolving...' : 'Open chain - build on it, bend it, or make it truer.'}</div>
+
+                <div class="quote-content">"${escapeHtml(quote.text)}"</div>
 
 
                 <div class="reactions">
@@ -3762,14 +3824,14 @@ function renderInlineThreads() {
         const latestReplies = replies.slice(-3);
         const replyTotal = replies.length || quote.replyCount || 0;
         const recapText = replyTotal === 0
-            ? 'No replies yet. A thoughtful first reply can set the tone.'
-            : `${replyTotal} ${replyTotal === 1 ? 'reply' : 'replies'} in this thread${isFollowingThread ? ' · following' : ''}.`;
+            ? 'No one has evolved this thought yet. Add a mirror, meaning, or continuation.'
+            : `${replyTotal} ${replyTotal === 1 ? 'reflection' : 'reflections'} are evolving this thought${isFollowingThread ? ' · following' : ''}.`;
         const panel = document.createElement('div');
         panel.className = `thread-panel ${isThreadOpen ? 'open' : ''}`;
         panel.id = `thread-${quote.id}`;
         panel.innerHTML = `
             <div class="thread-recap">
-                <strong>Thread recap</strong>
+                <strong>This thought is evolving</strong>
                 <span>${escapeHtml(recapText)}</span>
             </div>
             <div class="thread-replies">
@@ -3778,7 +3840,7 @@ function renderInlineThreads() {
             ${replies.length > 3 ? `<button class="thread-more" onclick="expandAllThreadReplies('${quote.id}')">Show all ${replies.length} replies</button>` : ''}
             <div class="thread-compose">
                 ${draft ? `<div class="thread-draft-note">Draft restored from ${formatTimeAgo(new Date(draft.updatedAt || Date.now()))}.</div>` : ''}
-                <textarea id="thread-input-${quote.id}" placeholder="Reply to this thought..." maxlength="500" oninput="saveThreadReplyDraft('${quote.id}')">${escapeHtml(draft?.text || '')}</textarea>
+                <textarea id="thread-input-${quote.id}" placeholder="Build on this thought..." maxlength="500" oninput="saveThreadReplyDraft('${quote.id}')">${escapeHtml(draft?.text || '')}</textarea>
                 <div class="thread-nudge">
                     <span>${escapeHtml(getThreadNudgeHint(quote))}</span>
                 </div>
@@ -3842,6 +3904,7 @@ function getThreadNudges(quote) {
     const moodNudges = THREAD_NUDGES[mood] || THREAD_NUDGES.Reflective;
     return [
         ...moodNudges,
+        ...CHAIN_NUDGES,
         { label: 'Relate', text: 'I relate to this because ' },
         { label: 'Support', text: 'If I were sitting with you, I would say ' }
     ];
@@ -4272,6 +4335,7 @@ function submitThought() {
 
     const category = document.getElementById('new-category').value;
     const mood = document.getElementById('new-mood')?.value || 'Reflective';
+    const mode = document.getElementById('new-mode')?.value || 'The Observer';
     const boosted = Boolean(document.getElementById('boost-thought')?.checked);
     const quiet = Boolean(document.getElementById('quiet-thought')?.checked);
 
@@ -4314,6 +4378,7 @@ function submitThought() {
 
         category: category,
         mood: mood,
+        mode: mode,
         boosted: boosted,
         quiet: quiet,
 

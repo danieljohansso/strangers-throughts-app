@@ -610,6 +610,19 @@
 
         </div>
 
+        <div class="category-selector">
+
+            <span>Mode:</span>
+
+            <select id="new-mode" onchange="saveThoughtDraft(); updateComposerPreview()">
+                <option value="The Overthinker">The Overthinker</option>
+                <option value="The Romantic">The Romantic</option>
+                <option value="The Cynic">The Cynic</option>
+                <option value="The Observer">The Observer</option>
+            </select>
+
+        </div>
+
         <label class="boost-toggle">
 
             <input type="checkbox" id="boost-thought" onchange="saveThoughtDraft(); updateComposerPreview()">
@@ -667,6 +680,8 @@
             <p>Your thought preview will appear here.</p>
         </div>
 
+        <div class="unsent-reflection" id="unsent-reflection" hidden></div>
+
         <div class="draft-locker">
             <div class="draft-locker-header">
                 <div>
@@ -680,7 +695,10 @@
             </div>
         </div>
 
-        <button id="submit-btn" onclick="submitThought()" disabled>Send Into the Room</button>
+        <div class="submit-actions">
+            <button class="secondary-action" type="button" onclick="keepThoughtUnsent()">Keep Unsent</button>
+            <button id="submit-btn" onclick="submitThought()" disabled>Send Into the Room</button>
+        </div>
     </div>
     
     </main>

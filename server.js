@@ -43,6 +43,7 @@ const colors = ['#FF5733', '#33FF57', '#3357FF', '#F3FF33', '#FF33F3', '#33FFF3'
 const CATEGORIES = ['Deep', 'Confessions', 'Advice', 'Late Night', 'Funny'];
 const MOODS = ['Reflective', 'Hopeful', 'Heavy', 'Curious', 'Unfiltered', 'Celebrating'];
 const REACTIONS = ['felt this', 'hmm', 'deep', 'ouch'];
+const IDENTITY_MODES = ['The Overthinker', 'The Romantic', 'The Cynic', 'The Observer'];
 const rateBuckets = new Map();
 
 function generateRandomName() {
@@ -672,12 +673,14 @@ io.on('connection', (socket) => {
     }
     const category = CATEGORIES.includes(newQuote?.category) ? newQuote.category : 'Deep';
     const mood = MOODS.includes(newQuote?.mood) ? newQuote.mood : 'Reflective';
+    const mode = IDENTITY_MODES.includes(newQuote?.mode) ? newQuote.mode : 'The Observer';
     const quotes = loadQuotes();
     const quoteWithId = {
       id: uuidv4(),
       text,
       category,
       mood,
+      mode,
       boosted: Boolean(newQuote?.boosted),
       quiet: Boolean(newQuote?.quiet),
       authorId: user.id,
