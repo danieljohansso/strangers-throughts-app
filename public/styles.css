@@ -3287,6 +3287,29 @@ body.calm-mode .orbit-card:hover {
     color: var(--warning);
 }
 
+.composer-quality {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin: -0.3rem 0 1rem;
+}
+
+.composer-quality span {
+    padding: 0.35rem 0.55rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.035);
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+.composer-quality span.ready {
+    border-color: rgba(152, 240, 192, 0.28);
+    background: rgba(152, 240, 192, 0.08);
+    color: #98f0c0;
+}
+
 .composer-preview {
     display: grid;
     gap: 0.35rem;

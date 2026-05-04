@@ -1683,6 +1683,26 @@ function useMoodCompassStarter() {
     focusThoughtInput();
 }
 
+function updateComposerQuality() {
+    const input = document.getElementById('thought-input');
+    const quality = document.getElementById('composer-quality');
+    if (!input || !quality) return;
+
+    const text = input.value.trim();
+    const category = document.getElementById('new-category')?.value;
+    const mood = document.getElementById('new-mood')?.value;
+    const checks = {
+        length: text.length >= MIN_LENGTH,
+        mood: Boolean(category && mood),
+        replyable: /[?.!]$/.test(text) || text.split(/\s+/).length >= 8
+    };
+
+    quality.querySelectorAll('[data-quality]').forEach(item => {
+        const key = item.dataset.quality;
+        item.classList.toggle('ready', Boolean(checks[key]));
+    });
+}
+
 function updateComposerPreview() {
     const preview = document.getElementById('composer-preview');
     const helper = document.getElementById('composer-helper');
@@ -1715,6 +1735,8 @@ function updateComposerPreview() {
             helper.classList.add('ready');
         }
     }
+
+    updateComposerQuality();
 }
 
 function filterByMood(mood) {
