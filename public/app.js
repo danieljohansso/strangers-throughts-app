@@ -626,7 +626,6 @@ function updateDashboardPanelVisibility() {
 function getFocusedViewMeta() {
     const tabLabels = {
         all: 'The room',
-        matches: 'Emotional matches',
         trending: 'Resonating now',
         yours: 'Your truths',
         profile: 'Profile',
@@ -654,12 +653,10 @@ function getFocusedViewMetrics() {
     const visibleCount = getVisibleQuotes().length;
     const renderedCount = currentTab === 'profile'
         ? getMyProfileStats().myThoughts.length
-        : currentTab === 'matches'
-            ? visibleCount
-            : quotes.length;
+        : quotes.length;
 
     return [
-        { label: currentTab === 'matches' ? 'eligible' : 'showing', value: renderedCount },
+        { label: 'showing', value: renderedCount },
         { label: 'visible room', value: visibleCount },
         { label: 'hidden locally', value: hiddenCount }
     ];
@@ -2595,7 +2592,7 @@ function closeOneOnOneChatInterface() {
     document.querySelectorAll('.match-button').forEach(button => {
 
 
-        button.textContent = '👥 Find Match';
+        button.textContent = '👥 Find Match';
 
 
         button.disabled = false;
@@ -2621,7 +2618,7 @@ function closeOneOnOneChatInterface() {
     }
 
     if (currentTab === 'matches') {
-        renderMatchLobby();
+        switchTab('all');
     }
 
 
@@ -3760,7 +3757,6 @@ function renderQuotes() {
                     </div>
 
 
-                    ${currentUser && currentTab === 'matches' ? `<button class="match-button" onclick="requestOneOnOneMatch('${quote.id}', '${quote.category}')">Find Match</button>` : ''}
 
 
                 </div>
@@ -4062,9 +4058,7 @@ function applyFiltersAndSort() {
 
 
     if (currentTab === 'matches') {
-        renderMatchLobby();
-        updateFocusedViewBar(true);
-        return;
+        currentTab = 'all';
     }
 
     let filtered = [...allQuotes];
@@ -4789,10 +4783,7 @@ function connect() {
     // Match queue updates
     socket.on('matchQueueUpdate', (queueInfo) => {
         matchQueueInfo = queueInfo;
-        if (currentTab === 'matches') {
-            applyFiltersAndSort();
-        }
-        updateMatchesTabBadge();
+        updateMatchesTabBadge();
     });
 
 
@@ -5099,7 +5090,8 @@ function connect() {
 // Tab switching functionality
 
 
-function switchTab(tab) {
+function switchTab(tab) {
+    if (tab === 'matches') tab = 'all';
 
 
     currentTab = tab;

@@ -24,7 +24,6 @@
         <div class="header-center">
             <div class="tabs">
                 <button class="tab-btn active" data-tab="all" onclick="switchTab('all')">The Room</button>
-                <button class="tab-btn" data-tab="matches" onclick="switchTab('matches')">Find Someone <span class="tab-badge" id="matches-badge">0</span></button>
                 <button class="tab-btn" data-tab="trending" onclick="switchTab('trending')">Trending</button>
                 <button class="tab-btn" data-tab="yours" onclick="switchTab('yours')">Your Truths <span class="tab-badge" id="yours-badge">0</span></button>
                 <button class="tab-btn" data-tab="profile" onclick="switchTab('profile')">Profile</button>
@@ -150,8 +149,6 @@
                 <div class="hero-actions">
 
                     <button class="primary-action" onclick="focusThoughtInput()">Say It Anonymously</button>
-
-                    <button class="secondary-action" onclick="switchTab('matches')">Find Someone</button>
 
                     <button class="secondary-action" onclick="showRandomThought()">Reflect on One</button>
 
@@ -696,7 +693,6 @@
         </div>
 
         <div class="submit-actions">
-            <button class="secondary-action" type="button" onclick="keepThoughtUnsent()">Keep Unsent</button>
             <button id="submit-btn" onclick="submitThought()" disabled>Send Into the Room</button>
         </div>
     </div>

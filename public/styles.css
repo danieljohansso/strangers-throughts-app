@@ -5007,6 +5007,10 @@ body::before {
     display: none;
 }
 
+.one-on-one-chat-interface {
+    display: none !important;
+}
+
 @media (max-width: 900px) {
     .header {
         grid-template-columns: 1fr auto;
