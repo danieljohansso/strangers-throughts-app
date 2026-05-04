@@ -3216,7 +3216,7 @@ body.calm-mode .orbit-card:hover {
 }
 
 .quick-reply-pack {
-    display: flex;
+    display: none;
     flex-wrap: wrap;
     align-items: center;
     flex: 1 1 100%;
@@ -4419,6 +4419,206 @@ body.calm-mode .orbit-card:hover {
 /* Trending pulse effect */
 .quote-card.trending {
     animation: none;
+}
+
+/* Professional feed reset */
+.app-shell {
+    width: min(1040px, calc(100% - 2rem));
+}
+
+.feed {
+    max-width: 720px;
+    padding: 1rem 0 1.5rem;
+    gap: 1rem;
+    border-inline: 0;
+    background: transparent;
+}
+
+.submit-area {
+    max-width: 720px;
+    margin: 1rem auto 0;
+    padding: 1.1rem 1.2rem;
+    background: rgba(22, 25, 34, 0.96);
+    border: 1px solid rgba(179, 189, 202, 0.12);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+#thought-input {
+    min-height: 104px;
+    padding: 0.9rem;
+    background: var(--bg-input);
+    border: 1px solid rgba(179, 189, 202, 0.12);
+    border-radius: var(--radius-md);
+}
+
+.quote-card {
+    display: block;
+    background: rgba(22, 25, 34, 0.96);
+    border: 1px solid rgba(179, 189, 202, 0.12);
+    border-radius: var(--radius-lg);
+    padding: 1.15rem 1.2rem;
+    overflow: visible;
+    box-shadow: var(--shadow-sm);
+    transition: background var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.quote-card::before {
+    display: none;
+}
+
+.quote-card:hover {
+    background: rgba(24, 28, 38, 0.98);
+    border-color: rgba(179, 189, 202, 0.18);
+    box-shadow: var(--shadow-md);
+}
+
+.quote-card.yours {
+    background: rgba(22, 25, 34, 0.96);
+    border-color: rgba(122, 162, 247, 0.28);
+}
+
+.quote-card.has-replies,
+.quote-card.saved,
+.quote-card.featured,
+.quote-card.quiet-thought-card,
+.quote-card.trending {
+    border-left-width: 1px;
+}
+
+.quote-card.featured {
+    border-color: rgba(229, 200, 144, 0.28);
+    box-shadow: var(--shadow-sm);
+}
+
+.quote-card.quiet-thought-card {
+    background: rgba(22, 25, 34, 0.96);
+    border-color: rgba(166, 209, 137, 0.2);
+}
+
+.quote-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.7rem;
+}
+
+.quote-avatar {
+    width: 34px;
+    height: 34px;
+    grid-row: auto;
+    flex: 0 0 auto;
+}
+
+.quote-author {
+    font-size: 0.9rem;
+    font-weight: 800;
+}
+
+.quote-category,
+.mood-tag,
+.mode-tag,
+.quiet-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.16rem 0.48rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.72rem;
+    font-weight: 750;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.quote-category {
+    margin-left: auto;
+    color: var(--primary);
+    background: rgba(122, 162, 247, 0.09);
+    border: 1px solid rgba(122, 162, 247, 0.14);
+}
+
+.mood-tag {
+    color: var(--success);
+    background: rgba(166, 209, 137, 0.08);
+    border: 1px solid rgba(166, 209, 137, 0.14);
+}
+
+.mode-tag {
+    color: var(--warning);
+    background: rgba(229, 200, 144, 0.08);
+    border: 1px solid rgba(229, 200, 144, 0.14);
+}
+
+.thought-evolving {
+    display: none;
+}
+
+.quote-content {
+    grid-column: auto;
+    font-size: clamp(1.05rem, 1.4vw, 1.22rem);
+    line-height: 1.55;
+    margin: 0.65rem 0 0.9rem;
+    font-weight: 520;
+}
+
+.reactions,
+.quote-meta,
+.quote-actions,
+.thread-panel {
+    grid-column: auto;
+}
+
+.reactions {
+    gap: 0.4rem;
+    margin-bottom: 0.75rem;
+}
+
+.reaction-btn {
+    padding: 0.36rem 0.62rem;
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(179, 189, 202, 0.1);
+    border-radius: var(--radius-pill);
+}
+
+.quote-meta {
+    margin-bottom: 0.75rem;
+    font-size: 0.8rem;
+}
+
+.quote-actions {
+    gap: 0.45rem;
+    margin-top: 0.5rem;
+}
+
+.join-btn {
+    padding: 0.45rem 0.72rem;
+    width: auto;
+    background: rgba(122, 162, 247, 0.1);
+    color: var(--primary);
+    border: 1px solid rgba(122, 162, 247, 0.16);
+    border-radius: var(--radius-md);
+}
+
+.quick-reply-pack {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+    .app-shell {
+        width: min(100% - 1rem, 760px);
+    }
+
+    .feed {
+        padding: 0.75rem 0 1rem;
+    }
+
+    .quote-card {
+        padding: 1rem;
+    }
+
+    .quote-content {
+        font-size: 1.05rem;
+        line-height: 1.5;
+    }
 }
 
 @keyframes trendingPulse {

@@ -3661,7 +3661,6 @@ function renderQuotes() {
         const isFollowingThread = followedThreads.includes(quote.id);
         const isPinned = profileDetails.pinnedThoughtId === quote.id;
         const health = getConversationHealth(quote);
-        const quickReplyNudges = getThreadNudges(quote).slice(0, 3);
 
 
         
@@ -3746,11 +3745,6 @@ function renderQuotes() {
                 <div class="quote-actions">
 
 
-                    <div class="quick-reply-pack">
-                        <span>Start a reply</span>
-                        ${quickReplyNudges.map(nudge => `<button onclick="startThreadReplyFromCard('${quote.id}', ${JSON.stringify(nudge.text).replace(/"/g, '&quot;')}, event)">${escapeHtml(nudge.label)}</button>`).join('')}
-                    </div>
-
                     <button class="join-btn" onclick="toggleThread('${quote.id}')">${isThreadOpen ? 'Hide Thread' : 'Reply in Thread'}</button>
                     ${isYours ? `<button class="action-btn ${isPinned ? 'active-action' : ''}" onclick="pinThoughtToProfile('${quote.id}', event)">${isPinned ? 'Unpin' : 'Pin'}</button>` : ''}
                     <div class="thought-more-menu" onclick="event.stopPropagation()">
