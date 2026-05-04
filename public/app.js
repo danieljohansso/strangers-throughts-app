@@ -113,7 +113,8 @@ let quotes = [];
 let allQuotes = [];
 
 
-let reactionsData = {};
+let reactionsData = {};
+let currentRandomThoughtId = null;
 
 
 let currentUser = null;
@@ -965,6 +966,96 @@ function updateMoodMatchLane() {
 
 function getVisibleQuotes() {
     return allQuotes.filter(quote => !isQuoteHiddenLocally(quote));
+}
+
+function getRandomThoughtSkips() {
+    try {
+        const stored = JSON.parse(localStorage.getItem('strangersRandomThoughtSkips') || '[]');
+        return Array.isArray(stored) ? stored : [];
+    } catch (error) {
+        return [];
+    }
+}
+
+function saveRandomThoughtSkips(ids) {
+    localStorage.setItem('strangersRandomThoughtSkips', JSON.stringify(ids.slice(-80)));
+}
+
+function getRandomRecentThoughtCandidates(includeSkipped = false) {
+    const skipped = getRandomThoughtSkips();
+    const visible = getVisibleQuotes()
+        .filter(quote => quote?.id && quote.text)
+        .filter(quote => includeSkipped || !skipped.includes(quote.id))
+        .sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+
+    const strangers = visible.filter(quote => quote.authorId !== currentUser?.id);
+    return (strangers.length ? strangers : visible).slice(0, 24);
+}
+
+function pickRandomRecentThought(includeSkipped = false) {
+    const candidates = getRandomRecentThoughtCandidates(includeSkipped);
+    if (candidates.length === 0) return null;
+    return candidates[Math.floor(Math.random() * candidates.length)];
+}
+
+function renderRandomThoughtPrompt(forceNew = false) {
+    const panel = document.getElementById('random-thought-panel');
+    const card = document.getElementById('random-thought-card');
+    if (!panel || !card) return;
+
+    const shouldShow = currentTab === 'all' && !searchQuery && currentFilter === 'all' && currentMoodFilter === 'all';
+    panel.hidden = !shouldShow;
+    if (!shouldShow) return;
+
+    let quote = allQuotes.find(item => item.id === currentRandomThoughtId && !isQuoteHiddenLocally(item));
+    if (forceNew || !quote) {
+        quote = pickRandomRecentThought(false) || pickRandomRecentThought(true);
+        currentRandomThoughtId = quote?.id || null;
+    }
+
+    if (!quote) {
+        card.innerHTML = `
+            <p class="random-thought-empty">No recent thoughts yet. Post one and this space will start matching strangers by feeling.</p>
+        `;
+        return;
+    }
+
+    const feltThis = currentUser?.lastReaction?.[quote.id] === 'felt this';
+    const skipped = getRandomThoughtSkips().includes(quote.id);
+    const author = quote.authorName || 'A stranger';
+    const time = quote.timestamp ? formatTimeAgo(new Date(quote.timestamp)) : 'recently';
+
+    card.innerHTML = `
+        <div class="random-thought-meta">
+            <span>${escapeHtml(author)}</span>
+            <span>${escapeHtml(time)}</span>
+        </div>
+        <p class="random-thought-text">${escapeHtml(quote.text)}</p>
+        <div class="random-thought-actions">
+            <button class="random-feel-btn ${feltThis ? 'active' : ''}" onclick="feelSameWithRandomThought('${quote.id}')">I feel this</button>
+            <button class="random-not-btn ${skipped ? 'active' : ''}" onclick="notMeRandomThought('${quote.id}')">Not me</button>
+        </div>
+    `;
+}
+
+function showAnotherRandomThought() {
+    renderRandomThoughtPrompt(true);
+}
+
+function feelSameWithRandomThought(quoteId) {
+    toggleReaction(quoteId, 'felt this');
+    addNotification({ type: 'match', message: 'Marked as something you feel too.' });
+    setTimeout(() => renderRandomThoughtPrompt(true), 220);
+}
+
+function notMeRandomThought(quoteId) {
+    const skipped = getRandomThoughtSkips();
+    if (!skipped.includes(quoteId)) {
+        skipped.push(quoteId);
+        saveRandomThoughtSkips(skipped);
+    }
+    addNotification({ type: 'match', message: 'Skipped. Showing a different thought.' });
+    renderRandomThoughtPrompt(true);
 }
 
 function getTopCount(items, getKey) {
@@ -4145,6 +4236,7 @@ function sendThreadReply(quoteId) {
 function applyFiltersAndSort() {
     updateDashboardPanelVisibility();
     updateComposerVisibility();
+    renderRandomThoughtPrompt();
 
     if (currentTab === 'profile') {
         updateExperienceStats();
