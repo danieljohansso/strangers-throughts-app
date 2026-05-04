@@ -3742,7 +3742,7 @@ function renderQuotes() {
                 <div class="quote-actions">
 
 
-                    <button class="join-btn" onclick="toggleThread('${quote.id}')">${isThreadOpen ? 'Hide Thread' : 'Reply in Thread'}</button>
+                    <button class="join-btn" onclick="toggleThread('${quote.id}')">${isThreadOpen ? 'Hide replies' : 'Reply'}</button>
                     ${isYours ? `<button class="action-btn ${isPinned ? 'active-action' : ''}" onclick="pinThoughtToProfile('${quote.id}', event)">${isPinned ? 'Unpin' : 'Pin'}</button>` : ''}
                     <div class="thought-more-menu" onclick="event.stopPropagation()">
                         <button class="thought-more-trigger" type="button" aria-label="More actions">...</button>

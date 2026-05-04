@@ -4368,6 +4368,83 @@ body.calm-mode .orbit-card:hover {
     }
 }
 
+/* Final composer/feed tightening */
+.submit-area {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: start;
+    column-gap: 0.45rem;
+}
+
+.submit-area h2 {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.submit-area h2::after {
+    content: "Anonymous";
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    font-weight: 650;
+}
+
+.category-selector {
+    margin-bottom: 0.55rem;
+}
+
+.mode-selector {
+    display: none !important;
+}
+
+#thought-input,
+.composer-status-row,
+.composer-helper,
+.unsent-reflection,
+.submit-actions {
+    grid-column: 1 / -1;
+}
+
+.composer-status-row {
+    align-items: center;
+}
+
+.composer-status-actions button {
+    color: var(--text-muted);
+}
+
+.quote-card {
+    border-radius: 12px;
+}
+
+.quote-actions {
+    border-top: 1px solid rgba(148, 163, 184, 0.08);
+    padding-top: 0.55rem;
+}
+
+.join-btn,
+.action-btn {
+    color: var(--text-muted);
+}
+
+.thought-more-list {
+    border-color: rgba(148, 163, 184, 0.14);
+    background: rgba(18, 21, 27, 0.98);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+}
+
+.thought-more-list button {
+    font-weight: 650;
+}
+
+@media (max-width: 560px) {
+    .submit-area {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* Menu polish */
 .header {
     grid-template-columns: minmax(180px, auto) minmax(360px, 680px) auto;
