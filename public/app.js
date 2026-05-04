@@ -992,6 +992,39 @@ function getRandomRecentThoughtCandidates(includeSkipped = false) {
     return (strangers.length ? strangers : visible).slice(0, 24);
 }
 
+function getLocalContextCity() {
+    const zone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    const city = zone.split('/').pop()?.replace(/_/g, ' ');
+    return city || 'nearby';
+}
+
+function formatPostedContext(timestamp) {
+    const date = new Date(timestamp || Date.now());
+    const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const now = new Date();
+    const isYesterday = date.toDateString() === new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1).toDateString();
+    const isNight = date.getHours() >= 23 || date.getHours() < 5;
+
+    if (isYesterday && isNight) return `Posted at ${time} last night`;
+    if (isNight) return `Posted at ${time}`;
+    return `Posted ${formatTimeAgo(date)}`;
+}
+
+function getFeltThisCount(quoteId) {
+    return reactionsData[quoteId]?.['felt this'] || 0;
+}
+
+function getAnonymousContextLabel(quote) {
+    if (quote.authorId === currentUser?.id) return 'You';
+    return `Someone in ${getLocalContextCity()}`;
+}
+
+function getFeelingContext(quote) {
+    const count = getFeltThisCount(quote.id);
+    if (count <= 0) return 'Be the first to feel this';
+    return `${count} ${count === 1 ? 'person has' : 'people have'} felt this nearby`;
+}
+
 function pickRandomRecentThought(includeSkipped = false) {
     const candidates = getRandomRecentThoughtCandidates(includeSkipped);
     if (candidates.length === 0) return null;
@@ -1022,8 +1055,9 @@ function renderRandomThoughtPrompt(forceNew = false) {
 
     const feltThis = currentUser?.lastReaction?.[quote.id] === 'felt this';
     const skipped = getRandomThoughtSkips().includes(quote.id);
-    const author = quote.authorName || 'A stranger';
-    const time = quote.timestamp ? formatTimeAgo(new Date(quote.timestamp)) : 'recently';
+    const author = getAnonymousContextLabel(quote);
+    const time = formatPostedContext(quote.timestamp);
+    const feeling = getFeelingContext(quote);
 
     card.innerHTML = `
         <div class="random-thought-meta">
@@ -1031,6 +1065,7 @@ function renderRandomThoughtPrompt(forceNew = false) {
             <span>${escapeHtml(time)}</span>
         </div>
         <p class="random-thought-text">${escapeHtml(quote.text)}</p>
+        <div class="random-thought-signal">${escapeHtml(feeling)}</div>
         <div class="random-thought-actions">
             <button class="random-feel-btn ${feltThis ? 'active' : ''}" onclick="feelSameWithRandomThought('${quote.id}')">I feel this</button>
             <button class="random-not-btn ${skipped ? 'active' : ''}" onclick="notMeRandomThought('${quote.id}')">Not me</button>
@@ -1056,6 +1091,77 @@ function notMeRandomThought(quoteId) {
     }
     addNotification({ type: 'match', message: 'Skipped. Showing a different thought.' });
     renderRandomThoughtPrompt(true);
+}
+
+function getEngagementMemory() {
+    try {
+        const stored = JSON.parse(localStorage.getItem('strangersEngagementMemory') || '{}');
+        return stored && typeof stored === 'object' ? stored : {};
+    } catch (error) {
+        return {};
+    }
+}
+
+function saveEngagementMemory(memory) {
+    localStorage.setItem('strangersEngagementMemory', JSON.stringify(memory));
+}
+
+function getReactionTotal(reactions = {}) {
+    return Object.values(reactions).reduce((sum, value) => sum + (Number(value) || 0), 0);
+}
+
+function rememberCurrentEngagement() {
+    const memory = getEngagementMemory();
+    allQuotes.forEach(quote => {
+        if (quote.authorId !== currentUser?.id) return;
+        memory[quote.id] = {
+            reactions: getReactionTotal(reactionsData[quote.id] || {}),
+            replies: quote.replyCount || 0
+        };
+    });
+    saveEngagementMemory(memory);
+}
+
+function notifyIfOwnThoughtGotReaction(quoteId, reactions) {
+    const quote = allQuotes.find(item => item.id === quoteId);
+    if (!quote || quote.authorId !== currentUser?.id) return;
+
+    const memory = getEngagementMemory();
+    const previous = memory[quoteId]?.reactions || 0;
+    const next = getReactionTotal(reactions);
+    memory[quoteId] = {
+        reactions: next,
+        replies: memory[quoteId]?.replies || quote.replyCount || 0
+    };
+    saveEngagementMemory(memory);
+
+    if (next > previous) {
+        const delta = next - previous;
+        addNotification({
+            type: 'loop',
+            message: `${delta === 1 ? 'Someone' : `${delta} people`} felt the same about your thought.`
+        });
+    }
+}
+
+function notifyIfOwnThoughtGotReply(quoteId, reply, replyCount) {
+    const quote = allQuotes.find(item => item.id === quoteId);
+    if (!quote || quote.authorId !== currentUser?.id || reply.authorId === currentUser?.id) return;
+
+    const memory = getEngagementMemory();
+    const previous = memory[quoteId]?.replies || 0;
+    memory[quoteId] = {
+        reactions: memory[quoteId]?.reactions || getReactionTotal(reactionsData[quoteId] || {}),
+        replies: replyCount || previous
+    };
+    saveEngagementMemory(memory);
+
+    if ((replyCount || 0) > previous) {
+        addNotification({
+            type: 'loop',
+            message: 'Someone wrote something back to your thought.'
+        });
+    }
 }
 
 function getTopCount(items, getKey) {
@@ -3808,7 +3914,7 @@ function renderQuotes() {
                     <div class="quote-avatar" style="background-color: ${quote.authorColor || '#444'}"></div>
 
 
-                    <button class="quote-author author-link" onclick="openAuthorProfile('${quote.authorId || ''}', event)">${escapeHtml(quote.authorName || 'Anonymous')}${isYours ? ' (You)' : ''}</button>
+                    <button class="quote-author author-link" onclick="openAuthorProfile('${quote.authorId || ''}', event)">${escapeHtml(getAnonymousContextLabel(quote))}</button>
                     ${!isYours && quote.authorId ? `<button class="follow-author-btn ${isAuthorFollowed(quote.authorId) ? 'following' : ''}" onclick="toggleFollowAuthor('${quote.authorId}', event)">${isAuthorFollowed(quote.authorId) ? 'Following' : 'Follow'}</button>` : ''}
 
 
@@ -3822,6 +3928,7 @@ function renderQuotes() {
 
 
                 <div class="thought-evolving">${replyCount > 0 ? 'Thread active' : 'Open thread'}</div>
+                <div class="quote-human-context">${escapeHtml(formatPostedContext(quote.timestamp))} · ${escapeHtml(getFeelingContext(quote))}</div>
 
                 <div class="quote-content">${escapeHtml(quote.text)}</div>
 
@@ -5016,7 +5123,8 @@ function connect() {
     socket.on('allReactions', (serverReactions) => {
 
 
-        reactionsData = serverReactions;
+        reactionsData = serverReactions;
+        rememberCurrentEngagement();
 
 
         applyFiltersAndSort();
@@ -5091,10 +5199,11 @@ function connect() {
     
 
 
-    socket.on('reactionUpdated', ({ quoteId, reactions }) => {
+    socket.on('reactionUpdated', ({ quoteId, reactions }) => {
 
-
-        reactionsData[quoteId] = reactions;
+
+        reactionsData[quoteId] = reactions;
+        notifyIfOwnThoughtGotReaction(quoteId, reactions);
 
 
         applyFiltersAndSort();
@@ -5169,6 +5278,7 @@ function connect() {
 
         allQuotes = allQuotes.map(quote => quote.id === quoteId ? { ...quote, replyCount } : quote);
         quotes = quotes.map(quote => quote.id === quoteId ? { ...quote, replyCount } : quote);
+        notifyIfOwnThoughtGotReply(quoteId, reply, replyCount);
 
         if (expandedThreads.has(quoteId)) {
             applyFiltersAndSort();

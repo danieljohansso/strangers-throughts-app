@@ -6860,6 +6860,18 @@ textarea {
     letter-spacing: 0;
 }
 
+.random-thought-signal,
+.quote-human-context {
+    color: var(--text-muted);
+    font-size: 0.86rem;
+    font-weight: 650;
+}
+
+.quote-human-context {
+    margin-top: 0.35rem;
+    grid-column: 2;
+}
+
 .random-thought-actions {
     gap: 0.65rem;
 }
