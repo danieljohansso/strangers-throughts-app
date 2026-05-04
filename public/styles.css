@@ -6910,6 +6910,10 @@ textarea {
     order: 2 !important;
 }
 
+.feed:empty {
+    display: none !important;
+}
+
 @media (max-width: 640px) {
     .random-thought-panel {
         max-width: calc(100% - 1rem);

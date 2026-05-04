@@ -3751,6 +3751,11 @@ function renderQuotes() {
     
 
 
+    if (currentTab === 'all' && !searchQuery && currentFilter === 'all' && currentMoodFilter === 'all') {
+        feed.innerHTML = '';
+        return;
+    }
+
     feed.innerHTML = shelf + quotes.map(quote => {
 
 
