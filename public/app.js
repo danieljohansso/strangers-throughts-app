@@ -3251,6 +3251,7 @@ function renderProfilePage() {
     if (!feed) return;
 
     const stats = getMyProfileStats();
+    const achievements = getProfileAchievements(stats);
     const displayName = currentUser?.name || 'Anonymous Stranger';
     const selectedAvatar = getSelectedAnimalAvatar();
     const memberSince = currentUser?.createdAt ? formatTimeAgo(new Date(currentUser.createdAt)) : 'just now';
