@@ -733,11 +733,13 @@ function updateProfileStats() {
     const replies = document.getElementById('profile-replies');
     const reactions = document.getElementById('profile-reactions');
     const largeAvatar = document.getElementById('profile-avatar-large');
+    const menuName = document.getElementById('profile-menu-name');
 
     if (posts) posts.textContent = stats.myThoughts.length;
     if (replies) replies.textContent = stats.totalReplies;
     if (reactions) reactions.textContent = stats.totalReactions;
     if (largeAvatar && currentUser) applyAnimalAvatarElement(largeAvatar);
+    if (menuName && currentUser) menuName.textContent = currentUser.name || 'Anonymous Stranger';
 }
 
 function getDailyPrompt() {

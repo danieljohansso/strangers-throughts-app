@@ -4498,6 +4498,74 @@ body.calm-mode .orbit-card:hover {
     }
 }
 
+/* Compact profile menu */
+.profile-dropdown {
+    width: min(300px, calc(100vw - 1rem));
+    padding: 0.4rem;
+    gap: 0.2rem;
+    background: rgba(20, 23, 29, 0.98);
+}
+
+.profile-info {
+    grid-template-columns: 44px minmax(0, 1fr);
+    padding: 0.75rem;
+    gap: 0.7rem;
+    border: 0;
+}
+
+.profile-avatar-large {
+    width: 44px;
+    height: 44px;
+    border-width: 2px;
+}
+
+.profile-menu-summary {
+    min-width: 0;
+}
+
+.profile-menu-summary strong,
+.profile-menu-summary span {
+    display: block;
+}
+
+.profile-menu-summary strong {
+    overflow: hidden;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    font-weight: 760;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.profile-menu-summary span {
+    margin-top: 0.12rem;
+    color: var(--text-muted);
+    font-size: 0.76rem;
+    line-height: 1.35;
+}
+
+.profile-menu-summary b {
+    color: var(--text-secondary);
+    font-weight: 760;
+}
+
+.profile-menu-item {
+    min-height: 40px;
+    padding: 0.68rem 0.75rem;
+    border: 0;
+    border-radius: var(--radius-md);
+}
+
+.profile-menu-item svg {
+    width: 17px;
+    height: 17px;
+}
+
+.profile-menu-item span {
+    font-size: 0.88rem;
+    font-weight: 650;
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
     width: 8px;

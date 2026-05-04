@@ -82,25 +82,17 @@
                 <span class="user-name" id="user-name">Connecting...</span>
                 
                 <div class="profile-dropdown" id="profile-dropdown">
-                    <div class="profile-info">
-                        <div class="profile-avatar-large" id="profile-avatar-large"></div>
-                        <div class="profile-stats">
-                            <div class="stat">
-                                <span class="stat-value" id="profile-posts">0</span>
-                                <span class="stat-label">Truths</span>
-                            </div>
-                            <div class="stat">
-                                <span class="stat-value" id="profile-replies">0</span>
-                                <span class="stat-label">Reflections</span>
-                            </div>
-                            <div class="stat">
-                                <span class="stat-value" id="profile-reactions">0</span>
-                                <span class="stat-label">Signals</span>
-                            </div>
-                        </div>
-                        <input type="text" class="profile-name-input" id="profile-name-input" placeholder="Enter new name..." maxlength="20" onkeydown="handleProfileInputKey(event)">
-                        <button class="profile-button" onclick="updateUsername(); event.stopPropagation();">Update display name</button>
-                    </div>
+                    <div class="profile-info">
+
+                        <div class="profile-avatar-large" id="profile-avatar-large"></div>
+
+                        <div class="profile-menu-summary">
+                            <strong id="profile-menu-name">Connecting...</strong>
+                            <span><b id="profile-posts">0</b> truths · <b id="profile-replies">0</b> reflections · <b id="profile-reactions">0</b> signals</span>
+                        </div>
+
+                    </div>
+
                     <div class="profile-menu-item" onclick="openMyProfile(); event.stopPropagation();">
 
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 5.3L20 8l-4 3.9.9 5.6L12 14.9 7.1 17.5 8 11.9 4 8l5.6-.7L12 2z"/></svg>
