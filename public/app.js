@@ -3688,15 +3688,15 @@ function renderQuotes() {
                     ${isFeatured ? '<span class="premium-badge">Featured</span>' : ''}
 
 
-                    ${currentUser ? `<button class="save-btn ${isSaved ? 'saved' : ''}" onclick="toggleSavePost('${quote.id}', event)" title="${isSaved ? 'Unsave' : 'Save'} post">${isSaved ? '🔖' : '🖤'}</button>` : ''}
+                    ${currentUser ? `<button class="save-btn ${isSaved ? 'saved' : ''}" onclick="toggleSavePost('${quote.id}', event)" title="${isSaved ? 'Unsave' : 'Save'} post">${isSaved ? 'Saved' : 'Save'}</button>` : ''}
 
 
                 </div>
 
 
-                <div class="thought-evolving">${replyCount > 0 ? 'This thought is evolving...' : 'Open chain - build on it, bend it, or make it truer.'}</div>
+                <div class="thought-evolving">${replyCount > 0 ? 'Thread active' : 'Open thread'}</div>
 
-                <div class="quote-content">"${escapeHtml(quote.text)}"</div>
+                <div class="quote-content">${escapeHtml(quote.text)}</div>
 
 
                 <div class="reactions">
@@ -3724,13 +3724,13 @@ function renderQuotes() {
                     <div class="quote-stats">
 
 
-                        <span>💬 ${replyCount} ${replyCount === 1 ? 'reply' : 'replies'}</span>
+                        <span>${replyCount} ${replyCount === 1 ? 'reply' : 'replies'}</span>
 
 
                         <span>${reactionCount} ${reactionCount === 1 ? 'felt signal' : 'felt signals'}</span>
 
 
-                        ${chatParticipants > 0 ? `<span class="chat-participants">👥 ${chatParticipants} ${chatParticipants === 1 ? 'person' : 'people'} chatting now</span>` : ''}
+                        ${chatParticipants > 0 ? `<span class="chat-participants">${chatParticipants} ${chatParticipants === 1 ? 'person' : 'people'} active</span>` : ''}
 
 
                     </div>
@@ -3760,7 +3760,7 @@ function renderQuotes() {
                     </div>
 
 
-                    ${currentUser && currentTab === 'matches' ? `<button class="match-button" onclick="requestOneOnOneMatch('${quote.id}', '${quote.category}')">👥 Find Match</button>` : ''}
+                    ${currentUser && currentTab === 'matches' ? `<button class="match-button" onclick="requestOneOnOneMatch('${quote.id}', '${quote.category}')">Find Match</button>` : ''}
 
 
                 </div>
