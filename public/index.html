@@ -23,9 +23,9 @@
         
         <div class="header-center">
             <div class="tabs">
-                <button class="tab-btn active" data-tab="all" onclick="switchTab('all')">Room</button>
-                <button class="tab-btn" data-tab="trending" onclick="switchTab('trending')">Trending</button>
-                <button class="tab-btn" data-tab="replies" onclick="switchTab('replies')">Reflections <span class="tab-badge" id="replies-badge">0</span></button>
+                <button class="tab-btn active" data-tab="all" onclick="switchTab('all')">Home</button>
+                <button class="tab-btn" data-tab="trending" onclick="switchTab('trending')">Explore</button>
+                <button class="tab-btn" data-tab="replies" onclick="switchTab('replies')">Replies <span class="tab-badge" id="replies-badge">0</span></button>
                 <button class="tab-btn" data-tab="saved" onclick="switchTab('saved')">Saved <span class="tab-badge" id="saved-badge">0</span></button>
             </div>
             
@@ -88,7 +88,7 @@
 
                         <div class="profile-menu-summary">
                             <strong id="profile-menu-name">Connecting...</strong>
-                            <span><b id="profile-posts">0</b> truths · <b id="profile-replies">0</b> reflections · <b id="profile-reactions">0</b> signals</span>
+                            <span><b id="profile-posts">0</b> posts · <b id="profile-replies">0</b> replies · <b id="profile-reactions">0</b> reactions</span>
                         </div>
 
                     </div>
@@ -105,13 +105,13 @@
 
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
 
-                        <span>Your truths</span>
+                        <span>Your posts</span>
                     </div>
 
                     <div class="profile-menu-item" onclick="viewSaved(); event.stopPropagation();">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
 
-                        <span>Saved signals</span>
+                        <span>Saved</span>
                     </div>
 
                     <div class="profile-menu-item" onclick="switchTab('following'); closeProfileDropdown(); event.stopPropagation();">
@@ -547,7 +547,7 @@
     </div>
     
     <div class="submit-area">
-        <h2>Share Your Thought</h2>
+        <h2>New post</h2>
         <div class="category-selector">
             <span>Category:</span>
             <select id="new-category" onchange="saveThoughtDraft(); updateComposerPreview(); updateCategoryCompass()">
@@ -633,7 +633,7 @@
 
         <textarea
             id="thought-input"
-            placeholder="What's on your mind? (minimum 10 characters)"
+            placeholder="What's on your mind?"
             maxlength="200" 
             oninput="updateCharCount()"
             disabled
@@ -674,7 +674,7 @@
         </div>
 
         <div class="submit-actions">
-            <button id="submit-btn" onclick="submitThought()" disabled>Send Into the Room</button>
+            <button id="submit-btn" onclick="submitThought()" disabled>Post</button>
         </div>
     </div>
     

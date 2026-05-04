@@ -710,12 +710,12 @@ function getProfileAchievements(stats = getMyProfileStats()) {
         },
         {
             title: 'Signal Found',
-            detail: 'Earned 10 felt signals',
+            detail: 'Earned 10 reactions',
             unlocked: stats.totalReactions >= 10
         },
         {
             title: 'Curator',
-            detail: 'Saved 3 signals for later',
+            detail: 'Saved 3 posts for later',
             unlocked: stats.savedCount >= 3
         },
         {
@@ -899,7 +899,7 @@ function updateMoodPulse() {
 
     summary.textContent = top?.count
         ? `${top.mood} is leading the room right now.`
-        : 'The room has no clear mood yet.';
+        : 'No clear mood yet.';
 
     bars.innerHTML = counts.map(item => {
         const width = Math.max(6, Math.round((item.count / total) * 100));
@@ -1388,7 +1388,7 @@ function updateTodayIntentionSummary() {
 
     const moodText = mood === 'all' ? 'any mood' : mood.toLowerCase();
     const categoryText = category === 'all' ? 'any category' : category.toLowerCase();
-    summary.textContent = `Today you are looking for ${moodText} signals in ${categoryText}.`;
+    summary.textContent = `Today you are looking for ${moodText} posts in ${categoryText}.`;
 }
 
 function applyTodayIntention() {
@@ -1554,7 +1554,7 @@ function keepThoughtUnsent() {
     panel.innerHTML = `
         <span class="hero-kicker">Kept unsent</span>
         <strong>${escapeHtml(reflection)}</strong>
-        <p>${similarCount} ${similarCount === 1 ? 'person has' : 'people have'} shared nearby emotional signals in ${escapeHtml(draft.category)} or ${escapeHtml(draft.mood)}.</p>
+        <p>${similarCount} ${similarCount === 1 ? 'person has' : 'people have'} shared nearby posts in ${escapeHtml(draft.category)} or ${escapeHtml(draft.mood)}.</p>
         <blockquote>${escapeHtml(anchor)}${words.length > 7 ? '...' : ''}</blockquote>
         <div class="thread-compose-actions">
             <button class="secondary-action compact-action" onclick="saveCurrentDraftToLocker()">Save Privately</button>
@@ -1893,7 +1893,7 @@ function updateDiscoveryQueue() {
     if (!quote) {
         card.innerHTML = `
             <p>The queue is empty. Share something honest to seed discovery.</p>
-            <button class="primary-action compact-action" onclick="focusThoughtInput()">Write a Thought</button>
+            <button class="primary-action compact-action" onclick="focusThoughtInput()">Write a post</button>
         `;
         return;
     }
@@ -3608,9 +3608,9 @@ function renderQuotes() {
                 : currentTab === 'following'
                     ? 'Follow interesting strangers to collect their thoughts here.'
                 : currentTab === 'yours'
-                    ? 'Your anonymous thoughts will collect here after you post.'
-                    : 'No thoughts to show yet. Start the room with something honest.';
-        feed.innerHTML = shelf + `<div class="empty-message premium-empty"><strong>${emptyCopy}</strong><button onclick="switchTab('all')">Browse Room</button></div>`;
+                    ? 'Your posts will appear here after you publish.'
+                    : 'No posts yet. Start with something simple.';
+        feed.innerHTML = shelf + `<div class="empty-message premium-empty"><strong>${emptyCopy}</strong><button onclick="switchTab('all')">Browse Home</button></div>`;
 
 
         return;
@@ -3724,7 +3724,7 @@ function renderQuotes() {
                         <span>${replyCount} ${replyCount === 1 ? 'reply' : 'replies'}</span>
 
 
-                        <span>${reactionCount} ${reactionCount === 1 ? 'felt signal' : 'felt signals'}</span>
+                        <span>${reactionCount} ${reactionCount === 1 ? 'reaction' : 'reactions'}</span>
 
 
                         ${chatParticipants > 0 ? `<span class="chat-participants">${chatParticipants} ${chatParticipants === 1 ? 'person' : 'people'} active</span>` : ''}
