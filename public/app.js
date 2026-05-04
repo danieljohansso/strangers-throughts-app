@@ -638,6 +638,12 @@ function updateDashboardPanelVisibility() {
     shell.classList.toggle('dashboard-collapsed', hasFocusedFeedState);
 }
 
+function updateComposerVisibility() {
+    const composer = document.querySelector('.submit-area');
+    if (!composer) return;
+    composer.hidden = currentTab !== 'all';
+}
+
 function getSelectedAnimalAvatar() {
     return ANIMAL_AVATARS.find(avatar => avatar.id === profileDetails.animalAvatar) || ANIMAL_AVATARS[0];
 }
@@ -4117,6 +4123,7 @@ function sendThreadReply(quoteId) {
 
 function applyFiltersAndSort() {
     updateDashboardPanelVisibility();
+    updateComposerVisibility();
 
     if (currentTab === 'profile') {
         updateExperienceStats();

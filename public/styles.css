@@ -6512,3 +6512,7 @@ input[type="checkbox"]#quiet-thought {
     border-color: rgba(15, 23, 42, 0.12) !important;
     box-shadow: none !important;
 }
+
+.submit-area[hidden] {
+    display: none !important;
+}
