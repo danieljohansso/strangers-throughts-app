@@ -590,7 +590,7 @@
 
             <span>Mood:</span>
 
-            <select id="new-mood" onchange="saveThoughtDraft(); updateComposerPreview()">
+            <select id="new-mood" onchange="saveThoughtDraft(); updateComposerPreview(); updateMoodCompass()">
 
                 <option value="Reflective">Reflective</option>
 
@@ -624,8 +624,17 @@
 
         </label>
 
-        <textarea 
-            id="thought-input" 
+        <div class="mood-compass" id="mood-compass">
+            <div>
+                <span class="hero-kicker">Mood compass</span>
+                <strong id="mood-compass-prompt">Name the thought, then the question underneath it.</strong>
+                <small id="mood-compass-tone">Slow, honest, observant</small>
+            </div>
+            <button class="secondary-action compact-action" onclick="useMoodCompassStarter()">Use Starter</button>
+        </div>
+
+        <textarea
+            id="thought-input"
             placeholder="What's on your mind? (minimum 10 characters)"
             maxlength="200" 
             oninput="updateCharCount()"

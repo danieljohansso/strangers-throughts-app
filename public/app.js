@@ -46,6 +46,39 @@ const THREAD_NUDGES = {
     ]
 };
 
+const MOOD_COMPASS = {
+    Reflective: {
+        prompt: 'Name the thought, then the question underneath it.',
+        starter: 'I keep returning to this thought because ',
+        tone: 'Slow, honest, observant'
+    },
+    Hopeful: {
+        prompt: 'Point at the small good thing you do not want to lose.',
+        starter: 'A small hopeful thing I want to protect is ',
+        tone: 'Warm, concrete, forward'
+    },
+    Heavy: {
+        prompt: 'Say the hard part clearly without forcing a solution.',
+        starter: 'The heavy part I have been carrying is ',
+        tone: 'Gentle, grounded, careful'
+    },
+    Curious: {
+        prompt: 'Ask the question you actually want a stranger to answer.',
+        starter: 'I keep wondering whether ',
+        tone: 'Open, specific, inviting'
+    },
+    Unfiltered: {
+        prompt: 'Tell the truth, then trim anything that only escalates it.',
+        starter: 'The unfiltered version is ',
+        tone: 'Direct, readable, controlled'
+    },
+    Celebrating: {
+        prompt: 'Make the good thing specific enough that others can feel it.',
+        starter: 'Something worth celebrating today is ',
+        tone: 'Bright, sincere, shared'
+    }
+};
+
 const DAILY_PROMPTS = [
     'What thought keeps coming back when the world gets quiet?',
     'What would you tell someone who feels exactly like you tonight?',
@@ -1341,6 +1374,7 @@ function initializeProductShell() {
     updateExperienceStats();
     updateSpotlight();
     restoreThoughtDraft();
+    updateMoodCompass();
     renderDraftLocker();
     showOnboarding();
 }
@@ -1614,6 +1648,39 @@ function useThoughtTemplate(text, category, mood) {
     updateCharCount();
     saveThoughtDraft();
     updateComposerPreview();
+    updateMoodCompass();
+}
+
+function getMoodCompass() {
+    const mood = document.getElementById('new-mood')?.value || 'Reflective';
+    return MOOD_COMPASS[mood] || MOOD_COMPASS.Reflective;
+}
+
+function updateMoodCompass() {
+    const prompt = document.getElementById('mood-compass-prompt');
+    const tone = document.getElementById('mood-compass-tone');
+    if (!prompt || !tone) return;
+
+    const compass = getMoodCompass();
+    prompt.textContent = compass.prompt;
+    tone.textContent = compass.tone;
+}
+
+function useMoodCompassStarter() {
+    const input = document.getElementById('thought-input');
+    if (!input) return;
+
+    const starter = getMoodCompass().starter;
+    if (!input.value.trim()) {
+        input.value = starter;
+    } else if (!input.value.includes(starter.trim())) {
+        input.value = `${input.value.trim()}\n\n${starter}`;
+    }
+
+    updateCharCount();
+    saveThoughtDraft();
+    updateComposerPreview();
+    focusThoughtInput();
 }
 
 function updateComposerPreview() {

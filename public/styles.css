@@ -3210,6 +3210,35 @@ body.calm-mode .orbit-card:hover {
     accent-color: var(--gold);
 }
 
+.mood-compass {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.75rem;
+    align-items: center;
+    margin: 0 0 1rem;
+    padding: 0.85rem;
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.mood-compass strong,
+.mood-compass small {
+    display: block;
+}
+
+.mood-compass strong {
+    margin-top: 0.45rem;
+    color: var(--text-primary);
+    line-height: 1.35;
+}
+
+.mood-compass small {
+    margin-top: 0.25rem;
+    color: var(--text-muted);
+    font-weight: 700;
+}
+
 #thought-input {
     width: 100%;
     min-height: 120px;
@@ -3852,6 +3881,14 @@ body.calm-mode .orbit-card:hover {
     
     .submit-area {
         padding: 1.5rem 1rem;
+    }
+
+    .mood-compass {
+        grid-template-columns: 1fr;
+    }
+
+    .mood-compass button {
+        width: 100%;
     }
 
     .one-on-one-chat-interface {
