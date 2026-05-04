@@ -647,7 +647,10 @@
         ></textarea>
         <div class="composer-status-row">
             <span class="draft-freshness" id="draft-freshness">Draft not saved yet</span>
-            <div class="char-count"><span id="char-count">0</span>/200</div>
+            <div class="composer-status-actions">
+                <button type="button" onclick="clearComposerDraft()">Clear Draft</button>
+                <div class="char-count"><span id="char-count">0</span>/200</div>
+            </div>
         </div>
         <div class="composer-helper" id="composer-helper">Start with a real sentence. The room works best when thoughts have a little shape.</div>
 

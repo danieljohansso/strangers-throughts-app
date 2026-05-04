@@ -1504,6 +1504,10 @@ function saveThoughtDraft() {
     const boosted = document.getElementById('boost-thought');
     const quiet = document.getElementById('quiet-thought');
     if (!input) return;
+    if (!input.value.trim()) {
+        clearThoughtDraft();
+        return;
+    }
 
     const updatedAt = new Date().toISOString();
     localStorage.setItem('strangerThoughtDraft', JSON.stringify({
@@ -1543,6 +1547,15 @@ function restoreThoughtDraft() {
 function clearThoughtDraft() {
     localStorage.removeItem('strangerThoughtDraft');
     updateDraftFreshness('');
+}
+
+function clearComposerDraft() {
+    const input = document.getElementById('thought-input');
+    if (input) input.value = '';
+    updateCharCount();
+    updateComposerPreview();
+    clearThoughtDraft();
+    addNotification({ type: 'draft', message: 'Composer draft cleared.' });
 }
 
 function updateDraftFreshness(updatedAt) {
