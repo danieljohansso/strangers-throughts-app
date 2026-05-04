@@ -6386,7 +6386,8 @@ input[type="checkbox"]#quiet-thought {
 }
 
 .activity-notice:empty,
-.similar-thoughts-stats:empty {
+.similar-thoughts-stats:empty,
+.error-message:empty {
     display: none !important;
 }
 
