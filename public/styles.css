@@ -6521,6 +6521,77 @@ input[type="checkbox"]#quiet-thought {
     display: none !important;
 }
 
+.live-indicator {
+    position: relative;
+    overflow: visible;
+    cursor: help;
+}
+
+.live-indicator .pulse {
+    position: relative;
+    width: 9px;
+    height: 9px;
+    background: #16a34a !important;
+    animation: livePulse 1.8s ease-in-out infinite;
+}
+
+.live-indicator .pulse::after {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border-radius: 999px;
+    border: 1px solid rgba(22, 163, 74, 0.32);
+    animation: livePulseRing 1.8s ease-out infinite;
+}
+
+.live-indicator::after {
+    content: "You're not alone.";
+    position: absolute;
+    top: calc(100% + 0.55rem);
+    left: 0;
+    z-index: 20;
+    width: max-content;
+    max-width: 190px;
+    padding: 0.45rem 0.6rem;
+    color: var(--text-primary);
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.12);
+    border-radius: 8px;
+    box-shadow: var(--shadow-md);
+    font-size: 0.75rem;
+    font-weight: 700;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-4px);
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+
+.live-indicator:hover::after,
+.live-indicator:focus-within::after {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@keyframes livePulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(0.72);
+    }
+}
+
+@keyframes livePulseRing {
+    0% {
+        opacity: 0.6;
+        transform: scale(0.7);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(1.45);
+    }
+}
+
 .logo {
     display: inline-flex;
     align-items: center;

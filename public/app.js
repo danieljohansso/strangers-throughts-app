@@ -398,13 +398,13 @@ function updateOnlineCount(count) {
     onlineCount = count;
 
 
-    const onlineCountElement = document.getElementById('online-count');
+    const onlineCountElement = document.getElementById('online-count');
 
 
     if (onlineCountElement) {
 
 
-        onlineCountElement.textContent = `${count} ${count === 1 ? 'stranger' : 'strangers'} online`;
+        onlineCountElement.textContent = count === 1 ? '1 stranger here' : `${count} strangers here`;
 
 
     }
