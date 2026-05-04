@@ -6411,3 +6411,104 @@ input[type="checkbox"]#quiet-thought {
     border: 0 !important;
     background: transparent !important;
 }
+
+/* Final profile light-theme cleanup. */
+.my-profile-page {
+    color: var(--text-secondary);
+}
+
+.my-profile-hero,
+.profile-editor-panel,
+.profile-panel {
+    color: var(--text-secondary);
+    background: #ffffff !important;
+    border: 1px solid rgba(15, 23, 42, 0.1) !important;
+    box-shadow: none !important;
+}
+
+.my-profile-hero {
+    border-radius: 16px;
+}
+
+.my-profile-copy h2,
+.profile-editor-panel h3,
+.profile-panel h3,
+.profile-stat-card strong,
+.profile-pattern strong,
+.profile-identity-preview strong,
+.profile-panel-header strong {
+    color: var(--text-primary) !important;
+}
+
+.my-profile-copy p,
+.profile-editor-panel p,
+.profile-editor-panel label,
+.profile-stat-card span,
+.profile-identity-preview span,
+.profile-thought-row span,
+.profile-panel .thread-empty {
+    color: var(--text-secondary) !important;
+}
+
+.profile-signal-row span,
+.profile-pattern span,
+.profile-progress,
+.premium-badge {
+    color: var(--text-secondary) !important;
+    background: #f9fafb !important;
+    border: 1px solid rgba(15, 23, 42, 0.1) !important;
+}
+
+.profile-stat-card,
+.animal-avatar-option,
+.profile-identity-preview,
+.profile-thought-row {
+    background: #ffffff !important;
+    border: 1px solid rgba(15, 23, 42, 0.1) !important;
+    box-shadow: none !important;
+}
+
+.animal-avatar-option {
+    color: var(--text-secondary) !important;
+}
+
+.animal-avatar-option.selected {
+    color: var(--text-primary) !important;
+    background: #eef2ff !important;
+    border-color: rgba(37, 99, 235, 0.32) !important;
+}
+
+.animal-avatar-option:hover,
+.animal-avatar-option:focus-visible,
+.profile-thought-row:hover {
+    background: #f9fafb !important;
+    border-color: rgba(15, 23, 42, 0.16) !important;
+}
+
+.profile-editor-panel input,
+.profile-editor-panel select,
+.profile-editor-panel textarea {
+    color: var(--text-primary) !important;
+    background: #ffffff !important;
+    border: 1px solid rgba(15, 23, 42, 0.12) !important;
+}
+
+.profile-editor-panel input:focus,
+.profile-editor-panel select:focus,
+.profile-editor-panel textarea:focus {
+    border-color: rgba(37, 99, 235, 0.42) !important;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08) !important;
+}
+
+.profile-editor-panel input::placeholder,
+.profile-editor-panel textarea::placeholder {
+    color: #9ca3af !important;
+}
+
+.my-profile-avatar,
+.animal-avatar-option img,
+.profile-identity-preview img {
+    background: #ffffff;
+    border-color: rgba(15, 23, 42, 0.12) !important;
+    box-shadow: none !important;
+}
