@@ -23,13 +23,13 @@
         
         <div class="header-center">
             <div class="tabs">
-                <button class="tab-btn active" data-tab="all" onclick="switchTab('all')">🌐 All Thoughts</button>
-                <button class="tab-btn" data-tab="matches" onclick="switchTab('matches')">👥 Find Matches <span class="tab-badge" id="matches-badge">0</span></button>
+                <button class="tab-btn active" data-tab="all" onclick="switchTab('all')">🌐 The Room</button>
+                <button class="tab-btn" data-tab="matches" onclick="switchTab('matches')">👥 Find Someone <span class="tab-badge" id="matches-badge">0</span></button>
                 <button class="tab-btn" data-tab="trending" onclick="switchTab('trending')">🔥 Trending</button>
-                <button class="tab-btn" data-tab="yours" onclick="switchTab('yours')">👤 Your Thoughts <span class="tab-badge" id="yours-badge">0</span></button>
+                <button class="tab-btn" data-tab="yours" onclick="switchTab('yours')">👤 Your Truths <span class="tab-badge" id="yours-badge">0</span></button>
                 <button class="tab-btn" data-tab="profile" onclick="switchTab('profile')">✨ Profile</button>
 
-                <button class="tab-btn" data-tab="replies" onclick="switchTab('replies')">💬 Replies <span class="tab-badge" id="replies-badge">0</span></button>
+                <button class="tab-btn" data-tab="replies" onclick="switchTab('replies')">💬 Reflections <span class="tab-badge" id="replies-badge">0</span></button>
                 <button class="tab-btn" data-tab="following" onclick="switchTab('following')">🧭 Following <span class="tab-badge" id="following-badge">0</span></button>
                 <button class="tab-btn" data-tab="saved" onclick="switchTab('saved')">🔖 Saved <span class="tab-badge" id="saved-badge">0</span></button>
             </div>
@@ -141,17 +141,19 @@
 
             <div class="hero-copy">
 
-                <span class="hero-kicker">Anonymous, real-time, moderated by the crowd</span>
+                <span class="hero-kicker">Anonymous emotional matching and reflection</span>
 
-                <h2>Say the thing you cannot quite say anywhere else.</h2>
+                <h2>Get seen without being judged.</h2>
 
-                <p>Share a thought, find a stranger in the same mood, or drift through what other people are carrying tonight.</p>
+                <p>Say what you would not say out loud, get a thoughtful reply, and find someone who gets it instantly.</p>
 
                 <div class="hero-actions">
 
-                    <button class="primary-action" onclick="focusThoughtInput()">Write a Thought</button>
+                    <button class="primary-action" onclick="focusThoughtInput()">Say It Anonymously</button>
 
-                    <button class="secondary-action" onclick="showRandomThought()">Random Thought</button>
+                    <button class="secondary-action" onclick="switchTab('matches')">Find Someone</button>
+
+                    <button class="secondary-action" onclick="showRandomThought()">Reflect on One</button>
 
                     <button class="secondary-action" id="calm-mode-btn" onclick="toggleCalmMode()">Calm Mode</button>
 
@@ -185,7 +187,7 @@
 
         <section class="insight-strip">
 
-            <div><span id="stat-thoughts">0</span><small>thoughts shared</small></div>
+            <div><span id="stat-thoughts">0</span><small>truths shared</small></div>
 
             <div><span id="stat-saved">0</span><small>saved by you</small></div>
 
@@ -203,7 +205,7 @@
 
                 <span class="hero-kicker">Today's intention</span>
 
-                <strong id="intention-summary">Choose what kind of thoughts you want to find.</strong>
+                <strong id="intention-summary">Choose what kind of emotional signal you want to find.</strong>
 
             </div>
 
@@ -542,7 +544,7 @@
 
             <span class="hero-kicker">Welcome to Stranger Thoughts</span>
 
-            <h2>Anonymous does not have to mean careless.</h2>
+            <h2>Say the thing. Find the person who understands it.</h2>
 
             <div class="onboarding-grid">
 
@@ -550,7 +552,7 @@
 
                 <div><strong>Find people fast</strong><span>Use moods, categories, search, saved posts, and random discovery to move around.</span></div>
 
-                <div><strong>Stay in control</strong><span>Report unsafe thoughts and block strangers from your own feed.</span></div>
+                <div><strong>Stay in control</strong><span>Report unsafe reflections and block strangers from your own feed.</span></div>
 
             </div>
 
@@ -652,7 +654,7 @@
                 <div class="char-count"><span id="char-count">0</span>/200</div>
             </div>
         </div>
-        <div class="composer-helper" id="composer-helper">Start with a real sentence. The room works best when thoughts have a little shape.</div>
+        <div class="composer-helper" id="composer-helper">Start with the sentence you would usually swallow. Specific feelings match better.</div>
 
         <div class="composer-quality" id="composer-quality">
             <span data-quality="length">Length</span>
@@ -678,7 +680,7 @@
             </div>
         </div>
 
-        <button id="submit-btn" onclick="submitThought()" disabled>Share Anonymously</button>
+        <button id="submit-btn" onclick="submitThought()" disabled>Send Into the Room</button>
     </div>
     
     </main>

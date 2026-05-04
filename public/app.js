@@ -617,14 +617,14 @@ function updateDashboardPanelVisibility() {
 
 function getFocusedViewMeta() {
     const tabLabels = {
-        all: 'All thoughts',
-        matches: 'Find matches',
-        trending: 'Trending thoughts',
-        yours: 'Your thoughts',
+        all: 'The room',
+        matches: 'Emotional matches',
+        trending: 'Resonating now',
+        yours: 'Your truths',
         profile: 'Profile',
-        replies: 'Threads with replies',
+        replies: 'Reflections',
         following: 'Following',
-        saved: 'Saved thoughts'
+        saved: 'Saved signals'
     };
     const filters = [];
 
@@ -634,7 +634,7 @@ function getFocusedViewMeta() {
 
     return {
         kicker: currentTab === 'all' ? 'Filtered feed' : 'Focused view',
-        title: tabLabels[currentTab] || 'Focused thoughts',
+        title: tabLabels[currentTab] || 'Focused signals',
         detail: filters.length
             ? `Showing ${filters.join(' - ')}.`
             : 'Dashboard panels are tucked away so this view has room.'
@@ -742,22 +742,22 @@ function getProfileAchievements(stats = getMyProfileStats()) {
     return [
         {
             title: 'First Thought',
-            detail: 'Posted at least one anonymous thought',
+            detail: 'Shared one thing you usually keep inside',
             unlocked: stats.myThoughts.length > 0
         },
         {
             title: 'Conversation Starter',
-            detail: 'Earned 5 thread replies',
+            detail: 'Earned 5 reflections from strangers',
             unlocked: stats.totalReplies >= 5
         },
         {
             title: 'Signal Found',
-            detail: 'Earned 10 reactions',
+            detail: 'Earned 10 felt signals',
             unlocked: stats.totalReactions >= 10
         },
         {
             title: 'Curator',
-            detail: 'Saved 3 thoughts for later',
+            detail: 'Saved 3 signals for later',
             unlocked: stats.savedCount >= 3
         },
         {
@@ -1421,13 +1421,13 @@ function updateTodayIntentionSummary() {
     const mood = todayIntention.mood || 'all';
     const category = todayIntention.category || 'all';
     if (mood === 'all' && category === 'all') {
-        summary.textContent = 'Choose what kind of thoughts you want to find.';
+        summary.textContent = 'Choose the emotional signal you want to find.';
         return;
     }
 
     const moodText = mood === 'all' ? 'any mood' : mood.toLowerCase();
     const categoryText = category === 'all' ? 'any category' : category.toLowerCase();
-    summary.textContent = `Today you are looking for ${moodText} thoughts in ${categoryText}.`;
+    summary.textContent = `Today you are looking for ${moodText} signals in ${categoryText}.`;
 }
 
 function applyTodayIntention() {
@@ -1772,7 +1772,7 @@ function updateComposerPreview() {
     if (helper) {
         helper.className = 'composer-helper';
         if (!text) {
-            helper.textContent = 'Start with a real sentence. The room works best when thoughts have a little shape.';
+            helper.textContent = 'Start with the sentence you would usually swallow. Specific feelings match better.';
         } else if (text.length < MIN_LENGTH) {
             helper.textContent = `${MIN_LENGTH - text.length} more characters before this can be posted.`;
             helper.classList.add('warning');
@@ -1780,7 +1780,7 @@ function updateComposerPreview() {
             helper.textContent = `${remaining} characters left. Tight, but still readable.`;
             helper.classList.add('warning');
         } else {
-            helper.textContent = 'Ready to share anonymously.';
+            helper.textContent = 'Ready to be seen without being judged.';
             helper.classList.add('ready');
         }
     }
@@ -2995,7 +2995,7 @@ function renderMatchLobby() {
         const isWaitingHere = waitingMatchCategory === category;
         const isWaitingElsewhere = waitingMatchCategory && !isWaitingHere;
         const disabled = !currentUser || currentOneOnOneChat || isWaitingElsewhere;
-        const buttonText = isWaitingHere ? 'Cancel Search' : waitingCount > 0 ? 'Join Match' : 'Start Matching';
+        const buttonText = isWaitingHere ? 'Cancel Search' : waitingCount > 0 ? 'Join Someone' : 'Find Someone';
         const buttonAction = isWaitingHere ? 'cancelMatchSearch()' : `requestOneOnOneMatch('${category}')`;
         const activityLabel = isWaitingHere
             ? 'Searching'
@@ -3005,10 +3005,10 @@ function renderMatchLobby() {
         const activityLevel = isWaitingHere || waitingCount > 0 ? 'warm' : 'calm';
         const activityWidth = isWaitingHere ? 72 : Math.min(100, 18 + waitingCount * 24);
         const helperText = isWaitingHere
-            ? 'Looking for someone now...'
+            ? 'Looking for someone who gets this mood now...'
             : waitingCount > 0
-                ? `${waitingCount} ${waitingCount === 1 ? 'person is' : 'people are'} waiting`
-                : 'No one waiting yet. Be first in line.';
+                ? `${waitingCount} ${waitingCount === 1 ? 'person is' : 'people are'} waiting to be understood`
+                : 'No one waiting yet. Start the signal.';
 
         return `
             <div class="quote-card match-lobby-card" data-category="${category}">
