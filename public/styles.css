@@ -6389,3 +6389,24 @@ input[type="checkbox"]#quiet-thought {
 .similar-thoughts-stats:empty {
     display: none !important;
 }
+
+.notification-badge:empty,
+.tab-badge:empty,
+.profile-badge-toggle,
+#profile-premium-input,
+.submit-area input[type="checkbox"],
+.submit-area button:empty,
+.submit-area span:empty,
+.submit-area label:empty,
+.submit-area div:empty:not(.char-count):not(.composer-status-actions) {
+    display: none !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+}

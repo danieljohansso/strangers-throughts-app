@@ -3402,10 +3402,6 @@ function renderProfilePage() {
                         <span>${escapeHtml(profileDetails.vibe || 'Kind listener')} · ${escapeHtml(profileDetails.intention)}</span>
                     </div>
                 </div>
-                <label class="boost-toggle profile-badge-toggle">
-                    <input type="checkbox" id="profile-premium-input" ${profileDetails.premiumBadge ? 'checked' : ''}>
-                    <span>Show premium badge placeholder</span>
-                </label>
                 <div class="thread-compose-actions">
                     <button class="secondary-action compact-action" onclick="copyUserId()">Copy ID</button>
                     <button class="secondary-action compact-action" onclick="copyProfileCard()">Copy Card</button>
@@ -3489,7 +3485,7 @@ function saveMyProfileDetails() {
         intention: document.getElementById('profile-intention-input')?.value || 'Share honestly',
         vibe: document.getElementById('profile-vibe-input')?.value || 'Kind listener',
         animalAvatar: profileDetails.animalAvatar || 'fox',
-        premiumBadge: Boolean(document.getElementById('profile-premium-input')?.checked),
+        premiumBadge: Boolean(profileDetails.premiumBadge),
         pinnedThoughtId: profileDetails.pinnedThoughtId || ''
     };
 
