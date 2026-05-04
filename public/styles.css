@@ -6735,3 +6735,47 @@ textarea {
         line-height: 1.3 !important;
     }
 }
+
+.submit-area,
+.feed {
+    width: 100% !important;
+    max-width: 640px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
+}
+
+#thought-input {
+    min-height: 112px !important;
+    font-size: 1.36rem !important;
+    line-height: 1.42 !important;
+    font-weight: 430 !important;
+}
+
+#thought-input::placeholder {
+    font-size: 1.28rem !important;
+}
+
+#feed .quote-card:not(.match-lobby-card) .quote-content {
+    margin: 0.6rem 0 0.9rem !important;
+    font-size: clamp(1.25rem, 1.65vw, 1.42rem) !important;
+    line-height: 1.38 !important;
+    font-weight: 430 !important;
+}
+
+@media (max-width: 640px) {
+    .submit-area,
+    .feed {
+        max-width: 100% !important;
+    }
+
+    #thought-input {
+        min-height: 104px !important;
+        font-size: 1.2rem !important;
+    }
+
+    #feed .quote-card:not(.match-lobby-card) .quote-content {
+        font-size: 1.16rem !important;
+        line-height: 1.42 !important;
+    }
+}
