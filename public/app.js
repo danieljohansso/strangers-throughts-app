@@ -1077,10 +1077,37 @@ function showAnotherRandomThought() {
     renderRandomThoughtPrompt(true);
 }
 
+function renderRandomThoughtResult(quoteId) {
+    const card = document.getElementById('random-thought-card');
+    const quote = allQuotes.find(item => item.id === quoteId);
+    if (!card || !quote) return;
+
+    const count = Math.max(getFeltThisCount(quoteId), 1);
+    const replyCount = quote.replyCount || 0;
+    const countCopy = count === 1
+        ? 'You are the first person here to feel this.'
+        : `${count} people have felt this nearby.`;
+    const replyCopy = replyCount > 0
+        ? `${replyCount} ${replyCount === 1 ? 'person has' : 'people have'} written something back.`
+        : 'No one has written back yet.';
+
+    card.innerHTML = `
+        <div class="random-result">
+            <span class="random-result-kicker">You are not alone</span>
+            <strong>${escapeHtml(countCopy)}</strong>
+            <p>${escapeHtml(replyCopy)}</p>
+            <div class="random-thought-actions">
+                <button class="random-feel-btn" onclick="openThread('${quoteId}')">See replies</button>
+                <button class="random-not-btn" onclick="showAnotherRandomThought()">Next thought</button>
+            </div>
+        </div>
+    `;
+}
+
 function feelSameWithRandomThought(quoteId) {
     toggleReaction(quoteId, 'felt this');
-    addNotification({ type: 'match', message: 'Marked as something you feel too.' });
-    setTimeout(() => renderRandomThoughtPrompt(true), 220);
+    renderRandomThoughtResult(quoteId);
+    addNotification({ type: 'match', message: 'Someone else might feel this too.' });
 }
 
 function notMeRandomThought(quoteId) {
