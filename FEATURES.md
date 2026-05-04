@@ -1,4 +1,4 @@
-# Stranger Thoughts App - Feature Documentation
+# Strangers Thoughts App - Feature Documentation
 
 ## 🎯 Killer Feature: "Match with a Stranger" - 1-on-1 Anonymous Chat
 
@@ -203,7 +203,7 @@ function findOneOnOneMatch(socket, category) {
 
 ### 📝 Summary
 
-The "Match with a Stranger" feature transforms Stranger Thoughts from a passive content platform into an **active social connection network**. By enabling real-time, anonymous, category-based 1-on-1 conversations, it creates meaningful interactions that differentiate the app from traditional social media platforms.
+The "Match with a Stranger" feature transforms Strangers Thoughts from a passive content platform into an **active social connection network**. By enabling real-time, anonymous, category-based 1-on-1 conversations, it creates meaningful interactions that differentiate the app from traditional social media platforms.
 
 **This is the killer feature that makes your app truly unique and valuable.**
 

@@ -1,4 +1,4 @@
-# Stranger Thoughts
+# Strangers Thoughts
 
 Anonymous quote-sharing app with reactions, categories, and chat.
 

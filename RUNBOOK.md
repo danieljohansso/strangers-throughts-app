@@ -1,4 +1,4 @@
-# Stranger Thoughts Runbook
+# Strangers Thoughts Runbook
 
 ## Stack
 

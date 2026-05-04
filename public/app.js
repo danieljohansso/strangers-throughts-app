@@ -1,4 +1,4 @@
-// Stranger Thoughts - Minimal working version
+// Strangers Thoughts - Minimal working version
 
 
 // Focused on core functionality to fix connection issues
@@ -3174,9 +3174,9 @@ function openShareCard(quoteId, event) {
     const preview = document.getElementById('share-card-preview');
     if (!quote || !modal || !preview) return;
 
-    currentShareCardText = `"${quote.text}"\n\n- ${quote.authorName || 'Anonymous'} on Stranger Thoughts\n${quote.category} · ${quote.mood || 'Reflective'}`;
+    currentShareCardText = `"${quote.text}"\n\n- ${quote.authorName || 'Anonymous'} on Strangers Thoughts\n${quote.category} · ${quote.mood || 'Reflective'}`;
     preview.innerHTML = `
-        <div class="share-card-brand">Stranger Thoughts</div>
+        <div class="share-card-brand">Strangers Thoughts</div>
         <blockquote>${escapeHtml(quote.text)}</blockquote>
         <div class="share-card-meta">
             <span>${escapeHtml(quote.authorName || 'Anonymous')}</span>
