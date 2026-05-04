@@ -4565,7 +4565,7 @@ function connect() {
             document.body.innerHTML = 
 
 
-                `<div style="text-align: center; padding: 4rem; color: #fff; font-family: Arial, sans-serif; background: #0a0a0a; min-height: 100vh;">
+                `<div style="text-align: center; padding: 4rem; color: #fff; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a0a; min-height: 100vh;">
 
 
                     <h1>Cannot Load Socket.IO</h1>
