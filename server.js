@@ -671,8 +671,8 @@ io.on('connection', (socket) => {
       socket.emit('quoteRejected', { message: 'Thoughts need at least 10 characters.' });
       return;
     }
-    const category = CATEGORIES.includes(newQuote?.category) ? newQuote.category : 'Deep';
-    const mood = MOODS.includes(newQuote?.mood) ? newQuote.mood : 'Reflective';
+    const category = CATEGORIES.includes(newQuote?.category) ? newQuote.category : '';
+    const mood = MOODS.includes(newQuote?.mood) ? newQuote.mood : '';
     const mode = IDENTITY_MODES.includes(newQuote?.mode) ? newQuote.mode : 'The Observer';
     const quotes = loadQuotes();
     const quoteWithId = {

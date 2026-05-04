@@ -2938,7 +2938,32 @@ function renderNotifications() {
 // Escape HTML to prevent XSS
 
 
-function escapeHtml(text) {
+function isDefaultPostLabel(value, fallback) {
+    return !value || value === fallback;
+}
+
+function renderPostLabels(quote, mood, mode, isQuiet, isFeatured) {
+    const labels = [];
+
+    if (!isDefaultPostLabel(quote.category, 'Deep')) {
+        labels.push(`<span class="quote-category">${escapeHtml(quote.category)}</span>`);
+    }
+
+    if (!isDefaultPostLabel(mood, 'Reflective')) {
+        labels.push(`<span class="mood-tag">${escapeHtml(mood)}</span>`);
+    }
+
+    if (!isDefaultPostLabel(mode, 'The Observer')) {
+        labels.push(`<span class="mode-tag">${escapeHtml(mode)}</span>`);
+    }
+
+    if (isQuiet) labels.push('<span class="quiet-tag">Quiet hours</span>');
+    if (isFeatured) labels.push('<span class="premium-badge">Featured</span>');
+
+    return labels.join('');
+}
+
+function escapeHtml(text) {
 
 
     if (!text) return '';
@@ -3662,8 +3687,8 @@ function renderQuotes() {
         const isSaved = isPostSaved(quote.id);
         const isFeatured = quote.boosted || getEngagementScore(quote) >= 5;
         const isQuiet = Boolean(quote.quiet);
-        const mood = quote.mood || 'Reflective';
-        const mode = quote.mode || 'The Observer';
+        const mood = quote.mood || '';
+        const mode = quote.mode || '';
         const replies = threadReplies[quote.id] || [];
         const isThreadOpen = expandedThreads.has(quote.id);
         const latestReplies = replies.slice(-3);
@@ -3691,11 +3716,7 @@ function renderQuotes() {
                     ${!isYours && quote.authorId ? `<button class="follow-author-btn ${isAuthorFollowed(quote.authorId) ? 'following' : ''}" onclick="toggleFollowAuthor('${quote.authorId}', event)">${isAuthorFollowed(quote.authorId) ? 'Following' : 'Follow'}</button>` : ''}
 
 
-                    <span class="quote-category">${escapeHtml(quote.category)}</span>
-                    <span class="mood-tag">${escapeHtml(mood)}</span>
-                    <span class="mode-tag">${escapeHtml(mode)}</span>
-                    ${isQuiet ? '<span class="quiet-tag">Quiet hours</span>' : ''}
-                    ${isFeatured ? '<span class="premium-badge">Featured</span>' : ''}
+                    ${renderPostLabels(quote, mood, mode, isQuiet, isFeatured)}
 
 
                     ${currentUser ? `<button class="save-btn ${isSaved ? 'saved' : ''}" onclick="toggleSavePost('${quote.id}', event)" title="${isSaved ? 'Unsave' : 'Save'} post">${isSaved ? 'Saved' : 'Save'}</button>` : ''}
@@ -4398,9 +4419,12 @@ function submitThought() {
     const content = input.value.trim();
 
 
-    const category = document.getElementById('new-category').value;
-    const mood = document.getElementById('new-mood')?.value || 'Reflective';
-    const mode = document.getElementById('new-mode')?.value || 'The Observer';
+    const categoryValue = document.getElementById('new-category')?.value || '';
+    const moodValue = document.getElementById('new-mood')?.value || '';
+    const modeValue = document.getElementById('new-mode')?.value || '';
+    const category = categoryValue === 'Deep' ? '' : categoryValue;
+    const mood = moodValue === 'Reflective' ? '' : moodValue;
+    const mode = modeValue === 'The Observer' ? '' : modeValue;
     const boosted = Boolean(document.getElementById('boost-thought')?.checked);
     const quiet = Boolean(document.getElementById('quiet-thought')?.checked);
 
