@@ -147,7 +147,7 @@ body::before {
 
 /* ==================== HEADER ==================== */
 .app-shell {
-    width: min(1120px, calc(100% - 2rem));
+    width: min(760px, calc(100% - 2rem));
     margin: 0 auto;
 }
 
@@ -2287,12 +2287,14 @@ body.calm-mode .orbit-card:hover {
 
 /* ==================== FEED ==================== */
 .feed {
-    padding: 1rem 1.5rem;
-    max-width: 800px;
+    padding: 0;
+    max-width: 640px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 0;
+    border-inline: 1px solid rgba(179, 189, 202, 0.1);
+    background: rgba(15, 17, 21, 0.42);
 }
 
 .loading {
@@ -2349,13 +2351,17 @@ body.calm-mode .orbit-card:hover {
 
 /* ==================== QUOTE CARDS ==================== */
 .quote-card {
-    background: var(--bg-card);
-    border: 1px solid rgba(179, 189, 202, 0.11);
-    border-radius: var(--radius-lg);
-    padding: 1.5rem;
-    transition: border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr);
+    column-gap: 0.75rem;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid rgba(179, 189, 202, 0.11);
+    border-radius: 0;
+    padding: 1rem 1.1rem;
+    transition: background var(--transition-fast);
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     animation: none;
 }
 
@@ -2404,19 +2410,18 @@ body.calm-mode .orbit-card:hover {
 .quote-card::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 3px;
-    height: 100%;
-    background: var(--primary);
-    opacity: 0;
-    transition: opacity var(--transition-normal);
+    top: 3.35rem;
+    left: 2.4rem;
+    width: 1px;
+    height: calc(100% - 4rem);
+    background: rgba(179, 189, 202, 0.16);
+    opacity: 1;
 }
 
 .quote-card:hover {
-    transform: translateY(-1px);
-    border-color: rgba(122, 162, 247, 0.22);
-    box-shadow: var(--shadow-sm);
+    transform: none;
+    background: rgba(255, 255, 255, 0.025);
+    box-shadow: none;
 }
 
 .quote-card:hover::before {
@@ -2424,26 +2429,26 @@ body.calm-mode .orbit-card:hover {
 }
 
 .quote-card.yours {
-    border-left: 3px solid var(--primary);
-    background: rgba(0, 120, 215, 0.03);
+    border-left: 0;
+    background: rgba(122, 162, 247, 0.035);
 }
 
 .quote-card.has-replies {
-    border-left: 3px solid var(--accent-3);
+    border-left: 0;
 }
 
 .quote-card.saved {
-    border-left: 3px solid var(--gold);
+    border-left: 0;
 }
 
 .quote-card.featured {
-    border-color: rgba(246, 212, 122, 0.28);
-    box-shadow: 0 10px 34px rgba(246, 212, 122, 0.08);
+    border-color: rgba(179, 189, 202, 0.11);
+    box-shadow: none;
 }
 
 .quote-card.quiet-thought-card {
-    border-color: rgba(152, 240, 192, 0.18);
-    background: linear-gradient(145deg, rgba(18, 18, 18, 0.98), rgba(18, 28, 25, 0.72));
+    border-color: rgba(179, 189, 202, 0.11);
+    background: rgba(166, 209, 137, 0.025);
 }
 
 .quiet-tag {
@@ -2466,35 +2471,34 @@ body.calm-mode .orbit-card:hover {
 }
 
 .mood-tag {
+    color: var(--text-muted);
+    background: transparent;
+    border: 0;
+    padding: 0;
     font-size: 0.74rem;
-    color: #98f0c0;
-    background: rgba(76, 175, 80, 0.12);
-    border: 1px solid rgba(76, 175, 80, 0.18);
-    padding: 0.125rem 0.5rem;
-    border-radius: var(--radius-pill);
-    font-weight: 700;
+    font-weight: 650;
 }
 
 .mode-tag {
-    font-size: 0.74rem;
     color: var(--warning);
-    background: rgba(229, 200, 144, 0.08);
-    border: 1px solid rgba(229, 200, 144, 0.16);
-    padding: 0.125rem 0.5rem;
-    border-radius: var(--radius-pill);
-    font-weight: 800;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    font-size: 0.74rem;
+    font-weight: 700;
 }
 
 .thought-evolving {
+    grid-column: 2;
     width: fit-content;
-    margin: 0.75rem 0 -0.25rem;
-    padding: 0.35rem 0.6rem;
-    border-radius: var(--radius-pill);
-    background: rgba(156, 207, 216, 0.075);
-    border: 1px solid rgba(156, 207, 216, 0.14);
-    color: var(--accent);
+    margin: 0.1rem 0 0.35rem;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    border: 0;
+    color: var(--text-muted);
     font-size: 0.78rem;
-    font-weight: 850;
+    font-weight: 600;
 }
 
 .quote-card trending {
@@ -2507,24 +2511,28 @@ body.calm-mode .orbit-card:hover {
 }
 
 .quote-header {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
+    gap: 0.45rem;
+    grid-column: 1 / -1;
+    margin-bottom: 0.25rem;
 }
 
 .quote-avatar {
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
     flex-shrink: 0;
     border: 2px solid rgba(255, 255, 255, 0.1);
+    grid-row: 1 / span 2;
 }
 
 .quote-author {
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     color: var(--text-primary);
-    font-weight: 600;
+    font-weight: 800;
+    justify-self: start;
 }
 
 .author-link {
@@ -2540,35 +2548,31 @@ body.calm-mode .orbit-card:hover {
 }
 
 .quote-category {
-    font-size: 0.75rem;
-    color: var(--primary);
-    background: rgba(122, 162, 247, 0.09);
-    padding: 0.125rem 0.5rem;
-    border-radius: var(--radius-pill);
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-left: auto;
+    font-size: 0.74rem;
+    color: var(--text-muted);
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    font-weight: 650;
+    text-transform: none;
+    letter-spacing: 0;
+    margin-left: 0;
 }
 
 .quote-content {
-    font-size: clamp(1.35rem, 2.4vw, 1.85rem);
+    grid-column: 2;
+    font-size: 0.96rem;
     color: var(--text-primary);
-    line-height: 1.55;
-    margin: 1.1rem 0 1.25rem;
-    font-weight: 750;
+    line-height: 1.45;
+    margin: 0.1rem 0 0.75rem;
+    font-weight: 450;
     letter-spacing: 0;
     word-break: break-word;
 }
 
 .quote-content::before,
 .quote-content::after {
-    content: '"';
-    color: var(--primary);
-    font-size: 2.35rem;
-    line-height: 1;
-    vertical-align: middle;
-    opacity: 0.38;
+    content: none;
 }
 
 .reply-preview {
@@ -2607,20 +2611,21 @@ body.calm-mode .orbit-card:hover {
 
 .reactions {
     display: flex;
-    gap: 0.45rem;
-    margin-bottom: 1.05rem;
+    grid-column: 2;
+    gap: 0.2rem;
+    margin-bottom: 0.45rem;
     flex-wrap: wrap;
 }
 
 .reaction-btn {
     display: flex;
     align-items: center;
-    gap: 0.35rem;
-    padding: 0.46rem 0.74rem;
-    background: rgba(255, 255, 255, 0.035);
-    color: var(--text-secondary);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: var(--radius-pill);
+    gap: 0.25rem;
+    padding: 0.25rem 0.4rem;
+    background: transparent;
+    color: var(--text-muted);
+    border: 0;
+    border-radius: var(--radius-sm);
     cursor: pointer;
     font-size: 0.82rem;
     font-weight: 850;
@@ -2629,9 +2634,8 @@ body.calm-mode .orbit-card:hover {
 }
 
 .reaction-btn:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(179, 189, 202, 0.16);
-    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.045);
+    transform: none;
 }
 
 .reaction-btn.active {
@@ -2674,10 +2678,11 @@ body.calm-mode .orbit-card:hover {
 
 .quote-meta {
     display: flex;
+    grid-column: 2;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
-    font-size: 0.85rem;
+    margin-bottom: 0.35rem;
+    font-size: 0.78rem;
     color: var(--text-muted);
 }
 
@@ -2737,22 +2742,24 @@ body.calm-mode .orbit-card:hover {
 }
 
 .join-btn {
-    width: 100%;
-    padding: 0.75rem 1.5rem;
-    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-    color: #fff;
-    border: none;
-    border-radius: var(--radius-md);
-    font-size: 1rem;
-    font-weight: 600;
+    width: auto;
+    padding: 0.28rem 0.45rem;
+    background: transparent;
+    color: var(--text-muted);
+    border: 0;
+    border-radius: var(--radius-sm);
+    font-size: 0.84rem;
+    font-weight: 750;
     cursor: pointer;
-    transition: all var(--transition-normal);
-    box-shadow: 0 2px 8px var(--primary-glow);
+    transition: background var(--transition-fast), color var(--transition-fast);
+    box-shadow: none;
 }
 
 .join-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 120, 215, 0.4);
+    transform: none;
+    background: rgba(255, 255, 255, 0.045);
+    color: var(--text-primary);
+    box-shadow: none;
 }
 
 .join-btn:active {
@@ -2967,12 +2974,13 @@ body.calm-mode .orbit-card:hover {
 /* ==================== QUOTE ACTIONS BAR ==================== */
 .quote-actions {
     display: flex;
+    grid-column: 2;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: 0.35rem;
     align-items: center;
-    margin-top: 0.75rem;
-    padding-top: 0.75rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    margin-top: 0.25rem;
+    padding-top: 0;
+    border-top: 0;
 }
 
 .thought-more-menu {
@@ -3047,9 +3055,10 @@ body.calm-mode .orbit-card:hover {
 
 .thread-panel {
     display: none;
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    grid-column: 2;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(179, 189, 202, 0.1);
 }
 
 .thread-panel.open {
@@ -3306,19 +3315,20 @@ body.calm-mode .orbit-card:hover {
 
 /* ==================== SUBMIT AREA ==================== */
 .submit-area {
-    padding: 2rem 1.5rem;
-    max-width: 800px;
+    padding: 1rem 1.1rem;
+    max-width: 640px;
     margin: 0 auto;
-    background: var(--bg-card);
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    background: transparent;
+    border: 1px solid rgba(179, 189, 202, 0.1);
+    border-top: 0;
+    border-radius: 0;
 }
 
 .submit-area h2 {
-    font-size: 1.25rem;
+    font-size: 0.96rem;
     color: var(--text-primary);
-    margin-bottom: 1rem;
-    font-weight: 600;
+    margin-bottom: 0.85rem;
+    font-weight: 800;
 }
 
 .composer-prompts {
@@ -3437,12 +3447,13 @@ body.calm-mode .orbit-card:hover {
 
 #thought-input {
     width: 100%;
-    min-height: 120px;
-    padding: 1rem;
-    background: var(--bg-input);
+    min-height: 86px;
+    padding: 0.85rem 0;
+    background: transparent;
     color: var(--text-primary);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--radius-md);
+    border: 0;
+    border-bottom: 1px solid rgba(179, 189, 202, 0.12);
+    border-radius: 0;
     font-size: 1rem;
     font-family: inherit;
     resize: vertical;
@@ -3453,8 +3464,8 @@ body.calm-mode .orbit-card:hover {
 }
 
 #thought-input:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(0, 120, 215, 0.1);
+    border-color: rgba(122, 162, 247, 0.32);
+    box-shadow: none;
 }
 
 #thought-input::placeholder {
@@ -4396,18 +4407,18 @@ body.calm-mode .orbit-card:hover {
 /* Quote marks animation */
 .quote-content::before,
 .quote-content::after {
-    transition: all 0.3s ease;
+    transition: none;
 }
 
 .quote-card:hover .quote-content::before,
 .quote-card:hover .quote-content::after {
-    opacity: 1;
-    transform: scale(1.1);
+    opacity: inherit;
+    transform: none;
 }
 
 /* Trending pulse effect */
 .quote-card.trending {
-    animation: trendingPulse 2s ease-in-out infinite;
+    animation: none;
 }
 
 @keyframes trendingPulse {
