@@ -3956,17 +3956,19 @@ function sendThreadReply(quoteId) {
     input.disabled = true;
 
     socket.timeout(5000).emit('sendThreadReply', { quoteId, text, quotedText }, (err, response) => {
-        input.disabled = false;
+        const activeInput = document.getElementById(`thread-input-${quoteId}`) || input;
+        const activeStatus = document.getElementById(`thread-status-${quoteId}`) || status;
+        activeInput.disabled = false;
         if (err || !response?.ok) {
-            if (status) status.textContent = response?.error || 'Reply did not send. Check the connection and try again.';
+            if (activeStatus) activeStatus.textContent = response?.error || 'Reply did not send. Check the connection and try again.';
             return;
         }
 
-        input.value = '';
+        activeInput.value = '';
         clearThreadReplyDraft(quoteId);
-        if (status) status.textContent = 'Reply posted.';
+        if (activeStatus) activeStatus.textContent = 'Reply posted.';
         setTimeout(() => {
-            if (status) status.textContent = '';
+            if (activeStatus) activeStatus.textContent = '';
         }, 1600);
     });
 }
@@ -4899,6 +4901,9 @@ function connect() {
     socket.on('newThreadReply', ({ quoteId, reply, replyCount }) => {
         if (!threadReplies[quoteId]) threadReplies[quoteId] = [];
         threadReplies[quoteId].push(reply);
+        if (reply.authorId === currentUser?.id) {
+            clearThreadReplyDraft(quoteId);
+        }
 
         allQuotes = allQuotes.map(quote => quote.id === quoteId ? { ...quote, replyCount } : quote);
         quotes = quotes.map(quote => quote.id === quoteId ? { ...quote, replyCount } : quote);
