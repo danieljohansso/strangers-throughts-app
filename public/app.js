@@ -748,6 +748,11 @@ function getDailyPrompt() {
     return DAILY_PROMPTS[index];
 }
 
+function isDailyPromptText(text) {
+    const normalized = String(text || '').trim();
+    return DAILY_PROMPTS.includes(normalized);
+}
+
 function getEngagementScore(quote) {
     return (quote.reactionCount || 0) + (quote.replyCount || 0) * 2 + (quote.boosted ? 4 : 0);
 }
@@ -1176,7 +1181,8 @@ function focusThoughtInput() {
 function useDailyPrompt() {
     const input = document.getElementById('thought-input');
     if (input) {
-        input.value = `${getDailyPrompt()} `;
+        if (isDailyPromptText(input.value)) input.value = '';
+        input.placeholder = "What's on your mind?";
         updateCharCount();
         focusThoughtInput();
     }
@@ -1466,7 +1472,8 @@ function saveThoughtDraft() {
     const boosted = document.getElementById('boost-thought');
     const quiet = document.getElementById('quiet-thought');
     if (!input) return;
-    if (!input.value.trim()) {
+    const text = input.value.trim();
+    if (!text || isDailyPromptText(text)) {
         clearThoughtDraft();
         return;
     }
@@ -1488,6 +1495,10 @@ function restoreThoughtDraft() {
     try {
         const draft = JSON.parse(localStorage.getItem('strangerThoughtDraft') || 'null');
         if (!draft || !draft.text) return;
+        if (isDailyPromptText(draft.text)) {
+            localStorage.removeItem('strangerThoughtDraft');
+            return;
+        }
 
         const input = document.getElementById('thought-input');
         const category = document.getElementById('new-category');
