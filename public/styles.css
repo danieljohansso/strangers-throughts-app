@@ -6626,3 +6626,41 @@ textarea {
 *::after {
     font-family: inherit;
 }
+
+.quote-card,
+.quote-card.yours,
+.quote-card.saved,
+.quote-card.featured,
+.quote-card.quiet-thought-card,
+.quote-card.trending {
+    color: var(--text-secondary) !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.1) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+.quote-card:hover,
+.quote-card.yours:hover {
+    background: transparent !important;
+    border-bottom-color: rgba(15, 23, 42, 0.18) !important;
+}
+
+.quote-card .quote-content,
+.quote-card .quote-author,
+.quote-card .quote-category,
+.quote-card .quote-meta,
+.quote-card .quote-stats,
+.quote-card .quote-actions,
+.quote-card .reaction-btn,
+.quote-card .join-btn,
+.quote-card .save-btn,
+.quote-card .thought-more-trigger {
+    color: inherit;
+}
+
+.quote-card .quote-content,
+.quote-card .quote-author {
+    color: var(--text-primary) !important;
+}
