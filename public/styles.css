@@ -2340,6 +2340,68 @@ body.calm-mode .orbit-card:hover {
     font-weight: 900;
 }
 
+.following-shelf {
+    background: rgba(255, 255, 255, 0.035);
+    border-color: rgba(148, 163, 184, 0.13);
+}
+
+.following-shelf .profile-panel-header span {
+    color: var(--text-muted);
+}
+
+.following-author-list {
+    display: grid;
+    gap: 0.55rem;
+}
+
+.following-author-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.6rem;
+    align-items: center;
+    padding: 0.65rem;
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.025);
+}
+
+.following-author-main {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
+}
+
+.following-author-avatar {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 auto;
+    border-radius: 50%;
+}
+
+.following-author-main strong,
+.following-author-main small {
+    display: block;
+}
+
+.following-author-main strong {
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.following-author-main small,
+.following-shelf-empty {
+    color: var(--text-muted);
+    font-size: 0.82rem;
+}
+
 @keyframes cardFadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }

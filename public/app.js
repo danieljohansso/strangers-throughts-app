@@ -3590,7 +3590,13 @@ function renderQuotes() {
     
 
 
-    if (quotes.length === 0) {
+    const shelf = currentTab === 'saved'
+        ? renderSavedShelf()
+        : currentTab === 'following'
+            ? renderFollowingShelf()
+            : '';
+
+    if (quotes.length === 0) {
 
 
         const emptyCopy = searchQuery
@@ -3602,7 +3608,7 @@ function renderQuotes() {
                 : currentTab === 'yours'
                     ? 'Your anonymous thoughts will collect here after you post.'
                     : 'No thoughts to show yet. Start the room with something honest.';
-        feed.innerHTML = `<div class="empty-message premium-empty"><strong>${emptyCopy}</strong><button onclick="focusThoughtInput()">Write a Thought</button></div>`;
+        feed.innerHTML = shelf + `<div class="empty-message premium-empty"><strong>${emptyCopy}</strong><button onclick="switchTab('all')">Browse Room</button></div>`;
 
 
         return;
@@ -3614,9 +3620,7 @@ function renderQuotes() {
     
 
 
-    const savedShelf = currentTab === 'saved' ? renderSavedShelf() : '';
-
-    feed.innerHTML = savedShelf + quotes.map(quote => {
+    feed.innerHTML = shelf + quotes.map(quote => {
 
 
         const date = new Date(quote.timestamp);
@@ -3790,6 +3794,67 @@ function renderSavedShelf() {
                         <span>${group.count}</span>
                     </button>
                 `).join('')}
+            </div>
+        </section>
+    `;
+}
+
+function getFollowedAuthorSummaries() {
+    return followedAuthors
+        .map(authorId => {
+            const authorQuotes = allQuotes
+                .filter(quote => quote.authorId === authorId && !isQuoteHiddenLocally(quote))
+                .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            const firstQuote = authorQuotes[0] || allQuotes.find(quote => quote.authorId === authorId);
+            if (!firstQuote) return null;
+            return {
+                id: authorId,
+                name: firstQuote.authorName || 'Anonymous',
+                color: firstQuote.authorColor || '#444',
+                count: authorQuotes.length,
+                mood: getMostCommon(authorQuotes.map(quote => quote.mood || 'Reflective')) || 'Reflective'
+            };
+        })
+        .filter(Boolean);
+}
+
+function renderFollowingShelf() {
+    const authors = getFollowedAuthorSummaries();
+    const followedThreadCount = followedThreads.length;
+    const totalFollowed = authors.length + followedThreadCount;
+
+    if (totalFollowed === 0) {
+        return `
+            <section class="saved-shelf following-shelf">
+                <div class="profile-panel-header">
+                    <h3>Following</h3>
+                    <span>0 followed</span>
+                </div>
+                <p class="following-shelf-empty">Follow strangers from a thought card or profile to build a calmer, more personal feed.</p>
+            </section>
+        `;
+    }
+
+    return `
+        <section class="saved-shelf following-shelf">
+            <div class="profile-panel-header">
+                <h3>Following</h3>
+                <span>${totalFollowed} followed</span>
+            </div>
+            <div class="following-author-list">
+                ${authors.map(author => `
+                    <div class="following-author-row">
+                        <button class="following-author-main" onclick="openAuthorProfile('${author.id}', event)">
+                            <span class="following-author-avatar" style="background-color: ${author.color}"></span>
+                            <span>
+                                <strong>${escapeHtml(author.name)}</strong>
+                                <small>${author.count} ${author.count === 1 ? 'thought' : 'thoughts'} · ${escapeHtml(author.mood)}</small>
+                            </span>
+                        </button>
+                        <button class="secondary-action compact-action" onclick="toggleFollowAuthor('${author.id}', event)">Unfollow</button>
+                    </div>
+                `).join('')}
+                ${followedThreadCount > 0 ? `<p class="following-shelf-empty">${followedThreadCount} followed ${followedThreadCount === 1 ? 'thread is' : 'threads are'} also included below.</p>` : ''}
             </div>
         </section>
     `;
