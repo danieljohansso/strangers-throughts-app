@@ -4498,6 +4498,132 @@ body.calm-mode .orbit-card:hover {
     }
 }
 
+/* Header navigation refinement */
+.header {
+    grid-template-columns: minmax(160px, 1fr) minmax(420px, 720px) minmax(160px, 1fr);
+    gap: 0.9rem;
+    padding: 0.7rem 1rem;
+}
+
+.header-left {
+    justify-self: start;
+}
+
+.header-right {
+    justify-self: end;
+}
+
+.header-center {
+    display: grid;
+    justify-items: center;
+    gap: 0.45rem;
+    min-width: 0;
+}
+
+.tabs {
+    width: auto;
+    max-width: 100%;
+    padding: 0.2rem;
+    border: 1px solid rgba(148, 163, 184, 0.12);
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.035);
+}
+
+.tab-btn {
+    min-height: 32px;
+    padding: 0.36rem 0.68rem;
+    border-radius: var(--radius-pill);
+}
+
+.tab-btn.active {
+    background: var(--text-primary);
+    color: var(--bg-dark);
+    border-color: transparent;
+}
+
+.tab-btn.active .tab-badge {
+    background: rgba(0, 0, 0, 0.12);
+    color: var(--bg-dark);
+}
+
+.controls {
+    display: grid;
+    grid-template-columns: minmax(220px, 1fr) auto auto;
+    align-items: center;
+    gap: 0.35rem;
+    width: min(100%, 620px);
+    opacity: 0.82;
+    transition: opacity var(--transition-fast);
+}
+
+.controls:hover,
+.controls:focus-within {
+    opacity: 1;
+}
+
+.search-box,
+.sort-controls,
+.filter-controls select {
+    min-height: 32px;
+    border-radius: var(--radius-pill);
+}
+
+.search-box {
+    min-width: 0;
+    padding: 0.18rem 0.45rem;
+}
+
+.search-box svg {
+    width: 16px;
+    height: 16px;
+}
+
+.search-box input,
+.search-box input:focus {
+    width: 100%;
+    min-width: 0;
+    padding: 0.3rem 0.35rem;
+    font-size: 0.84rem;
+}
+
+.sort-controls {
+    padding: 0.18rem;
+}
+
+.sort-btn {
+    min-height: 28px;
+    padding: 0.28rem 0.52rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.filter-controls select {
+    max-width: 132px;
+    padding: 0.28rem 0.52rem;
+    font-size: 0.8rem;
+}
+
+@media (max-width: 920px) {
+    .header {
+        grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .header-center {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 640px) {
+    .controls {
+        grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .filter-controls {
+        display: none;
+    }
+}
+
 /* Compact profile menu */
 .profile-dropdown {
     width: min(300px, calc(100vw - 1rem));
