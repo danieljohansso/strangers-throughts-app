@@ -23,15 +23,15 @@
         
         <div class="header-center">
             <div class="tabs">
-                <button class="tab-btn active" data-tab="all" onclick="switchTab('all')">🌐 The Room</button>
-                <button class="tab-btn" data-tab="matches" onclick="switchTab('matches')">👥 Find Someone <span class="tab-badge" id="matches-badge">0</span></button>
-                <button class="tab-btn" data-tab="trending" onclick="switchTab('trending')">🔥 Trending</button>
-                <button class="tab-btn" data-tab="yours" onclick="switchTab('yours')">👤 Your Truths <span class="tab-badge" id="yours-badge">0</span></button>
-                <button class="tab-btn" data-tab="profile" onclick="switchTab('profile')">✨ Profile</button>
+                <button class="tab-btn active" data-tab="all" onclick="switchTab('all')">The Room</button>
+                <button class="tab-btn" data-tab="matches" onclick="switchTab('matches')">Find Someone <span class="tab-badge" id="matches-badge">0</span></button>
+                <button class="tab-btn" data-tab="trending" onclick="switchTab('trending')">Trending</button>
+                <button class="tab-btn" data-tab="yours" onclick="switchTab('yours')">Your Truths <span class="tab-badge" id="yours-badge">0</span></button>
+                <button class="tab-btn" data-tab="profile" onclick="switchTab('profile')">Profile</button>
 
-                <button class="tab-btn" data-tab="replies" onclick="switchTab('replies')">💬 Reflections <span class="tab-badge" id="replies-badge">0</span></button>
-                <button class="tab-btn" data-tab="following" onclick="switchTab('following')">🧭 Following <span class="tab-badge" id="following-badge">0</span></button>
-                <button class="tab-btn" data-tab="saved" onclick="switchTab('saved')">🔖 Saved <span class="tab-badge" id="saved-badge">0</span></button>
+                <button class="tab-btn" data-tab="replies" onclick="switchTab('replies')">Reflections <span class="tab-badge" id="replies-badge">0</span></button>
+                <button class="tab-btn" data-tab="following" onclick="switchTab('following')">Following <span class="tab-badge" id="following-badge">0</span></button>
+                <button class="tab-btn" data-tab="saved" onclick="switchTab('saved')">Saved <span class="tab-badge" id="saved-badge">0</span></button>
             </div>
             
             <div class="controls">
@@ -92,43 +92,43 @@
                         <div class="profile-stats">
                             <div class="stat">
                                 <span class="stat-value" id="profile-posts">0</span>
-                                <span class="stat-label">Posts</span>
+                                <span class="stat-label">Truths</span>
                             </div>
                             <div class="stat">
                                 <span class="stat-value" id="profile-replies">0</span>
-                                <span class="stat-label">Replies</span>
+                                <span class="stat-label">Reflections</span>
                             </div>
                             <div class="stat">
                                 <span class="stat-value" id="profile-reactions">0</span>
-                                <span class="stat-label">Reactions</span>
+                                <span class="stat-label">Signals</span>
                             </div>
                         </div>
                         <input type="text" class="profile-name-input" id="profile-name-input" placeholder="Enter new name..." maxlength="20" onkeydown="handleProfileInputKey(event)">
-                        <button class="profile-button" onclick="updateUsername(); event.stopPropagation();">Change Username</button>
+                        <button class="profile-button" onclick="updateUsername(); event.stopPropagation();">Update display name</button>
                     </div>
                     <div class="profile-menu-item" onclick="copyUserId(); event.stopPropagation();">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
-                        <span>Copy User ID</span>
+                        <span>Copy identity ID</span>
                     </div>
                     <div class="profile-menu-item" onclick="regenerateIdentity(); event.stopPropagation();">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-                        <span>New Identity</span>
+                        <span>Regenerate identity</span>
                     </div>
                     <div class="profile-menu-item" onclick="viewYourThoughts(); event.stopPropagation();">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
-                        <span>View Your Posts</span>
+                        <span>Your truths</span>
                     </div>
                     <div class="profile-menu-item" onclick="openMyProfile(); event.stopPropagation();">
 
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 5.3L20 8l-4 3.9.9 5.6L12 14.9 7.1 17.5 8 11.9 4 8l5.6-.7L12 2z"/></svg>
 
-                        <span>Profile Page</span>
+                        <span>Profile page</span>
 
                     </div>
 
                     <div class="profile-menu-item" onclick="viewSaved(); event.stopPropagation();">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-                        <span>View Saved Posts</span>
+                        <span>Saved signals</span>
                     </div>
                 </div>
             </div>
