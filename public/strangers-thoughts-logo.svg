@@ -1,0 +1,20 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>Strangers Thoughts abstract logo</title>
+  <desc>Two overlapping rounded diamond shapes, one filled black and one outlined, with a small white circle at the intersection.</desc>
+
+  <!-- Left filled rounded diamond -->
+  <rect x="118" y="156" width="178" height="178" rx="28"
+        transform="rotate(45 207 245)"
+        fill="#050505"/>
+
+  <!-- Right outlined rounded diamond -->
+  <rect x="216" y="156" width="178" height="178" rx="28"
+        transform="rotate(45 305 245)"
+        fill="none"
+        stroke="#050505"
+        stroke-width="14"
+        stroke-linejoin="round"/>
+
+  <!-- Intersection dot -->
+  <circle cx="256" cy="256" r="22" fill="#FFFFFF"/>
+</svg>
