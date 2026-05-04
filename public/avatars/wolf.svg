@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Wolf avatar">
-  <rect width="128" height="128" rx="64" fill="#f4f7fb"/>
-  <path d="M26 37 50 51l14-24 14 24 24-14-10 49c-5 18-16 29-28 29S41 104 36 86L26 37Z" fill="#64748b"/>
-  <path d="M44 58 64 27l20 31-20 43-20-43Z" fill="#94a3b8"/>
-  <path d="M43 78 64 101l21-23c-4 23-13 36-21 36S47 101 43 78Z" fill="#e2e8f0"/>
+  <rect width="128" height="128" rx="64" fill="#ffffff"/>
+  <path d="M26 37 50 51l14-24 14 24 24-14-10 49c-5 18-16 29-28 29S41 104 36 86L26 37Z" fill="#111111"/>
+  <path d="M44 58 64 27l20 31-20 43-20-43Z" fill="#6b7280"/>
+  <path d="M43 78 64 101l21-23c-4 23-13 36-21 36S47 101 43 78Z" fill="#f8fafc"/>
   <circle cx="50" cy="69" r="5" fill="#0f172a"/>
   <circle cx="78" cy="69" r="5" fill="#0f172a"/>
   <path d="M58 84h12l-6 8-6-8Z" fill="#0f172a"/>
-  <path d="M31 42 48 52 38 62 31 42Zm66 0L80 52l10 10 7-20Z" fill="#334155"/>
+  <path d="M31 42 48 52 38 62 31 42Zm66 0L80 52l10 10 7-20Z" fill="#374151"/>
 </svg>

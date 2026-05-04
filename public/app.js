@@ -171,12 +171,12 @@ let profileDetails = {
 };
 
 const ANIMAL_AVATARS = [
-    { id: 'fox', name: 'Fox', image: '/avatars/fox.svg', accent: '#f97316' },
-    { id: 'owl', name: 'Owl', image: '/avatars/owl.svg', accent: '#2563eb' },
-    { id: 'cat', name: 'Cat', image: '/avatars/cat.svg', accent: '#ec4899' },
-    { id: 'wolf', name: 'Wolf', image: '/avatars/wolf.svg', accent: '#64748b' },
-    { id: 'deer', name: 'Deer', image: '/avatars/deer.svg', accent: '#b45309' },
-    { id: 'raven', name: 'Raven', image: '/avatars/raven.svg', accent: '#4f46e5' }
+    { id: 'fox', name: 'Fox', image: '/avatars/fox.svg', accent: '#111111' },
+    { id: 'owl', name: 'Owl', image: '/avatars/owl.svg', accent: '#111111' },
+    { id: 'cat', name: 'Cat', image: '/avatars/cat.svg', accent: '#111111' },
+    { id: 'wolf', name: 'Wolf', image: '/avatars/wolf.svg', accent: '#111111' },
+    { id: 'deer', name: 'Deer', image: '/avatars/deer.svg', accent: '#111111' },
+    { id: 'raven', name: 'Raven', image: '/avatars/raven.svg', accent: '#111111' }
 ];
 
 const PROFILE_VIBES = [
