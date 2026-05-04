@@ -42,7 +42,7 @@ const nouns = ['Fox', 'Wolf', 'Bear', 'Eagle', 'Lion', 'Tiger', 'Owl', 'Deer', '
 const colors = ['#FF5733', '#33FF57', '#3357FF', '#F3FF33', '#FF33F3', '#33FFF3', '#8A2BE2', '#FF7F50', '#6495ED', '#DC143C'];
 const CATEGORIES = ['Deep', 'Confessions', 'Advice', 'Late Night', 'Funny'];
 const MOODS = ['Reflective', 'Hopeful', 'Heavy', 'Curious', 'Unfiltered', 'Celebrating'];
-const REACTIONS = ['👍', '😂', '🤔', '❤️'];
+const REACTIONS = ['felt this', 'hmm', 'deep', 'ouch'];
 const rateBuckets = new Map();
 
 function generateRandomName() {

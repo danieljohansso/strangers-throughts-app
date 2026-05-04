@@ -13,7 +13,7 @@ const MAX_LENGTH = 200;
 const MIN_LENGTH = 10;
 
 
-const REACTIONS = ['👍', '😂', '🤔', '❤️'];
+const REACTIONS = ['felt this', 'hmm', 'deep', 'ouch'];
 
 const MATCH_CATEGORIES = ['Deep', 'Confessions', 'Advice', 'Late Night', 'Funny'];
 
@@ -3647,7 +3647,8 @@ function renderQuotes() {
                         const count = quoteReactions[reaction] || 0;
 
 
-                        return `<button class="reaction-btn" onclick="toggleReaction('${quote.id}', '${reaction}')" title="${reaction}">${reaction}<span class="reaction-count">${count > 0 ? count : ''}</span></button>`;
+                        const isActive = currentUser?.lastReaction?.[quote.id] === reaction;
+                        return `<button class="reaction-btn ${isActive ? 'active' : ''}" onclick="toggleReaction('${quote.id}', '${reaction}')" title="${reaction}"><span>${escapeHtml(reaction)}</span><span class="reaction-count">${count > 0 ? count : ''}</span></button>`;
 
 
                     }).join('')}
@@ -3665,7 +3666,7 @@ function renderQuotes() {
                         <span>💬 ${replyCount} ${replyCount === 1 ? 'reply' : 'replies'}</span>
 
 
-                        <span>❤️ ${reactionCount} ${reactionCount === 1 ? 'reaction' : 'reactions'}</span>
+                        <span>${reactionCount} ${reactionCount === 1 ? 'felt signal' : 'felt signals'}</span>
 
 
                         ${chatParticipants > 0 ? `<span class="chat-participants">👥 ${chatParticipants} ${chatParticipants === 1 ? 'person' : 'people'} chatting now</span>` : ''}
@@ -3690,12 +3691,17 @@ function renderQuotes() {
 
                     <button class="join-btn" onclick="toggleThread('${quote.id}')">${isThreadOpen ? 'Hide Thread' : 'Reply in Thread'}</button>
                     ${isYours ? `<button class="action-btn ${isPinned ? 'active-action' : ''}" onclick="pinThoughtToProfile('${quote.id}', event)">${isPinned ? 'Unpin' : 'Pin'}</button>` : ''}
-                    <button class="action-btn" onclick="copyThoughtLink('${quote.id}', event)">Copy Link</button>
-                    <button class="action-btn" onclick="openShareCard('${quote.id}', event)">Share Card</button>
-                    <button class="action-btn" onclick="snoozeThought('${quote.id}', event)">Snooze</button>
-                    <button class="action-btn" onclick="reportThought('${quote.id}', '${quote.authorId || ''}', event)">Report</button>
-                    ${isYours ? `<button class="action-btn danger-action" onclick="deleteOwnThought('${quote.id}', event)">Delete</button>` : ''}
-                    ${!isYours ? `<button class="action-btn" onclick="blockAuthor('${quote.authorId || ''}', event)">Block</button>` : ''}
+                    <div class="thought-more-menu" onclick="event.stopPropagation()">
+                        <button class="thought-more-trigger" type="button" aria-label="More actions">...</button>
+                        <div class="thought-more-list">
+                            <button type="button" onclick="copyThoughtLink('${quote.id}', event)">Copy Link</button>
+                            <button type="button" onclick="openShareCard('${quote.id}', event)">Share Card</button>
+                            <button type="button" onclick="snoozeThought('${quote.id}', event)">Snooze</button>
+                            <button type="button" onclick="reportThought('${quote.id}', '${quote.authorId || ''}', event)">Report</button>
+                            ${isYours ? `<button type="button" class="danger-action" onclick="deleteOwnThought('${quote.id}', event)">Delete</button>` : ''}
+                            ${!isYours ? `<button type="button" onclick="blockAuthor('${quote.authorId || ''}', event)">Block</button>` : ''}
+                        </div>
+                    </div>
 
 
                     ${currentUser && currentTab === 'matches' ? `<button class="match-button" onclick="requestOneOnOneMatch('${quote.id}', '${quote.category}')">👥 Find Match</button>` : ''}

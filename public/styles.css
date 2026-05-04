@@ -2453,11 +2453,12 @@ body.calm-mode .orbit-card:hover {
 }
 
 .quote-content {
-    font-size: 1.15rem;
+    font-size: clamp(1.35rem, 2.4vw, 1.85rem);
     color: var(--text-primary);
-    line-height: 1.8;
-    margin-bottom: 1rem;
-    font-style: italic;
+    line-height: 1.55;
+    margin: 1.1rem 0 1.25rem;
+    font-weight: 750;
+    letter-spacing: 0;
     word-break: break-word;
 }
 
@@ -2465,7 +2466,7 @@ body.calm-mode .orbit-card:hover {
 .quote-content::after {
     content: '"';
     color: var(--primary);
-    font-size: 2rem;
+    font-size: 2.35rem;
     line-height: 1;
     vertical-align: middle;
     opacity: 0.6;
@@ -2507,29 +2508,31 @@ body.calm-mode .orbit-card:hover {
 
 .reactions {
     display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
+    gap: 0.45rem;
+    margin-bottom: 1.05rem;
     flex-wrap: wrap;
 }
 
 .reaction-btn {
     display: flex;
     align-items: center;
-    gap: 0.25rem;
-    padding: 0.4rem 0.75rem;
-    background: rgba(255, 255, 255, 0.05);
+    gap: 0.35rem;
+    padding: 0.46rem 0.74rem;
+    background: rgba(255, 255, 255, 0.045);
     color: var(--text-secondary);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: var(--radius-pill);
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 0.82rem;
+    font-weight: 850;
+    text-transform: lowercase;
     transition: all var(--transition-fast);
 }
 
 .reaction-btn:hover {
     background: rgba(255, 255, 255, 0.1);
     border-color: rgba(255, 255, 255, 0.15);
-    transform: scale(1.1);
+    transform: translateY(-1px);
 }
 
 .reaction-btn.active {
@@ -2539,7 +2542,7 @@ body.calm-mode .orbit-card:hover {
 }
 
 .reaction-btn span:first-child {
-    font-size: 1.1rem;
+    font-size: 0.82rem;
 }
 
 .reaction-count {
@@ -2867,9 +2870,80 @@ body.calm-mode .orbit-card:hover {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
+    align-items: center;
     margin-top: 0.75rem;
     padding-top: 0.75rem;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.thought-more-menu {
+    position: relative;
+    margin-left: auto;
+}
+
+.thought-more-trigger {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-pill);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.035);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 900;
+    line-height: 1;
+    transition: all var(--transition-fast);
+}
+
+.thought-more-trigger:hover,
+.thought-more-menu:focus-within .thought-more-trigger {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.16);
+}
+
+.thought-more-list {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 0.45rem);
+    z-index: 30;
+    display: none;
+    min-width: 170px;
+    padding: 0.4rem;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(16, 18, 27, 0.98);
+    box-shadow: var(--shadow-lg);
+}
+
+.thought-more-menu:hover .thought-more-list,
+.thought-more-menu:focus-within .thought-more-list {
+    display: grid;
+    gap: 0.25rem;
+}
+
+.thought-more-list button {
+    width: 100%;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 750;
+    text-align: left;
+    padding: 0.55rem 0.65rem;
+}
+
+.thought-more-list button:hover {
+    background: rgba(255, 255, 255, 0.075);
+    color: var(--text-primary);
+}
+
+.thought-more-list button.danger-action:hover {
+    color: #ff8b8b;
+    background: rgba(255, 68, 68, 0.1);
 }
 
 .thread-panel {
@@ -3990,7 +4064,8 @@ body.calm-mode .orbit-card:hover {
     }
     
     .quote-content {
-        font-size: 1rem;
+        font-size: 1.28rem;
+        line-height: 1.55;
     }
     
     #thought-input {
@@ -4139,10 +4214,16 @@ body.calm-mode .orbit-card:hover {
     
     .quote-actions {
         flex-direction: column;
+        align-items: stretch;
     }
     
     .action-btn {
         width: 100%;
+    }
+
+    .thought-more-menu {
+        align-self: flex-end;
+        margin-left: 0;
     }
 }
 
