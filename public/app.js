@@ -1496,14 +1496,16 @@ function saveThoughtDraft() {
     const quiet = document.getElementById('quiet-thought');
     if (!input) return;
 
+    const updatedAt = new Date().toISOString();
     localStorage.setItem('strangerThoughtDraft', JSON.stringify({
         text: input.value,
         category: category?.value || 'Deep',
         mood: mood?.value || 'Reflective',
         boosted: Boolean(boosted?.checked),
         quiet: Boolean(quiet?.checked),
-        updatedAt: new Date().toISOString()
+        updatedAt
     }));
+    updateDraftFreshness(updatedAt);
 }
 
 function restoreThoughtDraft() {
@@ -1522,6 +1524,7 @@ function restoreThoughtDraft() {
         if (boosted) boosted.checked = Boolean(draft.boosted);
         if (quiet) quiet.checked = Boolean(draft.quiet);
         updateCharCount();
+        updateDraftFreshness(draft.updatedAt);
         addNotification({ type: 'draft', message: 'Your unfinished thought draft was restored.' });
     } catch (err) {
         localStorage.removeItem('strangerThoughtDraft');
@@ -1530,6 +1533,21 @@ function restoreThoughtDraft() {
 
 function clearThoughtDraft() {
     localStorage.removeItem('strangerThoughtDraft');
+    updateDraftFreshness('');
+}
+
+function updateDraftFreshness(updatedAt) {
+    const target = document.getElementById('draft-freshness');
+    if (!target) return;
+
+    if (!updatedAt) {
+        target.textContent = 'Draft not saved yet';
+        target.classList.remove('saved');
+        return;
+    }
+
+    target.textContent = `Draft saved ${formatTimeAgo(new Date(updatedAt))}`;
+    target.classList.add('saved');
 }
 
 function getDraftLocker() {

@@ -3265,12 +3265,23 @@ body.calm-mode .orbit-card:hover {
     color: var(--text-muted);
 }
 
-.char-count {
+.composer-status-row {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+    gap: 0.75rem;
+    align-items: center;
     font-size: 0.85rem;
     color: var(--text-muted);
     margin-bottom: 0.45rem;
+}
+
+.char-count,
+.draft-freshness {
+    color: var(--text-muted);
+}
+
+.draft-freshness.saved {
+    color: #98f0c0;
 }
 
 .composer-helper {
