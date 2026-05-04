@@ -5,26 +5,26 @@
 }
 
 :root {
-    --bg-dark: #0a0a0a;
-    --bg-card: #121212;
-    --bg-input: #1e1e1e;
-    --border-glow: rgba(0, 120, 215, 0.1);
-    --primary: #0078d7;
-    --primary-dark: #005fa3;
-    --primary-glow: rgba(0, 120, 215, 0.3);
-    --accent: #00bfff;
-    --accent-2: #ff6b6b;
-    --accent-3: #4CAF50;
-    --text-primary: #ffffff;
-    --text-secondary: #a0a0a0;
-    --text-muted: #666666;
-    --success: #4CAF50;
-    --error: #ff4444;
-    --warning: #ff8c00;
-    --gold: #FFD700;
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
+    --bg-dark: #0f1115;
+    --bg-card: #161922;
+    --bg-input: #10131a;
+    --border-glow: rgba(132, 146, 166, 0.14);
+    --primary: #7aa2f7;
+    --primary-dark: #5f7fc2;
+    --primary-glow: rgba(122, 162, 247, 0.16);
+    --accent: #9ccfd8;
+    --accent-2: #e78284;
+    --accent-3: #a6d189;
+    --text-primary: #f4f7fb;
+    --text-secondary: #b3bdca;
+    --text-muted: #778293;
+    --success: #a6d189;
+    --error: #e78284;
+    --warning: #e5c890;
+    --gold: #e5c890;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.18);
+    --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.22);
+    --shadow-lg: 0 18px 45px rgba(0, 0, 0, 0.32);
     --radius-sm: 4px;
     --radius-md: 8px;
     --radius-lg: 12px;
@@ -52,14 +52,10 @@ body::before {
     left: 0;
     right: 0;
     bottom: 0;
-    background: 
-        radial-gradient(ellipse at 20% 80%, rgba(120, 119, 198, 0.15) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 20%, rgba(255, 119, 191, 0.1) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 50%, rgba(0, 120, 215, 0.05) 0%, transparent 70%);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 280px);
     pointer-events: none;
     z-index: -1;
-    opacity: 0.5;
-    animation: bgShift 20s ease-in-out infinite;
+    opacity: 1;
 }
 
 @keyframes bgShift {
@@ -276,10 +272,10 @@ body.calm-mode .orbit-card:hover {
 .hero-copy,
 .daily-prompt-card,
 .upgrade-panel {
-    background: linear-gradient(145deg, rgba(18, 18, 18, 0.94), rgba(22, 28, 34, 0.92));
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(22, 25, 34, 0.96);
+    border: 1px solid rgba(179, 189, 202, 0.12);
     border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-sm);
 }
 
 .hero-copy {
@@ -293,9 +289,9 @@ body.calm-mode .orbit-card:hover {
     width: fit-content;
     padding: 0.25rem 0.6rem;
     border-radius: var(--radius-pill);
-    color: #f6d47a;
-    background: rgba(246, 212, 122, 0.1);
-    border: 1px solid rgba(246, 212, 122, 0.18);
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(179, 189, 202, 0.12);
     font-size: 0.72rem;
     font-weight: 700;
     text-transform: uppercase;
@@ -306,8 +302,8 @@ body.calm-mode .orbit-card:hover {
     max-width: 760px;
     margin-top: 0.8rem;
     color: var(--text-primary);
-    font-size: clamp(2rem, 5vw, 4rem);
-    line-height: 1.02;
+    font-size: clamp(2rem, 4.6vw, 3.75rem);
+    line-height: 1.06;
     letter-spacing: 0;
 }
 
@@ -340,7 +336,7 @@ body.calm-mode .orbit-card:hover {
 
 .primary-action,
 .daily-prompt-card button {
-    background: linear-gradient(135deg, var(--primary), var(--accent-3));
+    background: var(--primary);
 }
 
 .secondary-action,
@@ -354,7 +350,7 @@ body.calm-mode .orbit-card:hover {
 .secondary-action:hover,
 .daily-prompt-card button:hover,
 .premium-empty button:hover {
-    transform: translateY(-2px);
+    transform: translateY(-1px);
 }
 
 .daily-prompt-card {
@@ -1713,28 +1709,27 @@ body.calm-mode .orbit-card:hover {
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    background: rgba(255, 255, 255, 0.03);
+    background: transparent;
     color: var(--text-secondary);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: var(--radius-pill);
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
     cursor: pointer;
     font-size: 0.9rem;
     font-weight: 500;
-    transition: all var(--transition-normal);
-    backdrop-filter: blur(5px);
+    transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
 }
 
 .tab-btn:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.045);
+    border-color: rgba(179, 189, 202, 0.1);
     color: var(--text-primary);
 }
 
 .tab-btn.active {
-    background: linear-gradient(135deg, rgba(0, 120, 215, 0.15) 0%, rgba(0, 191, 255, 0.1) 100%);
-    border-color: rgba(0, 120, 215, 0.3);
+    background: rgba(122, 162, 247, 0.12);
+    border-color: rgba(122, 162, 247, 0.28);
     color: var(--text-primary);
-    box-shadow: 0 2px 8px rgba(0, 120, 215, 0.15);
+    box-shadow: none;
 }
 
 .tab-badge {
@@ -2273,13 +2268,13 @@ body.calm-mode .orbit-card:hover {
 /* ==================== QUOTE CARDS ==================== */
 .quote-card {
     background: var(--bg-card);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(179, 189, 202, 0.11);
     border-radius: var(--radius-lg);
     padding: 1.5rem;
-    transition: all var(--transition-normal);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
     position: relative;
     overflow: hidden;
-    animation: cardFadeIn 0.3s ease-out;
+    animation: none;
 }
 
 .saved-shelf {
@@ -2331,15 +2326,15 @@ body.calm-mode .orbit-card:hover {
     left: 0;
     width: 3px;
     height: 100%;
-    background: linear-gradient(180deg, var(--primary) 0%, var(--accent) 100%);
+    background: var(--primary);
     opacity: 0;
     transition: opacity var(--transition-normal);
 }
 
 .quote-card:hover {
-    transform: translateY(-4px);
-    border-color: rgba(0, 120, 215, 0.2);
-    box-shadow: 0 8px 24px rgba(0, 120, 215, 0.1);
+    transform: translateY(-1px);
+    border-color: rgba(122, 162, 247, 0.22);
+    box-shadow: var(--shadow-sm);
 }
 
 .quote-card:hover::before {
@@ -2400,9 +2395,9 @@ body.calm-mode .orbit-card:hover {
 
 .mode-tag {
     font-size: 0.74rem;
-    color: #f6d47a;
-    background: rgba(246, 212, 122, 0.1);
-    border: 1px solid rgba(246, 212, 122, 0.18);
+    color: var(--warning);
+    background: rgba(229, 200, 144, 0.08);
+    border: 1px solid rgba(229, 200, 144, 0.16);
     padding: 0.125rem 0.5rem;
     border-radius: var(--radius-pill);
     font-weight: 800;
@@ -2413,8 +2408,8 @@ body.calm-mode .orbit-card:hover {
     margin: 0.75rem 0 -0.25rem;
     padding: 0.35rem 0.6rem;
     border-radius: var(--radius-pill);
-    background: rgba(0, 191, 255, 0.075);
-    border: 1px solid rgba(0, 191, 255, 0.14);
+    background: rgba(156, 207, 216, 0.075);
+    border: 1px solid rgba(156, 207, 216, 0.14);
     color: var(--accent);
     font-size: 0.78rem;
     font-weight: 850;
@@ -2465,7 +2460,7 @@ body.calm-mode .orbit-card:hover {
 .quote-category {
     font-size: 0.75rem;
     color: var(--primary);
-    background: rgba(0, 120, 215, 0.1);
+    background: rgba(122, 162, 247, 0.09);
     padding: 0.125rem 0.5rem;
     border-radius: var(--radius-pill);
     font-weight: 500;
@@ -2491,7 +2486,7 @@ body.calm-mode .orbit-card:hover {
     font-size: 2.35rem;
     line-height: 1;
     vertical-align: middle;
-    opacity: 0.6;
+    opacity: 0.38;
 }
 
 .reply-preview {
@@ -2540,7 +2535,7 @@ body.calm-mode .orbit-card:hover {
     align-items: center;
     gap: 0.35rem;
     padding: 0.46rem 0.74rem;
-    background: rgba(255, 255, 255, 0.045);
+    background: rgba(255, 255, 255, 0.035);
     color: var(--text-secondary);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: var(--radius-pill);
@@ -2552,8 +2547,8 @@ body.calm-mode .orbit-card:hover {
 }
 
 .reaction-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(179, 189, 202, 0.16);
     transform: translateY(-1px);
 }
 
@@ -3632,7 +3627,7 @@ body.calm-mode .orbit-card:hover {
 #submit-btn {
     width: 100%;
     padding: 1rem;
-    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    background: var(--primary);
     color: #fff;
     border: none;
     border-radius: var(--radius-md);
@@ -3640,12 +3635,13 @@ body.calm-mode .orbit-card:hover {
     font-weight: 600;
     cursor: pointer;
     transition: all var(--transition-normal);
-    box-shadow: 0 4px 12px var(--primary-glow);
+    box-shadow: none;
 }
 
 #submit-btn:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 120, 215, 0.4);
+    transform: translateY(-1px);
+    background: var(--primary-dark);
+    box-shadow: none;
 }
 
 #submit-btn:active:not(:disabled) {
