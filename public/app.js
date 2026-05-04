@@ -2997,6 +2997,13 @@ function renderMatchLobby() {
         const disabled = !currentUser || currentOneOnOneChat || isWaitingElsewhere;
         const buttonText = isWaitingHere ? 'Cancel Search' : waitingCount > 0 ? 'Join Match' : 'Start Matching';
         const buttonAction = isWaitingHere ? 'cancelMatchSearch()' : `requestOneOnOneMatch('${category}')`;
+        const activityLabel = isWaitingHere
+            ? 'Searching'
+            : waitingCount > 0
+                ? 'Ready now'
+                : 'Quiet lane';
+        const activityLevel = isWaitingHere || waitingCount > 0 ? 'warm' : 'calm';
+        const activityWidth = isWaitingHere ? 72 : Math.min(100, 18 + waitingCount * 24);
         const helperText = isWaitingHere
             ? 'Looking for someone now...'
             : waitingCount > 0
@@ -3011,9 +3018,9 @@ function renderMatchLobby() {
                     <span class="quote-category">${waitingCount} waiting</span>
                 </div>
                 <div class="quote-content match-lobby-content">${helperText}</div>
-                <div class="conversation-health health-${health.level}">
-                    <span>${escapeHtml(health.label)}</span>
-                    <i style="width: ${Math.min(100, 18 + getEngagementScore(quote) * 8)}%"></i>
+                <div class="conversation-health health-${activityLevel}">
+                    <span>${escapeHtml(activityLabel)}</span>
+                    <i style="width: ${activityWidth}%"></i>
                 </div>
 
                 <div class="quote-actions">
