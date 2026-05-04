@@ -6516,3 +6516,7 @@ input[type="checkbox"]#quiet-thought {
 .submit-area[hidden] {
     display: none !important;
 }
+
+.submit-area > .category-selector:not(.mode-selector) {
+    display: none !important;
+}
